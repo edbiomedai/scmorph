@@ -1,0 +1,81 @@
+[project]
+name = "scmorph"
+version = "0.1.0"
+description = "Single-cell morphological analysis"
+authors = [
+    {name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com"}
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["single-cell", "morphology", "anndata"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "scanpy",
+    "anndata",
+    "pyarrow",
+    "pyod",
+    "tqdm",
+    "patsy",
+    "formulaic"
+]
+
+[tool.setuptools.package-data]
+data = ["test_data.csv", "test_image_data.csv"]
+
+[tool.semantic_release]
+branch = "main"
+version_variable = "src/scmorph/__init__.py:__version__"
+upload_to_repository = "False"
+
+[tool.pytest]
+testpaths = "tests/"
+
+[tool.pytest.ini_options]
+addopts = "-v -Wdefault"
+pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    "if TYPE_CHECKING",
+    "raise NotImplementedError",
+]
+
+[tool.isort]
+profile = "black"
+known_first_party = ["scmorph", "tests"]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+mypy_path = "src/"
+no_implicit_optional = true
+show_error_codes = true
+warn_unreachable = true
+warn_unused_ignores = true
+exclude = [
+    'docs/',
+    'utils.py'
+]
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "docs"
+ignore_errors = true
