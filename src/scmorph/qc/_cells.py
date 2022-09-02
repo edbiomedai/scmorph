@@ -12,8 +12,7 @@ def calculate_qc_metrics(adata: AnnData) -> AnnData:
 
     Returns
     -------
-    AnnData
-            Annotated data matrix with QC metrics
+    adata : :class:`~AnnData`
     """
     import scanpy as sc
 

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph.io.io import _make_AnnData
+from scmorph._io.io import _make_AnnData
 
 
 # Helper functions and classes for typing
@@ -22,26 +22,6 @@ class Classifier(Protocol):
         return self.predict(X)
 
 
-# TODO: Remove if not needed
-# def _ad_to_df(ad: AnnData) -> pd.DataFrame:
-#     """
-#     Convert AnnData to DataFrame
-
-#     Parameters
-#     ----------
-#     ad : AnnData
-#         AnnData object
-
-#     Returns
-#     -------
-#     df : DataFrame
-#         DataFrame representation of AnnData object
-#     """
-#     df = pd.DataFrame(ad.X, columns=ad.var.index)
-#     df = pd.concat([ad.obs.reset_index(drop=True), df], axis=1)
-#     return df
-
-
 def _is_label_binary(labels: Union[np.ndarray, pd.Series]) -> bool:
     """
     Check if labels are binary
@@ -53,7 +33,7 @@ def _is_label_binary(labels: Union[np.ndarray, pd.Series]) -> bool:
 
     Returns
     -------
-    bool
+    adata : :class:`~bool`
             True if labels are binary
     """
     return len(set(labels)) == 2
@@ -70,8 +50,8 @@ def _default_qc_classifiers(binary: bool = True) -> Classifier:
 
     Returns
     -------
-    classifier :
-        Classifier object. LDA in binary case, MultiTaskLasso in multiclass case.
+    classifier : :class:`~Classifier`
+        LDA in binary case, MultiTaskLasso in multiclass case.
     """
     if binary:
         from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -98,8 +78,8 @@ def _prob_to_pred(pred: np.array, decision_boundary: float = 0.5) -> np.ndarray:
 
     Returns
     -------
-    np.ndarray
-        Array of actual labels
+    adata : :class:`~np.ndarray`
+        Array of binary labels
     """
     # Check if predictions are strings, in which case just return them
     if not np.issubdtype(pred.dtype, np.number):
@@ -118,13 +98,14 @@ def _prob_to_pred(pred: np.array, decision_boundary: float = 0.5) -> np.ndarray:
 
 def read_image_qc(
     filename: str,
-    meta_cols: Union[List["str"], None] = None,
+    meta_cols: Union[List[str], None] = None,
     label_col: str = "Image_Metadata_QClabel",
     sep: str = ",",
     feature_delim: str = "_",
 ) -> AnnData:
     """
-    Read image metrics from csv file
+    Read image metrics from csv file.
+    Note that you will manually have to add a labeled column into the file.
 
     Parameters
     ----------
@@ -145,7 +126,7 @@ def read_image_qc(
 
     Returns
     ----------
-    AnnData object with metadata in obs slot
+    adata : :class:`~AnnData`
     """
     df = pd.read_csv(filename, sep=sep)
     labels = df.pop(label_col)
@@ -159,7 +140,7 @@ def read_image_qc(
     return qc
 
 
-def qc_with(
+def qc_images(
     model: AnnData, qc: AnnData, classifier: Union[None, Classifier] = None
 ) -> AnnData:
     """
@@ -178,8 +159,7 @@ def qc_with(
 
     Returns
     -------
-    AnnData
-            AnnData object with qc saved in 'obs' slot
+    adata : :class:`~AnnData`
     """
 
     if "label" not in qc.obs.columns:

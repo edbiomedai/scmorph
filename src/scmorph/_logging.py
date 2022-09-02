@@ -3,7 +3,7 @@ import sys
 from typing import TextIO
 
 LOG_LEVEL = logging.INFO
-LOG_HANDLE = "annmorph"
+LOG_HANDLE = "scmorph"
 
 
 def set_logger(stream: TextIO = sys.stdout) -> None:

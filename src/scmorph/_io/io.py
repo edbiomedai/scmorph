@@ -11,7 +11,7 @@ import pyarrow
 from anndata import AnnData
 from scanpy import read_h5ad
 
-from scmorph.logging import get_logger
+from scmorph._logging import get_logger
 
 if sys.version_info >= (3, 9):
     Pattern = re.Pattern
@@ -292,12 +292,13 @@ def read_cellprofiler(
 
     Returns
     ----------
-    Annotated data matrix.
+    adata : :class:`~AnnData`
 
     Note
     ----------
     Depending on the size of the input matrix, this function can take a lot of memory.
-    In the future this might be improved by using temporary backing files and appending them lazily.
+    If needed, try exporting CellProfiler in batches of smaller csv files and read them in using
+    :func:`read_cellprofiler_batch`.
     """
     # TODO: think about having temporary file-backing to lower memory usage
     df = _parse_csv(filename, n_headers, sep=sep)
@@ -348,7 +349,7 @@ def read_cellprofiler_batches(
 
     Returns
     ----------
-    Annotated data matrix.
+    adata : :class:`~AnnData`
     """
     import anndata as ad
     import h5py
@@ -512,7 +513,7 @@ def read_meta(
 
     Returns
     ----------
-    Pandas dataframe with metadata
+    meta : :class:`~pandas.DataFrame`
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
@@ -542,7 +543,7 @@ def read_X(
 
     Returns
     ----------
-    Numpy array with X
+    X : :class:`~numpy.array`
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
@@ -571,8 +572,7 @@ def read(filename: str, **kwargs: Any) -> AnnData:
 
     Returns
     -------
-    AnnData
-        Annotated data matrix.
+    adata : :class:`~AnnData`
     """
     _, fileending = os.path.splitext(filename)
     if fileending == ".csv":

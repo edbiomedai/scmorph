@@ -14,7 +14,14 @@ def filter_outliers(
     n_cores: int = 1,
 ) -> AnnData:
     """
+
     Filter outlier observations from an AnnData object.
+
+    Note
+    ----------
+    The ``outliers`` argument determines how many cells will be classified as outlier cells.
+    Since it is an arbitrary threshold this will depend on your dataset and downstream analysis.
+    We encourage you to try different values and see which one works best for your dataset.
 
     Parameters
     ----------
@@ -39,13 +46,7 @@ def filter_outliers(
 
     Returns
     ----------
-    Filtered AnnData object.
-
-    Note
-    ----------
-    The `outliers` argument determines how many cells will be classified as outlier cells.
-    Since it is an arbitrary threshold this will depend on your dataset and downstream analysis.
-    We encourage you to try different values and see which one works best for your dataset.
+    adata : :class:`~AnnData`
     """
     from pyod.models.ecod import ECOD
 

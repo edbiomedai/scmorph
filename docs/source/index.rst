@@ -19,6 +19,7 @@ To find out what scmorph can do for you, head to :doc:`usage`.
    api
    changelog
    contributing
+   references
 
 
 .. |logo| image:: _static/img/scmorph_logo.svg

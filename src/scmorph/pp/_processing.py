@@ -1,17 +1,20 @@
-import functools
-
 import numpy as np
 import scanpy as sc
 from anndata import AnnData
 
 pca = sc.pp.pca
-neighbors = functools.partial(sc.pp.neighbors, n_pcs=20, n_neighbors=10)
+pca.__doc__ = "| Copied from :ref:`scanpy.pp.pca` [Wolf18]_." + pca.__doc__
+neighbors = sc.pp.neighbors
+neighbors.__doc__ = (
+    "| Copied from :ref:`scanpy.pp.neighbors` [Wolf18]_." + neighbors.__doc__
+)
 umap = sc.tl.umap
+umap.__doc__ = "| Copied from :ref:`scanpy.pp.umap` [Wolf18]_." + umap.__doc__
 
 
 def scale(adata: AnnData, chunked: bool = False) -> AnnData:
     """
-    Scale data to unit variance per feature while maintaining a low memory footprint if the file is backed
+    Scale data to unit variance per feature while maintaining a low memory footprint
 
     Parameters
     ----------
@@ -23,7 +26,7 @@ def scale(adata: AnnData, chunked: bool = False) -> AnnData:
 
     Returns
     ----------
-        AnnData object with scaled data
+    adata : :class:`~AnnData`
     """
 
     if not chunked:
@@ -46,9 +49,9 @@ def scale(adata: AnnData, chunked: bool = False) -> AnnData:
     return adata
 
 
-def scale_by_batch(adata: AnnData, batch_key: str) -> AnnData:
+def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> AnnData:
     """
-    Scale data to unit variance per batch while maintaining a low memory footprint
+    Scale data to unit variance per batch
 
     Parameters
     ----------
@@ -63,8 +66,7 @@ def scale_by_batch(adata: AnnData, batch_key: str) -> AnnData:
 
     Returns
     -------
-    AnnData
-            AnnData object with scaled data
+    adata : :class:`~AnnData`
 
     Note
     -------
@@ -72,7 +74,7 @@ def scale_by_batch(adata: AnnData, batch_key: str) -> AnnData:
     """
 
     for _, idx in adata.obs.groupby(batch_key).indices.items():
-        scale(adata[idx, :])
+        scale(adata[idx, :], chunked=chunked)
 
     return adata
 
@@ -84,7 +86,7 @@ def drop_na(
     inplace: bool = True,
 ) -> AnnData:
     """
-    Drop features with only NAs, then drop cells with any NAs (or infinite values)
+    Drop features with many NAs, then drop cells with any NAs (or infinite values)
 
     Parameters
     ----------
@@ -102,8 +104,7 @@ def drop_na(
         Whether to drop the features and/or cells inplace.
     Returns
     -------
-    AnnData
-        The cleaned AnnData object
+    adata : :class:`~AnnData`
     """
 
     isna = np.bitwise_or(np.isinf(adata.X), np.isnan(adata.X))

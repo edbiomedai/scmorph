@@ -18,22 +18,22 @@ def compute_batch_effects(
 ) -> Tuple[np.array, np.array]:
     """
     Compute batch effects using scone's method of deconvoluting technical from biological effects
-     through linear modeling. If no biological differences are expected (e.g. because data is all from
-     the same cell line), set `bio_key` to None.
+    through linear modeling. If no biological differences are expected (e.g. because data is all from
+    the same cell line), set `bio_key` to None.
 
-     For details on scone, see Cole et al., 2019: https://doi.org/10.1016/j.cels.2019.03.010
+    For details on scone, see [Cole19]_. For details on the results particularly view Eq. 3.
 
-     Parameters
-     ----------
-     adata : AnnData
-             Annotated data matrix
+    Parameters
+    ----------
+    adata : AnnData
+            Annotated data matrix
 
-     bio_key : _type_, optional
-             Name of column used to delineate biological entities, e.g. cell lines. Default: None
+    bio_key : :class:`~str`, optional
+            Name of column used to delineate biological entities, e.g. cell lines. Default: None
 
-     batch_key : str, optional
-             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
-             no argument is given. Default: "infer"
+    batch_key : str, optional
+            Name of column used to delineate batch effects, e.g. plates. Will try to guess if
+            no argument is given. Default: "infer"
 
     treatment_key: str, optional
             Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
@@ -45,10 +45,10 @@ def compute_batch_effects(
 
      Returns
      -------
-     Tuple[np.array, np.array]:
-             Betas, and gammas of Eq. 3 in the paper. In other words, betas represent the biological effects,
-             i.e. how much each feature varied because of biological differences. Gammas represent the technical
-             effects, i.e. batch effects.
+     betas : :class:`~np.array`
+            Biological effects, i.e. how much each feature varied because of biological differences
+     gammas: :class:`~np.array`
+            Technical effects, i.e. batch effects.
     """
     from formulaic import Formula
     from patsy.contrasts import Treatment
@@ -117,9 +117,9 @@ def remove_batch_effects(
     Remove batch effects using scone's method of deconvoluting technical from biological effects
     through linear modeling. Note that this preserves biological differences and only
     removes technical effects. If no biological differences are expected (e.g. because data
-    is all from the same cell line), set `bio_key` to None.
+    is all from the same cell line), set ``bio_key`` to None.
 
-    For details on scone, see Cole et al., 2019: https://doi.org/10.1016/j.cels.2019.03.010
+    For details on scone, see [Cole19]_.
 
     Parameters
     ----------
@@ -133,12 +133,13 @@ def remove_batch_effects(
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
             no argument is given. Default: "infer"
 
-    copy: bool, optional
+    copy : bool, optional
             If False, will perform operation in-place, else return a modified copy of the data.
 
     Returns
     -------
-    Batch-corrected annotated data matrix. Will only return object if copy=True.
+    adata : :class:`~AnnData`
+            Annotated data matrix with batch effects removed. If ``copy`` is False, will modify in-place and not return anything.
     """
     _, gammas = compute_batch_effects(adata, bio_key, batch_key)
     if copy:

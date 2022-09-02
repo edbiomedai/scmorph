@@ -1,11 +1,11 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph._utils import get_group_keys, get_grouped_op
-from scmorph.logging import get_logger
+from scmorph._logging import get_logger
+from scmorph._utils import _infer_names, get_group_keys, get_grouped_op
 from scmorph.pp import drop_na, pca, scale
 
 
@@ -102,6 +102,52 @@ def _pca_mahalanobis(
     return dists
 
 
+def aggregate(
+    adata: AnnData,
+    well_key: str = "infer",
+    group_keys: Optional[Union[str, List[str]]] = None,
+    method: str = "median",
+) -> AnnData:
+    """
+    Aggregate single-cell measurements into well-level profiles
+
+    Parameters
+    ----------
+    adata : AnnData
+        Annotated data matrix
+    well_key : str, optional
+        Name of column in metadata used to define wells. Default: "infer"
+    group_keys : Optional[Union[str, List[str]]], optional
+        Other column names to group by, e.g. plate names, by default None
+    method : str,
+        Which aggregation to perform. Must be one of 'mean', 'median', 'std',
+        'var', 'sem', 'mad', and 'mad_scaled' (i.e. median/mad)
+
+    Note
+    ---------
+    If this function produces warnings about dividing by zero, this means that at least
+    one group had a median absolute deviation of 0 for a feature. This means that this
+    feature is constant in that group. However, this will produce missing values.
+    Before proceeding, you should therefore use
+    `drop_na(adata, feature_threshold=1, cell_threshold=0)`
+    to remove features with missing values.
+
+    Returns
+    ---------
+    dists : :class:`~AnnData`
+            Aggregated annotated data matrix
+    """
+    if well_key == "infer":
+        well_key = _infer_names("well", adata.obs.columns)[0]
+
+    if not isinstance(group_keys, list):
+        group_keys = [group_keys] if group_keys is not None else []
+
+    group_keys = [well_key, *group_keys]
+
+    return get_grouped_op(adata, group_keys, operation=method, as_anndata=True)
+
+
 def aggregate_mahalanobis(
     adata: AnnData,
     treatment_key: str = "infer",
@@ -112,12 +158,12 @@ def aggregate_mahalanobis(
     cov_from_single_cell: bool = False,
 ) -> pd.DataFrame:
     """
-    Aggregate single-cell matrix by treatment using Mahalanobis distance
+    Measure distance between groups using mahalanobis distance
 
     Parameters
     ----------
     adata : AnnData
-            The AnnData object as read in with annmorph
+            Annotated data matrix
 
     treatment_key : str
             Name of column in metadata used to define treatments
@@ -143,7 +189,8 @@ def aggregate_mahalanobis(
 
     Returns
     ----------
-    DataFrame, containing mahalanobis distances between treatments
+    dists : :class:`~pd.DataFrame`
+            Mahalanobis distances between treatments
     """
     import anndata
 
@@ -226,12 +273,12 @@ def aggregate_pc(
     cum_var_explained: float = 0.9,
 ) -> pd.Series:
     """
-    Aggregate single-cell matrix by treatment using weighted principal component distances
+    Measure distance between groups using principle components weighted by variance explained
 
     Parameters
     ----------
     adata : AnnData
-            The AnnData object as read in with annmorph
+            Annotated data matrix
 
     treatment_key : str
             Name of column in metadata used to define treatments
@@ -246,7 +293,8 @@ def aggregate_pc(
 
     Returns
     ----------
-    One Series, containing weighted principal component distances to control
+    dists : :class:`~pd.Series`
+            Weighted principal component distances to control
     """
 
     group_keys, treatment_col = get_group_keys(adata, treatment_key, None)
@@ -285,12 +333,13 @@ def aggregate_ttest(
     group_key: Optional[str] = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Aggregate single-cell matrix by treatment using t-statistics
+    Measure per-feature distance between groups using t-statistics.
+    Can be aggregated to a single distance by using `tstat_distance`
 
     Parameters
     ----------
     adata : AnnData
-            The AnnData object as read in with annmorph
+            Annotated data matrix
 
     treatment_key : str
             Name of column in metadata used to define treatments
@@ -303,7 +352,11 @@ def aggregate_ttest(
 
     Returns
     ----------
-    Two pd.DataFrames, one with the t-statistics and one with the q-values (i.e. FDR-corrected p-values)
+    dists : :class:`~pd.DataFrame`
+            T-statistics between groups
+
+    qvals: :class:`~pd.DataFrame`
+            q-values (i.e. FDR-corrected p-values)
     """
     import scipy
     from statsmodels.stats.multitest import fdrcorrection
@@ -342,7 +395,7 @@ def aggregate_ttest(
 
 def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
     """
-    Compute t-static distances
+    Summarize t-statistics into per group. See `aggregate_ttest` for details.
 
     Parameters
     ----------
@@ -351,97 +404,9 @@ def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    DataFrame
+    dists : :class:`~pd.DataFrame`
         Per-group t-statistic distances
     """
     # score[j] = sqrt(t_1^2 + ... + t_i^2)
     # where i = features and j = compounds
     return tstats.pow(2).sum(axis=0).pow(0.5)
-
-
-# keep for now until differences have been found
-# def aggregate_ttest(
-#     adata: AnnData,
-#     treatment_key: str = "infer",
-#     control: str = "DMSO",
-# ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-#     """
-#     Aggregate single-cell matrix by treatment using t-statistics
-
-#     Parameters
-#     ----------
-#     adata : AnnData
-#             The AnnData object as read in with annmorph
-
-#     treatment_key : str
-#             Name of column in metadata used to define treatments
-
-#     control : str
-#             Name of control treatment
-
-#     Returns
-#     ----------
-#     Two DataFrames, one with the t-statistics and one with the q-values (i.e. FDR-corrected p-values)
-#     """
-#     import scipy
-#     from statsmodels.stats.multitest import fdrcorrection
-
-#     # inferring treatment names if necessary
-#     if isinstance(treatment_key, str) and treatment_key == "infer":
-#         treatment_col = _infer_names("treatment", adata.obs.columns)
-#     else:
-#         treatment_col = [treatment_key]
-#     # end inference
-
-#     means = grouped_op(adata, treatment_col, "mean")
-#     vars = grouped_op(adata, treatment_col, "var")
-#     Ns = adata.obs[treatment_col].squeeze().value_counts()
-
-#     groups = pd.Index(means.columns, name=treatment_col[0])
-
-#     means.columns = groups
-#     vars.columns = groups
-
-#     u_control = means.loc[:, control]
-#     u_drugs = means.loc[:, means.columns != control]
-
-#     var_control = vars.loc[:, control]
-#     var_drugs = vars.loc[:, vars.columns != control]
-
-#     N_control = Ns.loc[control]
-#     N_drugs = Ns.loc[Ns.index != control]
-
-#     ### This section was adapted from scipy.stats._mstats_basic.ttest_ind
-#     # This adaption was implemented to compute all t-statistics and df's at once,
-#     # i.e. to avoid computing variance and mean of control multiple times
-#     # as would happen when using scipy.stats.ttest_ind
-#     # it uses pandas' vectorized implementations of operators to efficiently
-#     # compute the statistics
-
-#     vn1 = var_control / N_control
-#     vn2 = var_drugs / N_drugs
-#     with np.errstate(divide="ignore", invalid="ignore"):
-#         df_nom = (vn2.add(vn1, axis="rows")).pow(2)
-#         df_control_denom = (vn1.pow(2)).div(N_control - 1)
-#         df_drug_denom = (vn2.pow(2)).div(N_drugs - 1)
-#         df = df_nom / (df_drug_denom.add(df_control_denom, axis="rows"))
-#         # df = (vn1 + vn2)**2 / (vn1**2 / (n1 - 1) + vn2**2 / (n2 - 1))
-
-#     # If df is undefined, variances are zero.
-#     # It doesn't matter what df is as long as it is not NaN.
-#     df = np.where(np.isnan(df), 1, df)
-#     denom = vn2.add(vn1, axis="rows").pow(0.5)
-
-#     with np.errstate(divide="ignore", invalid="ignore"):
-#         t = (-u_drugs).add(u_control, axis="rows") / denom
-#         # (u_control - u_drugs) / denom, but vectorized
-
-#     t, pval = scipy.stats._stats_py._ttest_finish(df, t, "two-sided")
-#     ### End of adapted section
-
-#     qvals = pd.DataFrame(
-#         fdrcorrection(np.ravel(pval))[1].reshape(pval.shape),
-#         columns=pval.columns,
-#         index=pval.index,
-#     )
-#     return t, qvals

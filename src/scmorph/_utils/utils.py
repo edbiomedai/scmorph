@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph.logging import get_logger
+from scmorph._logging import get_logger
 
 
 def _infer_names(type: str, options: Iterable[str]) -> Sequence[str]:
@@ -96,8 +96,9 @@ def grouped_op(
 
     else:
         raise ValueError(
-            "Operation must be one of 'mean', 'median', 'std', 'var', 'sem'"
+            "Operation must be one of 'mean', 'median', 'std', 'var', 'sem', 'mad', 'mad_scaled'"
         )
+
     return grouped_obs_fun(adata, group_key, fun=fun, layer=layer)
 
 
@@ -112,7 +113,7 @@ def group_obs_fun_inplace(
     Parameters
     ----------
     adata : AnnData
-        The annotated data matrix object
+        Annotated data matrix object
 
     group_key : Union[str, List[str]]
         obs keys to group by
@@ -125,7 +126,7 @@ def group_obs_fun_inplace(
     Returns
     -------
     AnnData
-        The annotated data matrix object after the operation
+        Annotated data matrix object after the operation
     """
     grouped = adata.obs.groupby(group_key)
 
@@ -240,7 +241,10 @@ def grouped_op_to_anndata(df: pd.DataFrame, group_key: List[str]) -> AnnData:
     AnnData
             Converted object
     """
-    obs = pd.DataFrame.from_records(df.columns, columns=group_key)
+    if len(group_key) == 1:
+        obs = pd.DataFrame(df.columns, index=df.columns, columns=group_key)
+    else:
+        obs = pd.DataFrame.from_records(df.columns, columns=group_key)
     obs.index = obs.index.astype(str)
     X = df.T
     X.index = obs.index

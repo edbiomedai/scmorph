@@ -37,14 +37,13 @@ def xim(X: np.array, Y: Union[None, np.array] = None, M: int = 5) -> np.array:
 
     Returns
     ----------
-    Value of XIM
+    xim : :class:~`float`
+            Value of XIM
 
     Note
     ----------
-    This code is a Python reimplementation of code by Zhexiao Lin and Fang Han's found
-    here: https://sites.stat.washington.edu/people/fanghan/XIMCOR.R
-    It is the implementation of their work found here: https://arxiv.org/abs/2108.06828v1
-    Reimplementation by Jesko Wagner.
+    This code is an implementation of [Lin21]_.
+    Implementation by Jesko Wagner.
     """
 
     @jit(nopython=True)
@@ -88,7 +87,7 @@ def xim(X: np.array, Y: Union[None, np.array] = None, M: int = 5) -> np.array:
     return cormat_2d
 
 
-def compute_corr(
+def corr(
     X: np.array, Y: Union[np.array, None] = None, method: str = "pearson", M: int = 5
 ) -> float:
     """
@@ -102,15 +101,16 @@ def compute_corr(
             In the 2-D case, each row is assumed to contain an observation.
             Both arrays need to have the same length.
 
-    method : str, optional
-            One of "pearson", "spearman", or "chatterjee", by default "pearson"
+    method : str
+            One of "pearson", "spearman", or "chatterjee" ([Lin21]_), by default "pearson"
 
     M : int, optional
-            Number of right nearest neighbors to use for chatterjee correlation.
+            Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    Correlation coefficients
+    corr : :class:~`float`
+            Correlation coefficient
     """
 
     if method == "pearson":
