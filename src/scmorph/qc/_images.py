@@ -141,14 +141,18 @@ def read_image_qc(
 
 
 def qc_images(
-    model: AnnData, qc: AnnData, classifier: Union[None, Classifier] = None
+    adata: AnnData,
+    qc: AnnData,
+    classifier: Union[None, Classifier] = None,
+    passing_label: int = 1,
+    copy: bool = False,
 ) -> AnnData:
     """
     Perform cell-QC based on image metrics, if needed using a classifier and a subset of labeled images.
 
     Parameters
     ----------
-    model : AnnData
+    adata : AnnData
             Object as returned by `read_cellprofiler`. Represents AnnData object populated with single-cell data.
 
     qc : AnnData
@@ -156,6 +160,12 @@ def qc_images(
 
     classifier : Classifier
             Classifier to use for prediction. If None, will use the LASSO classifier.
+
+    passing_label : int
+            Label to use for passing images. Default: 1
+
+    copy : bool
+            Return a copy instead of writing to ``adata``. Default: False
 
     Returns
     -------
@@ -166,7 +176,7 @@ def qc_images(
         raise ValueError("QC data must have a label column")
 
     # merge QC metadata with model metadata
-    qc_full = pd.merge(model.obs, qc.obs.reset_index(), how="left")
+    qc_full = pd.merge(adata.obs, qc.obs.reset_index(), how="left")
     if qc_full["index"].isna().any():
         raise ValueError(
             "Some wells do not have corresponding QC data."
@@ -177,7 +187,7 @@ def qc_images(
 
     if not qc_full["label"].isna().any():
         warn("All wells have complete QC data. No inference will be performed.")
-        model.obs["qc_label"] = qc_full["label"]
+        adata.obs["qc_label"] = qc_full["label"]
     else:
         train_ind = qc.obs.loc[~qc.obs["label"].isna()].index
         qc_train = qc[train_ind].copy()
@@ -196,8 +206,12 @@ def qc_images(
 
         meta_labelled = pd.concat([qc_train.obs, qc_pred.obs])
         # Save QC data to model's obsm slot
-        model.obs["image_qc"] = pd.merge(model.obs, meta_labelled, how="left")[
+        adata.obs["image_qc"] = pd.merge(adata.obs, meta_labelled, how="left")[
             "assigned_label"
         ].values
 
-    return model
+    if copy:
+        return adata[adata.obs["image_qc"] == passing_label, :].copy()
+
+    adata._inplace_subset_obs(adata.obs["image_qc"] == passing_label)
+    return adata

@@ -58,7 +58,7 @@ For example, in our test data set we labeled images based on whether they contai
 
 .. code-block:: python
 
-   img_qc = sm.datasets.test_image_data() # read image QC data from csv file
+   img_qc = sm.datasets.image_qc_data() # read image QC data from csv file
    sm.qc.qc_images(adata, img_qc) # perform QC
 
 Unsupervised single-cell QC
