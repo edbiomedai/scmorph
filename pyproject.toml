@@ -6,11 +6,11 @@ authors = [
     {name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com"}
 ]
 license = {file = "LICENSE"}
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.7"
 keywords = ["single-cell", "morphology", "anndata"]
 classifiers = [
-    "Development Status :: 1 - Alpha",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Operating System :: OS Independent",
