@@ -1,24 +1,33 @@
 
 
-.. raw:: html
+.. image:: https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=for-the-badge
+   :target: https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI
+   :alt: CI logo
+   :width: 320
+   :align: center
 
-   <p align="center">
-     <a href="https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI">
-       <img src="https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=flat-square" alt="CI Status" >
-     </a>
-     <a href="https://github.com/edbiomedai/scmorph/blob/main/LICENSE">
-       <img src="https://img.shields.io/github/license/edbiomedai/scmorph" alt="MIT License" >
-     </a>
-     <a href="https://github.com/edbiomedai/scmorph/stargazers">
-       <img src="https://img.shields.io/github/stars/edbiomedai/scmorph?style=social" alt="GitHub starts" >
-     </a>
-     <a href="https://github.com/ambv/black">
-       <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square" alt="black">
-     </a>
-     <a href="https://github.com/pre-commit/pre-commit">
-       <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=flat-square" alt="pre-commit">
-     </a>
-   </p>
+.. image: https://img.shields.io/github/license/edbiomedai/scmorph?style=for-the-badge
+   :target: https://github.com/edbiomedai/scmorph/blob/main/LICENSE
+   :alt: MIT License
+   :width: 320
+   :align: center
+
+.. image:: https://img.shields.io/github/stars/edbiomedai/scmorph?style=for-the-badge
+   :alt: Stars logo
+   :width: 320
+   :align: center
+
+.. image: https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge
+   :target: https://github.com/ambv/black
+   :alt: black
+   :width: 320
+   :align: center
+
+.. image: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=
+   :target: https://github.com/pre-commit/pre-commit
+   :alt: pre-commit
+   :width: 320
+   :align: center
 
 
 scmorph
