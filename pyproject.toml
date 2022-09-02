@@ -3,7 +3,7 @@ name = "scmorph"
 version = "0.1.0"
 description = "Single-cell morphological analysis"
 authors = [
-    {name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com"}
+    {name = "Jesko Wagner", email = "35219306+edbiomedai@users.noreply.github.com"}
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
@@ -25,6 +25,16 @@ dependencies = [
     "patsy",
     "formulaic"
 ]
+
+[project.optional-dependencies]
+doc = [
+    "sphinx>=4.4",
+    "sphinx-rtd-theme>=1.0",
+    "scanpydoc[typehints]>=0.7.7",
+    "myst-parser",
+    "scmorph",
+]
+
 
 [tool.setuptools.package-data]
 data = ["test_data.csv", "test_image_data.csv"]

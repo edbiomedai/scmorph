@@ -61,7 +61,7 @@ napoleon_use_rtype = True  # having a separate entry generally helps readability
 napoleon_use_param = True
 napoleon_custom_sections = [("Params", "Parameters")]
 typehints_defaults = "braces"
-nitpick_ignore = [("py:class", "matplotlib.colors.Colormap")]
+nitpick_ignore = [("py:class", "matplotlib.*")]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -74,6 +74,7 @@ html_context = dict(
     github_repo="scmorph",  # Repo name
     github_version="main",  # Version
     conf_py_path="/docs/",  # Path in the checkout to the docs root
+    accent_color="#B6C6E6",
 )
 html_static_path = ["_static"]
 html_show_sphinx = False

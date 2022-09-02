@@ -78,7 +78,7 @@ def _prob_to_pred(pred: np.array, decision_boundary: float = 0.5) -> np.ndarray:
 
     Returns
     -------
-    adata : :class:`~np.ndarray`
+    adata : :class:`~numpy.ndarray`
         Array of binary labels
     """
     # Check if predictions are strings, in which case just return them
@@ -112,7 +112,7 @@ def read_image_qc(
     filename : str
             Path to .csv file
 
-    meta_cols : list, optional
+    meta_cols : list
             Names of metadata columns. None for automatic detection. Default: None
 
     label_col : str

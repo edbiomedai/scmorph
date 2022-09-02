@@ -38,23 +38,23 @@ def cumulative_density(
     x : Union[int, str, List[int], List[str]]
             Name or index of variable(s) to plot
 
-    layer : str, optional
+    layer : str
             Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
             (default: "X")
 
-    color : str, optional
+    color : str
              Variable in "obs" to color by (default: None)
 
-    n_col : int, optional
+    n_col : int
             Number of columns to facet by (default: 3)
 
-    xlim : Tuple[float, float], optional
+    xlim : Tuple[float, float]
             Limits of x-axis (default: None)
 
-    xlabel : str, optional
+    xlabel : str
             Label for x-axis (default: "value")
 
-    kwargs : Any, optional
+    kwargs : Any
             Other arguments passed to seaborn.FacetGrid
 
     Returns
@@ -135,10 +135,10 @@ def ridge_plot(
     y : str
             Name of column containing category values
 
-    n_col : int, optional
+    n_col : int
             How many columns to plot over (default: 1)
 
-    kwargs : Any, optional
+    kwargs : Any
             Other arguments passed to seaborn.FacetGrid
 
     Returns
