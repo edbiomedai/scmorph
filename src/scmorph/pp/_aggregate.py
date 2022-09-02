@@ -115,9 +115,9 @@ def aggregate(
     ----------
     adata : AnnData
         Annotated data matrix
-    well_key : str, optional
+    well_key : str
         Name of column in metadata used to define wells. Default: "infer"
-    group_keys : Optional[Union[str, List[str]]], optional
+    group_keys : Optional[Union[str, List[str]]]
         Other column names to group by, e.g. plate names, by default None
     method : str,
         Which aggregation to perform. Must be one of 'mean', 'median', 'std',
@@ -189,7 +189,7 @@ def aggregate_mahalanobis(
 
     Returns
     ----------
-    dists : :class:`~pd.DataFrame`
+    dists : :class:`~pandas.DataFrame`
             Mahalanobis distances between treatments
     """
     import anndata
@@ -293,7 +293,7 @@ def aggregate_pc(
 
     Returns
     ----------
-    dists : :class:`~pd.Series`
+    dists : :class:`~pandas.Series`
             Weighted principal component distances to control
     """
 
@@ -352,10 +352,10 @@ def aggregate_ttest(
 
     Returns
     ----------
-    dists : :class:`~pd.DataFrame`
+    dists : :class:`~pandas.DataFrame`
             T-statistics between groups
 
-    qvals: :class:`~pd.DataFrame`
+    qvals: :class:`~pandas.DataFrame`
             q-values (i.e. FDR-corrected p-values)
     """
     import scipy
@@ -404,7 +404,7 @@ def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    dists : :class:`~pd.DataFrame`
+    dists : :class:`~pandas.DataFrame`
         Per-group t-statistic distances
     """
     # score[j] = sqrt(t_1^2 + ... + t_i^2)

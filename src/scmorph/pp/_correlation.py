@@ -104,7 +104,7 @@ def corr(
     method : str
             One of "pearson", "spearman", or "chatterjee" ([Lin21]_), by default "pearson"
 
-    M : int, optional
+    M : int
             Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns

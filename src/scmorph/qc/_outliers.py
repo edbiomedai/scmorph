@@ -28,20 +28,20 @@ def filter_outliers(
     adata : AnnData,
             Annotated data matrix.
 
-    outliers : float, optional
+    outliers : float
             Expected fraction of outlier cells.
 
-    fraction: float, optional
+    fraction: float
             During training, subsample to this `fraction` of the number of observations.
 
-    n_obs : int, optional
+    n_obs : int
             During training, subsample to this number of observations.
             We recommend 10,000 or fewer, as this results in faster training with adequate accuracy.
 
     detect_only : bool,  optional
             Whether to only detect outliers but not filter them.
 
-    n_cores : int, optional
+    n_cores : int
             Number of cores to use for parallelization. -1 for all cores.
 
     Returns

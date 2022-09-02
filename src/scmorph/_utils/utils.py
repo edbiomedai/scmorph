@@ -188,9 +188,9 @@ def get_grouped_op(
         Operation, e.g. mean or median
     as_anndata : bool,
         Whether to return an AnnData object, by default False
-    layer : Optional[str], optional
+    layer : Optional[str]
         Which layer to retrieve data from, by default None
-    store : bool, optional
+    store : bool
         Whether to retrieve from/save to cache the result, by default True
 
     Returns

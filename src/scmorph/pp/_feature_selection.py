@@ -21,7 +21,7 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
     method : str
             One of "pearson", "spearman" and "chatterjee" ([Lin21]_), by default "pearson"
 
-    M : int, optional
+    M : int
             Number of right nearest neighbors to use for chatterjee correlation.
 
     Returns
@@ -88,17 +88,17 @@ def select_features(
             Which correlation coefficient to use for filtering.
             One of "pearson", "spearman" and "chatterjee" ([Lin21]_), by default "pearson"
 
-    cor_cutoff : tuple, optional
+    cor_cutoff : tuple
             Cutoff beyond which features with a correlation coefficient
             higher than it are removed. Must be between 0 and 1.
 
-    fraction: float, optional
+    fraction: float
             Subsample to this `fraction` of the number of observations.
 
-    n_obs : int, optional
+    n_obs : int
             Subsample to this number of observations.
 
-    copy : bool, optional
+    copy : bool
             Whether to return a copy or modify `adata` inplace, by default False
             (i.e. operate inplace)
 

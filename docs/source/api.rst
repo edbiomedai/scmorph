@@ -14,7 +14,7 @@ Reading and writing data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``scmorph`` processes `csv` files created with CellProfiler's ``ExportToSpreadsheet`` module into a file format called ``h5ad``.
-This has the advantage of being a fast, standard format that can be used with many existing single-cell tools, such as :ref:`scanpy`.
+This has the advantage of being a fast, standard format that can be used with many existing single-cell tools, such as :ref:`scanpy:index`.
 
 .. note::
    If you would like to learn more about the ``h5ad`` file format, please see :ref:`anndata`, which is used to read and write these files.

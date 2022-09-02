@@ -24,16 +24,19 @@ To use this package, import it:
 Load data
 ---------
 
-The following command loads a morphological dataset created with CellProfiler from a csv file.
-SQlite databases are not yet supported. The expected format is a csv file with cells in rows and features in columns. There should be some columns containing metadata, followed by features in the remaining columns. For an example file, please see ``data/test_data.csv``.
+The following command loads a sample morphological dataset created with CellProfiler from a csv file.
+
+.. note::
+    SQlite databases are not yet supported.
+    Instead, ``scmorph`` reads data as csv files, with cells in rows and features in columns (as produced by CellProfiler)
+    There should be some columns containing metadata, followed by features in the remaining columns.
 
 .. code-block:: python
 
-   path_to_csv = "./data/test_data.csv"
-   adata = sm.read(path_to_csv) # read data from CellProfiler
+   adata = sm.datasets.multi_plate_experiment() # read data example data
 
 QC
---
+--------
 
 There are three broad ways to QC your data:
 
@@ -51,26 +54,24 @@ For example, in our test data set we labeled images based on whether they contai
 .. note::
     Note that here we labeled images on if they contained large particles in the DAPI channel.
     However, this method can be used with any image-level annotations.
-    Depending on how small the artefacts are and how many images are labeled the QC may work better or worse.
+    Depending on how small the artifacts are and how many images are labeled the QC may work better or worse.
 
 .. code-block:: python
 
-   path_to_image_csv = "./data/test_image_data.csv"
-   img_qc = sm.qc.read_image_qc(path_to_image_csv) # read image QC data from csv file
-   sm.qc.qc_with(ad, img_qc) # perform QC
+   img_qc = sm.datasets.image_qc_data() # read image QC data from csv file
+   sm.qc.qc_images(adata, img_qc) # perform QC
 
 Unsupervised single-cell QC
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In this task, we will try to remove outlier cells, which are presumably poorly measured cells, based on their morphological profiles.
-Since manually labeling single-cells is a tedious task, here we provide an unsupervised approach to outlier removal based on `PyOD's <http://jmlr.org/papers/v20/19-011.html>` implementation of EODF.
+Since manually labeling single-cells is a tedious task, here we provide an unsupervised approach to outlier removal based on `PyOD's <http://jmlr.org/papers/v20/19-011.html>_` implementation of EODF.
 
 .. note::
     This method has two caveats:
 
     #. It needs an educated guess about the fraction of cells that are of poor quality.
-    #. It also requires those poor-quality cells to be at the edges of their feature distribution.
-    #. In other words, if for example poorly segmented cells are phenotypically similar to real cells, this method will not work.
+    #. It also requires those poor-quality cells to be at the edges of their feature distribution. In other words, if for example poorly segmented cells are phenotypically similar to real cells, this method will not work.
 
 
 .. code-block:: python
