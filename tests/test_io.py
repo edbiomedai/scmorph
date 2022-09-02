@@ -6,7 +6,7 @@ from anndata import AnnData
 
 import scmorph as sm
 
-filename = "data/test_data.csv"
+filename = "src/scmorph/datasets/test_data.csv"
 n_headers = 1
 tmpfile = tempfile.NamedTemporaryFile("w+b", suffix=".h5ad").name
 
@@ -52,13 +52,13 @@ def test_read_cellprofiler():
 
 
 def test_writing_h5ad():
-    adata = sm.read_cellprofiler(filename, n_headers=n_headers)
+    adata = sm.datasets.multi_plate_experiment()
     adata.write(tmpfile)
     assert os.path.isfile(tmpfile)
 
 
 def test_read_h5ad():
-    adata = sm.read_cellprofiler(filename, n_headers)
+    adata = sm.datasets.multi_plate_experiment()
     adata.write(tmpfile)
     adata.file.close()
     del adata  # just to make sure
