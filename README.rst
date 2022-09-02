@@ -46,7 +46,6 @@ It provides tools to make single-cell data analysis easier and more reproducible
 * Perform statistically robust aggregate analysis to quickly identify hits.
 
 
-
 Installation
 ------------
 
