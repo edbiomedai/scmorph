@@ -1,29 +1,3 @@
-.. image:: https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=flat-square
-   :target: https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI
-   :alt: CI logo
-   :align: left
-
-.. image:: https://img.shields.io/github/license/edbiomedai/scmorph
-   :target: https://github.com/edbiomedai/scmorph/blob/main/LICENSE
-   :alt: MIT License
-   :align: center
-
-.. image:: https://img.shields.io/github/stars/edbiomedai/scmorph?style=social
-   :alt: Stars logo
-   :align: center
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square
-   :target: https://github.com/ambv/black
-   :alt: black
-   :align: center
-
-.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=flat-square
-   :target: https://github.com/pre-commit/pre-commit
-   :alt: pre-commit
-   :align: right
-
-------------
-
 scmorph
 ========
 
@@ -54,7 +28,7 @@ Installation
 
 Install scmorph via pip:
 
-``pip install git+https://github.com/edbiomedai/scmorph``
+``pip install scmorph``
 
 Usage
 -----
