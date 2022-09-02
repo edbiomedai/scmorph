@@ -1,5 +1,3 @@
-
-
 .. image:: https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=flat-square
    :target: https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI
    :alt: CI logo
