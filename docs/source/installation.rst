@@ -2,11 +2,11 @@
 Installation
 ============
 
-scmorph is currently available through `Github <https://github.com/edbiomedai/scmorph>`_ and can be installed with ``pip`` (or any equivalent):
+scmorph is currently available through `PyPi <https://pypi.org/>`_ and can be installed with ``pip``:
 
 .. code-block:: bash
 
-   pip install git+https://github.com/edbiomedai/scmorph/
+   pip install scmorph
 
 Alternatively, you may also install the dependencies via ``conda``.
 Note that at the time of writing, the package itself is not yet released on conda and will therefore be installed through ``pip``.
@@ -24,15 +24,6 @@ On Unix system, you can install the dependencies with:
    conda activate scmorph
 
    # Install scmorph
-   pip install git+https://github.com/edbiomedai/scmorph/
-
-In the future we will release scmorph on conda and PyPI, so watch this space for updates!
-
-.. raw:: html
-
-   <!--
-   The package is available through [PyPI](https://pypi.org/project/scmorph/) and can be installed with `pip` (or any equivalent):
-   ```bash
    pip install scmorph
-   ```
-   -->
+
+In the future we will release scmorph on conda-forge, so watch this space for updates!
