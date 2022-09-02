@@ -52,10 +52,6 @@ docs = [
     "pandoc"
 ]
 
-
-[tool.setuptools.package-data]
-data = ["test_data.csv", "test_image_data.csv"]
-
 [tool.semantic_release]
 branch = "main"
 version_variable = "src/scmorph/__init__.py:__version__"
