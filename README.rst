@@ -3,7 +3,7 @@
 .. image:: https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=flat-square
    :target: https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI
    :alt: CI logo
-   :align: center
+   :align: left
 
 .. image:: https://img.shields.io/github/license/edbiomedai/scmorph
    :target: https://github.com/edbiomedai/scmorph/blob/main/LICENSE
@@ -22,8 +22,9 @@
 .. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=flat-square
    :target: https://github.com/pre-commit/pre-commit
    :alt: pre-commit
-   :align: center
+   :align: right
 
+------------
 
 scmorph
 ========
