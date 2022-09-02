@@ -10,12 +10,13 @@ readme = "README.md"
 requires-python = ">=3.7"
 keywords = ["single-cell", "morphology", "anndata"]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 1 - Alpha",
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries",
 ]
+
 dependencies = [
     "scanpy",
     "anndata",
@@ -23,11 +24,33 @@ dependencies = [
     "pyod",
     "tqdm",
     "patsy",
-    "formulaic"
+    "formulaic",
+    "numpy<1.23", # numba restriction
+    "pandas",
+    "scikit-learn",
+    "seaborn",
+    "matplotlib"
 ]
 
-[tool.setuptools.package-data]
-data = ["test_data.csv", "test_image_data.csv"]
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "isort",
+    "mypy",
+    "bandit",
+    "pyupgrade"
+]
+
+docs = [
+    "sphinx>=4.4",
+    "sphinx-rtd-theme>=1.0",
+    "scanpydoc[typehints]>=0.7.7",
+    "myst-parser",
+    "nbsphinx",
+    "scmorph",
+    "pandoc"
+]
 
 [tool.semantic_release]
 branch = "main"

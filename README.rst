@@ -3,8 +3,14 @@
 .. raw:: html
 
    <p align="center">
-     <a href="https://github.com/jeskowagner/scmorph/actions?query=workflow%3ACI">
-       <img src="https://img.shields.io/github/workflow/status/jeskowagner/scmorph/CI/main?label=CI&logo=github&style=flat-square" alt="CI Status" >
+     <a href="https://github.com/edbiomedai/scmorph/actions?query=workflow%3ACI">
+       <img src="https://img.shields.io/github/workflow/status/edbiomedai/scmorph/CI/main?label=CI&logo=github&style=flat-square" alt="CI Status" >
+     </a>
+     <a href="https://github.com/edbiomedai/scmorph/blob/main/LICENSE">
+       <img src="https://img.shields.io/github/license/edbiomedai/scmorph" alt="MIT License" >
+     </a>
+     <a href="https://github.com/edbiomedai/scmorph/stargazers">
+       <img src="https://img.shields.io/github/stars/edbiomedai/scmorph?style=social" alt="GitHub starts" >
      </a>
      <a href="https://github.com/ambv/black">
        <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square" alt="black">
@@ -40,13 +46,12 @@ It provides tools to make single-cell data analysis easier and more reproducible
 * Perform statistically robust aggregate analysis to quickly identify hits.
 
 
-
 Installation
 ------------
 
 Install scmorph via pip:
 
-``pip install git+https://github.com/jeskowagner/scmorph``
+``pip install git+https://github.com/edbiomedai/scmorph``
 
 Usage
 -----

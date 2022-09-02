@@ -166,7 +166,7 @@ def _split_meta(
     df : pd.DataFrame
             DataFrame with metadata and measurement columns
 
-    meta_cols : list, optional
+    meta_cols : list
             Names of metadata columns. None for automatic detection. Default: None
 
     Returns
@@ -198,7 +198,7 @@ def _make_AnnData(
     df : pd.DataFrame
             Phenotypic measurements, e.g. derived from CellProfiler
 
-    meta_cols : list, optional
+    meta_cols : list
         Names of metadata columns. None for automatic detection. Default: None
 
     feature_delim : str
@@ -278,16 +278,16 @@ def read_cellprofiler(
     filename : str
             Path to .csv file
 
-    n_headers : int, optional
+    n_headers : int
             Number of header rows. Default: 2
 
-    meta_cols: list, optional
+    meta_cols: list
             Names of metadata columns. None for automatic detection. Default: None
 
-    feature_delim : str, optional
+    feature_delim : str
             Feature deliminator. Default: "_"
 
-    sep : str, optional
+    sep : str
             Column deliminator. Default: ","
 
     Returns
@@ -332,19 +332,19 @@ def read_cellprofiler_batches(
     file_pattern : str
             Pattern to match .csv files. Default: "Nuclei.csv"
 
-    n_headers : int, optional
+    n_headers : int
             Number of header rows. Default: 2
 
-    meta_cols: list, optional
+    meta_cols: list
             Names of metadata columns. None for automatic detection. Default: None
 
-    feature_delim : str, optional
+    feature_delim : str
             Feature deliminator. Default: "_"
 
-    sep : str, optional
+    sep : str
             Column deliminator. Default: ","
 
-    progress : bool, optional
+    progress : bool
             Show progress bar. Default: True
 
     Returns
@@ -476,9 +476,9 @@ def _read_csv_columns(
         Names of columns to include
     column_names : List[str]
         Column names
-    n_headers : int, optional
+    n_headers : int
         Number of headers, by default 1
-    sep : str, optional
+    sep : str
         Column deliminiator, by default ","
 
     Returns
@@ -508,7 +508,7 @@ def read_meta(
     path : str
             Path to .csv file
 
-    meta_cols: list, optional
+    meta_cols: list
             Names of metadata columns. None for automatic detection. Default: None
 
     Returns
@@ -538,7 +538,7 @@ def read_X(
     path : str
             Path to .csv file
 
-    meta_cols: list, optional
+    meta_cols: list
             Names of metadata columns. None for automatic detection. Default: None
 
     Returns
@@ -567,7 +567,7 @@ def read(filename: str, **kwargs: Any) -> AnnData:
     filename : str
             Path to .csv or h5ad file
 
-    kwargs : Any, optional
+    kwargs : Any
             Other parameters passed to `read_cellprofiler` or `read_h5ad`
 
     Returns

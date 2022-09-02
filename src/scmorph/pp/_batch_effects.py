@@ -28,26 +28,26 @@ def compute_batch_effects(
     adata : AnnData
             Annotated data matrix
 
-    bio_key : :class:`~str`, optional
+    bio_key : str
             Name of column used to delineate biological entities, e.g. cell lines. Default: None
 
-    batch_key : str, optional
+    batch_key : str
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
             no argument is given. Default: "infer"
 
-    treatment_key: str, optional
+    treatment_key: str
             Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
             In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
             If using, please also see `control`.
 
-    control: str, optional
+    control: str
             Name of control treatment. Must be valid value in `treatment_key`.
 
      Returns
      -------
-     betas : :class:`~np.array`
+     betas : :class:`~numpy.array`
             Biological effects, i.e. how much each feature varied because of biological differences
-     gammas: :class:`~np.array`
+     gammas: :class:`~numpy.array`
             Technical effects, i.e. batch effects.
     """
     from formulaic import Formula
@@ -126,14 +126,14 @@ def remove_batch_effects(
     adata : AnnData
             Annotated data matrix
 
-    bio_key : _type_, optional
+    bio_key : _type_
             Name of column used to delineate biological entities, e.g. cell lines. Default: None
 
-    batch_key : str, optional
+    batch_key : str
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
             no argument is given. Default: "infer"
 
-    copy : bool, optional
+    copy : bool
             If False, will perform operation in-place, else return a modified copy of the data.
 
     Returns
