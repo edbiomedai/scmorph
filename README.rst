@@ -28,7 +28,7 @@ Installation
 
 Install scmorph via pip:
 
-``pip install git+https://github.com/edbiomedai/scmorph``
+``pip install scmorph``
 
 Usage
 -----
