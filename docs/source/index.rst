@@ -4,8 +4,8 @@ scmorph - single-cell morphological analysis
 |logo|
 
 .. include:: ../../README.rst
-    :start-line: 34
-    :end-line: 51
+    :start-line: 3
+    :end-line: 32
 
 To find out what scmorph can do for you, head to :doc:`usage`.
 
