@@ -26,9 +26,13 @@ It provides tools to make single-cell data analysis easier and more reproducible
 Installation
 ------------
 
-Install scmorph via pip:
+Install scmorph via pip or conda:
 
-``pip install scmorph``
+.. code-block:: bash
+
+    pip install scmorph
+    # or:
+    conda install -c conda-forge scmorph
 
 Usage
 -----

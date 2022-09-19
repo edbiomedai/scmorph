@@ -7,13 +7,13 @@ Welcome to the documentation of scmorph, a Python package for the analysis of si
 
 .. include:: ../../README.rst
     :start-line: 7
-    :end-line: 32
+    :end-line: 35
 
 To find out what scmorph can do for you, head to :doc:`usage`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Contents
 
    usage
    installation

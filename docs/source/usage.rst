@@ -93,7 +93,7 @@ To get an idea of if cells cluster distinctly, we can perform a principle compon
 
    sm.pp.scale(adata) # scale data
    sm.pp.pca(adata) # compute PCA
-   sm.dr.pca(adata) # plot PCA
+   sm.pl.pca(adata) # plot PCA
 
 For a non-linear transformation of the data, we can just as easily visualize cells in a UMAP:
 
@@ -101,7 +101,7 @@ For a non-linear transformation of the data, we can just as easily visualize cel
 
    sm.pp.neighors(adata)
    sm.pp.umap(adata)
-   sm.dr.umap(adata)
+   sm.pl.umap(adata)
 
 Saving data
 ^^^^^^^^^^^
