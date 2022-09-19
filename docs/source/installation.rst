@@ -8,7 +8,7 @@ scmorph is currently available through `PyPi <https://pypi.org/>`_ and can be in
 
    pip install scmorph
 
-Alternatively, you may also install scmorph via conda:
+Alternatively, you may also install scmorph via `conda <https://docs.conda.io/en/latest/>`_ :
 
 .. code-block:: bash
 

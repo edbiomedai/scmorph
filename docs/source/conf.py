@@ -30,6 +30,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
+    "sphinx.ext.autosectionlabel",
     "nbsphinx",
     "matplotlib.sphinxext.plot_directive",
     "scanpydoc",
@@ -44,7 +45,7 @@ source_suffix = [".rst", ".md"]
 templates_path = ["_templates"]
 
 exclude_patterns = [""]
-
+autosectionlabel_prefix_document = True
 intersphinx_mapping = dict(
     anndata=("https://anndata.readthedocs.io/en/latest/", None),
     scanpy=("https://scanpy.readthedocs.io/en/latest/", None),

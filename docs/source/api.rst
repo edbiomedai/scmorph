@@ -125,3 +125,5 @@ Most of these functions are wrappers around :ref:`scanpy` functions.
 
     pl.pca
     pl.umap
+    pl.cumulative_density
+    pl.ridge_plot

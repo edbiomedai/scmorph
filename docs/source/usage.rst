@@ -65,7 +65,7 @@ Unsupervised single-cell QC
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In this task, we will try to remove outlier cells, which are presumably poorly measured cells, based on their morphological profiles.
-Since manually labeling single-cells is a tedious task, here we provide an unsupervised approach to outlier removal based on `PyOD's <http://jmlr.org/papers/v20/19-011.html>_` implementation of EODF.
+Since manually labeling single-cells is a tedious task, here we provide an unsupervised approach to outlier removal based on `PyOD's <http://jmlr.org/papers/v20/19-011.html>`_ implementation of EODF.
 
 .. note::
     This method has two caveats:
@@ -82,7 +82,7 @@ Since manually labeling single-cells is a tedious task, here we provide an unsup
 Supervised single-cell QC
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For a tutorial on how to perform single-cell supervised QC, please see: :doc:` Building a single-cell QC model <tutorials/outlier_removal>`.
+For a tutorial on how to perform single-cell supervised QC, please see: :doc:`Building a single-cell QC model </tutorials/outlier_removal>`.
 
 Dimensionality reduction
 ------------------------
