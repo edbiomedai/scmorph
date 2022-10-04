@@ -323,9 +323,7 @@ def aggregate_pc(
     return pd.Series(dist, index=agg_adata.obs[treatment_col[0]], name="pc_dist")
 
 
-# this implementation is slower than the below, but guaranteed to give the right results
-# we noticed differences with the alternative implementation that still have to be addressed
-# TODO: check differences between implementations
+# TODO: check speedup options
 def aggregate_ttest(
     adata: AnnData,
     treatment_key: str = "infer",
