@@ -689,9 +689,10 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
 
 def read(filename: str, **kwargs: Any) -> AnnData:
     """
-    Read csv or h5ad files.
+    Read csv, h5ad or sql files.
 
-    This function wraps read_cellprofiler and read_h5ad and uses to appropriate one depending on file ending.
+    This function wraps read_cellprofiler, read_h5ad, and read_sql and uses to appropriate one depending on file ending.
+    For details, see the respective functions.
 
     Parameters
     ----------
@@ -710,5 +711,7 @@ def read(filename: str, **kwargs: Any) -> AnnData:
         return read_cellprofiler(filename, **kwargs)
     elif fileending == ".h5ad":
         return read_h5ad(filename, **kwargs)
+    elif fileending in [".sql", ".sqlite"]:
+        return read_sql(filename, **kwargs)
     else:
         raise ValueError(f"File ending {fileending} not supported")
