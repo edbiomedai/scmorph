@@ -1,6 +1,10 @@
-from tempfile import TemporaryDirectory
+settings = {}  # type: ignore
+settings["cachedir"] = None
 
-import scanpy
 
-settings = scanpy.settings
-settings.cachedir = TemporaryDirectory()
+def get_cachedir() -> str:
+    if not settings["cachedir"]:
+        from tempfile import TemporaryDirectory
+
+        settings["cachedir"] = TemporaryDirectory().name
+    return settings["cachedir"]

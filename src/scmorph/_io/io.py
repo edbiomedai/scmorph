@@ -3,7 +3,7 @@ import glob
 import os
 import re
 import sys
-from typing import Any, List, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -79,7 +79,10 @@ def _parse_csv_headers(
 
 
 def _parse_csv(
-    path: Union[str, List["str"]], n_headers: int = 1, sep: str = ","
+    path: Union[str, List["str"]],
+    n_headers: int = 1,
+    sep: str = ",",
+    backup_url: Optional[str] = None,
 ) -> pd.DataFrame:
     """
     Parses csv files with multiple headers.
@@ -93,8 +96,11 @@ def _parse_csv(
     n_headers : int
             1-indexed row number of last header
 
-    sep : char
+    sep : str
             Column deliminator
+
+    backup_url : str
+            Retrieve the file from an URL if not present on disk. Default: `None`
 
     Returns
     ----------
@@ -104,6 +110,11 @@ def _parse_csv(
     ----------
     Depending on the size of the input matrix, this function can take a lot of memory
     """
+    if isinstance(path, list):
+        for p in path:
+            _cache_file(p, backup_url=backup_url)
+    else:
+        _cache_file(path, backup_url=backup_url)
 
     # get header information
     head = _parse_csv_headers(path, n_headers, sep=sep)
@@ -208,7 +219,6 @@ def _make_AnnData(
     ----------
     Annotated data matrix
     """
-
     meta, X = _split_meta(df, meta_cols=meta_cols)
     dropcols = _match_drop(df.columns)
     if dropcols:
@@ -266,9 +276,10 @@ def _find_files(path: Union[str, List["str"]], suffix: str = ".csv") -> List["st
 def read_cellprofiler(
     filename: str,
     n_headers: int = 1,
-    meta_cols: Union[List["str"], None] = None,
+    meta_cols: Optional[List[str]] = None,
     feature_delim: str = "_",
     sep: str = ",",
+    backup_url: Optional[str] = None,
 ) -> AnnData:
     """
     Read a matrix from a .csv file created with CellProfiler
@@ -282,10 +293,13 @@ def read_cellprofiler(
             Number of header rows. Default: 2
 
     meta_cols: list
-            Names of metadata columns. None for automatic detection. Default: None
+            Names of metadata columns. None for automatic detection. Default: `None`
 
     feature_delim : str
             Feature deliminator. Default: "_"
+
+    backup_url : str
+            Retrieve the file from an URL if not present on disk. Default: `None`
 
     sep : str
             Column deliminator. Default: ","
@@ -301,7 +315,7 @@ def read_cellprofiler(
     :func:`read_cellprofiler_batch`.
     """
     # TODO: think about having temporary file-backing to lower memory usage
-    df = _parse_csv(filename, n_headers, sep=sep)
+    df = _parse_csv(filename, n_headers, sep=sep, backup_url=backup_url)
 
     # convert df to AnnData objects
     ad = _make_AnnData(df, meta_cols=meta_cols, feature_delim=feature_delim)
@@ -415,6 +429,9 @@ def _meta_terms() -> Pattern[str]:
         "Image.?Number",
         "^URL",
         "Metadata",
+        "Parent_(Cells|Nuclei)",
+        "Children",
+        "TableNumber",
     ]
     filt = "|".join(filters)
     return re.compile(filt)
@@ -432,7 +449,7 @@ def _drop_terms() -> Pattern[str]:
         "NormalizedMoment",
         "InertiaMoment",  # TODO: double-check whether to kick this out
         "Location",
-        "[XY]$",
+        "[XYZ]$",
     ]
     filt = "|".join(filters)
     return re.compile(filt)
@@ -492,6 +509,52 @@ def _read_csv_columns(
     convopts = csv.ConvertOptions(include_columns=columns)
     tab = csv.read_csv(path, readopts, parseopts, convopts)
     return tab
+
+
+def _cache_file(
+    path: str, backup_url: Optional[str], move_if_present: bool = False
+) -> None:
+    """
+    Check if a file is present, or else copy it to the cache directory
+
+    Parameters
+    ----------
+    path : str
+        Path to file
+    backup_url : str
+        URL to backup file
+    move_if_present : bool
+        Whether to move existing files to cache
+    Note
+    ----------
+    Uses scanpy's functionality for file caching.
+    All rights for these functions lie with the license holders:
+    https://github.com/scverse/scanpy/blob/master/LICENSE
+    """
+
+    import shutil
+    from os.path import isfile
+    from pathlib import Path
+
+    from scanpy.readwrite import _check_datafile_present_and_download
+
+    from scmorph.settings import get_cachedir
+
+    log.debug("Checking if file is present, downloading if not...")
+    log.debug(
+        "Note that this initially saves the file to the parent directory"
+        + " of the file, and then moves it to the cache directory."
+    )
+    was_present = isfile(path)
+    is_present = _check_datafile_present_and_download(path, backup_url=backup_url)
+
+    if not is_present:
+        log.error(f"{path} not found, and could not be downloaded.")
+
+    if not was_present or move_if_present:
+        log.debug("Moving file to cache directory...")
+        cache_location = get_cachedir() + "/" + Path(path).name
+        shutil.move(path, cache_location)
 
 
 def read_meta(
@@ -554,6 +617,74 @@ def read_X(
     )
     arr = np.array(tab, dtype="float32").T
     return arr
+
+
+def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
+    """
+    Read sql files.
+
+    Parameters
+    ----------
+    filename : str
+        Path to .sql file
+
+    backup_url : str
+        URL to backup file
+
+    Returns
+    -------
+    adata : :class:`~AnnData`
+    """
+    import sqlite3
+
+    _cache_file(filename, backup_url=backup_url)
+
+    known_tables = ["Image", "Nuclei", "Cytoplasm", "Cells"]
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = [i[0] for i in c.fetchall()]
+
+    # sanity check
+    unknown_tables = list(set(tables) - set(known_tables))
+    if unknown_tables:
+        log.warning(f"Unknown tables found in SQL database: {unknown_tables}")
+
+    keep_tables = list(set(tables) & set(known_tables))
+
+    data = {  # nosec
+        i: pd.read_sql_query(f"SELECT * from {i}", conn) for i in keep_tables
+    }
+
+    meta_present = False
+    if "Image" in data:
+        meta = data.pop("Image")
+        meta_present = True
+
+    X = pd.concat(data, axis=1, ignore_index=False)
+    # remove table names from index, this information is in features
+    if isinstance(X.columns, pd.MultiIndex):
+        X.columns = X.columns.droplevel(0)
+    adata = _make_AnnData(X)
+
+    if meta_present:
+        # keep only subset of metadata table, to avoid creating large memory and disk-size overhead
+        # for information that is likely not needed. If you do need other information contained
+        # in the Image table, please open a GitHub issue.
+        meta_cols_keep = [
+            "TableNumber",
+            "Count_Cells",
+            "Count_Cytoplasm",
+            "Count_Nuclei",
+        ]
+        log.info(
+            "Metadata found in SQL database, adding to AnnData object."
+            + " Will only keep the following columns: "
+            + ", ".join(meta_cols_keep)
+        )
+        adata.obs = pd.merge(adata.obs, meta[meta_cols_keep])
+
+    return adata
 
 
 def read(filename: str, **kwargs: Any) -> AnnData:

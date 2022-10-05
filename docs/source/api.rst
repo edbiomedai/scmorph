@@ -30,6 +30,7 @@ This has the advantage of being a fast, standard format that can be used with ma
     read
     read_cellprofiler
     read_cellprofiler_batches
+    read_sql
 
 Preprocessing: ``pp``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
