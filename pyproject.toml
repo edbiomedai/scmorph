@@ -29,7 +29,8 @@ dependencies = [
     "pandas",
     "scikit-learn",
     "seaborn",
-    "matplotlib"
+    "matplotlib",
+    "sqlite3"
 ]
 
 [project.optional-dependencies]
