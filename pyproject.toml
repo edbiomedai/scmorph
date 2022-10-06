@@ -30,7 +30,6 @@ dependencies = [
     "scikit-learn",
     "seaborn",
     "matplotlib",
-    "sqlite"
 ]
 
 [project.optional-dependencies]

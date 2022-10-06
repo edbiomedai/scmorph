@@ -511,11 +511,9 @@ def _read_csv_columns(
     return tab
 
 
-def _cache_file(
-    path: str, backup_url: Optional[str], move_if_present: bool = False
-) -> None:
+def _cache_file(path: str, backup_url: Optional[str]) -> None:
     """
-    Check if a file is present, or else copy it to the cache directory
+    Check if a file is present, download if not.
 
     Parameters
     ----------
@@ -523,38 +521,20 @@ def _cache_file(
         Path to file
     backup_url : str
         URL to backup file
-    move_if_present : bool
-        Whether to move existing files to cache
+
     Note
     ----------
     Uses scanpy's functionality for file caching.
     All rights for these functions lie with the license holders:
     https://github.com/scverse/scanpy/blob/master/LICENSE
     """
-
-    import shutil
-    from os.path import isfile
-    from pathlib import Path
-
     from scanpy.readwrite import _check_datafile_present_and_download
 
-    from scmorph.settings import get_cachedir
-
     log.debug("Checking if file is present, downloading if not...")
-    log.debug(
-        "Note that this initially saves the file to the parent directory"
-        + " of the file, and then moves it to the cache directory."
-    )
-    was_present = isfile(path)
     is_present = _check_datafile_present_and_download(path, backup_url=backup_url)
 
     if not is_present:
         log.error(f"{path} not found, and could not be downloaded.")
-
-    if not was_present or move_if_present:
-        log.debug("Moving file to cache directory...")
-        cache_location = get_cachedir() + "/" + Path(path).name
-        shutil.move(path, cache_location)
 
 
 def read_meta(
@@ -629,12 +609,13 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
         Path to .sql file
 
     backup_url : str
-        URL to backup file
+        URL to backup file. Default: None
 
     Returns
     -------
     adata : :class:`~AnnData`
     """
+    import re
     import sqlite3
 
     _cache_file(filename, backup_url=backup_url)
@@ -671,17 +652,18 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
         # keep only subset of metadata table, to avoid creating large memory and disk-size overhead
         # for information that is likely not needed. If you do need other information contained
         # in the Image table, please open a GitHub issue.
-        meta_cols_keep = [
-            "TableNumber",
-            "Count_Cells",
-            "Count_Cytoplasm",
-            "Count_Nuclei",
-        ]
+        log.info("Adding metadata to AnnData object...")
+
+        meta_regex_keep = (
+            r"^Metadata|TableNumber|Count_Cells|Count_Cytoplasm|Count_Nuclei"
+        )
+        meta_cols_keep = [i for i in meta.columns if re.match(meta_regex_keep, i)]
         log.info(
             "Metadata found in SQL database, adding to AnnData object."
             + " Will only keep the following columns: "
             + ", ".join(meta_cols_keep)
         )
+
         adata.obs = pd.merge(adata.obs, meta[meta_cols_keep])
 
     return adata
