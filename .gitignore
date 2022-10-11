@@ -141,3 +141,4 @@ cython_debug/
 
 # Ignore common result files
 *.h5ad
+analysis/
