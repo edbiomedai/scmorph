@@ -13,17 +13,17 @@
 #' @author Jesko Wagner
 #' @export
 run_slingshot <- function(X_pca, clusterLabels, start.clus = NULL, end.clus = NULL, ...){
-    library(slingshot)
+    suppressPackageStartupMessages(library(slingshot))
     colnames(X_pca) = paste0("PC", 1:ncol(X_pca))
-    pso = slingshot(X_pca,
+    slingshot_object = slingshot(X_pca,
                     clusterLabels=clusterLabels,
                     start.clus=start.clus,
                     end.clus = end.clus,
                     ...)
-   curve_coords = slingCurves(pso, as.df = TRUE)
-   pseudotime = slingPseudotime(pso)
-   cell_assignments = slingCurveWeights(pso, as_probs=TRUE)
-   return(list(slingshot_object = pso,
+   curve_coords = slingCurves(slingshot_object, as.df = TRUE)
+   pseudotime = slingPseudotime(slingshot_object)
+   cell_assignments = slingCurveWeights(slingshot_object, as.probs=TRUE)
+   return(list(slingshot_object = slingshot_object,
                curve_coords = curve_coords,
                pseudotime = pseudotime,
                cell_assingments=cell_assignments))
@@ -48,10 +48,9 @@ test_common_trajectory <- function(slingshot_object,
                                    conditions,
                                    parallel=TRUE,
                                    ...){
-    library(condiments)
+    suppressPackageStartupMessages(library(condiments))
     conditions = as.character(conditions)
-    res = topologyTest(sds = slingshot_object, conditions, parallel=parallel, ...)
-    return(res)
+    topologyTest(sds = slingshot_object, conditions, parallel=parallel, ...)
 }
 
 
@@ -70,13 +69,12 @@ test_common_trajectory <- function(slingshot_object,
 #' @author Jesko Wagner
 #' @export
 test_differential_progression <- function(slingshot_object, conditions, global=TRUE, lineages=TRUE, ...){
-    library(condiments)
-    res = progressionTest(slingshot_object,
-                          conditions=df$conditions,
-                          global=global,
-                          lineages=lineages,
-                          ...)
-    return(res)
+    suppressPackageStartupMessages(library(condiments))
+    progressionTest(slingshot_object,
+                    conditions=df$conditions,
+                    global=global,
+                    lineages=lineages,
+                    ...)
 }
 
 
@@ -102,11 +100,10 @@ test_differential_differentiation <- function(slingshot_object,
                                               conditions,
                                               global=TRUE,
                                               pairwise=TRUE, ...){
-    library(condiments)
-    res = differentiationTest(slingshot_object,
-                          conditions=df$conditions,
-                          global=global,
-                          pairwise=pairwise,
-                          ...)
-    return(res)
+    suppressPackageStartupMessages(library(condiments))
+    differentiationTest(slingshot_object,
+                        conditions=df$conditions,
+                        global=global,
+                        pairwise=pairwise,
+                        ...)
 }
