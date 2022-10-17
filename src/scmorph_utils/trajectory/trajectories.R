@@ -1,4 +1,14 @@
 
+
+"""Support functions to run slingshot and condiments
+
+Note: these functions are not actually being called from this file!
+They are here for easier reference, but are actually defined in and sourced from
+`_utils/r_functions.py`. Reason: we do not want to ship R files in a Python package,
+as that makes distribution harder. Therefore, take these functions only as reference
+that should be in sync with those used in scmorph.
+"""
+
 #' @title run_slingshot
 #'
 #' @description This function conveniently wraps slingshot and returns trajectories and pseudotime
@@ -21,7 +31,7 @@ run_slingshot <- function(X_pca, clusterLabels, start.clus = NULL, end.clus = NU
                     end.clus = end.clus,
                     ...)
    curve_coords = slingCurves(slingshot_object, as.df = TRUE)
-   pseudotime = slingPseudotime(slingshot_object)
+   pseudotime = slingPseudotime(slingshot_object, na=FALSE)
    cell_assignments = slingCurveWeights(slingshot_object, as.probs=TRUE)
    return(list(slingshot_object = slingshot_object,
                curve_coords = curve_coords,
@@ -57,7 +67,8 @@ test_common_trajectory <- function(slingshot_object,
 #' @title test_differential_progression
 #'
 #' @description This function wraps `progressionTest` from the condiments package
-#' @param slingshot_object slingshot object as returned by `run_slingshot` in slot `slingshot_object`
+#' @param cellWeights the cell weights for each lineage
+#' @param pseudotime a matrix of pseudotime values, each row represents a cell and each column represents a lineage.
 #' @param conditions Vector with per-cell condition label
 #' @param global If TRUE, test for all pairs simultaneously.
 #' @param lineages If TRUE, test for all lineages independently.
@@ -68,10 +79,11 @@ test_common_trajectory <- function(slingshot_object,
 #' @import condiments
 #' @author Jesko Wagner
 #' @export
-test_differential_progression <- function(slingshot_object, conditions, global=TRUE, lineages=TRUE, ...){
+test_differential_progression <- function(cellWeights, pseudotime, conditions, global=TRUE, lineages=TRUE, ...){
     suppressPackageStartupMessages(library(condiments))
-    progressionTest(slingshot_object,
-                    conditions=df$conditions,
+    progressionTest(as.matrix(cellWeights),
+                    pseudotime=as.matrix(pseudotime),
+                    conditions=conditions,
                     global=global,
                     lineages=lineages,
                     ...)
@@ -81,7 +93,7 @@ test_differential_progression <- function(slingshot_object, conditions, global=T
 #' @title test_differential_differentiation
 #'
 #' @description This function wraps `differentiationTest` from the condiments package
-#' @param slingshot_object slingshot object as returned by `run_slingshot` in slot `slingshot_object`
+#' @param cellWeights a matrix of cell weights defining the probability that a cell belongs to a particular lineage
 #' @param conditions Vector with per-cell condition label
 #' @param global If TRUE, test for all pairs simultaneously.
 #' @param pairwise If TRUE, test for all pairs independently.
@@ -96,13 +108,13 @@ test_differential_progression <- function(slingshot_object, conditions, global=T
 #' @import condiments
 #' @author Jesko Wagner
 #' @export
-test_differential_differentiation <- function(slingshot_object,
+test_differential_differentiation <- function(cellWeights,
                                               conditions,
                                               global=TRUE,
                                               pairwise=TRUE, ...){
     suppressPackageStartupMessages(library(condiments))
-    differentiationTest(slingshot_object,
-                        conditions=df$conditions,
+    differentiationTest(as.matrix(cellWeights),
+                        conditions=conditions,
                         global=global,
                         pairwise=pairwise,
                         ...)
