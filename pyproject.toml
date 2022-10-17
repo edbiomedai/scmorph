@@ -39,6 +39,7 @@ dev = [
     "isort",
     "mypy",
     "bandit",
+    "pre-commit",
     "pyupgrade"
 ]
 
