@@ -28,7 +28,7 @@ The following command loads a sample morphological dataset created with CellProf
 
 .. note::
     SQlite databases are not yet supported.
-    Instead, ``scmorph`` reads data as csv files, with cells in rows and features in columns (as produced by CellProfiler)
+    Instead,``scmorph`` reads data as csv files, with cells in rows and features in columns (as produced by CellProfiler)
     There should be some columns containing metadata, followed by features in the remaining columns.
 
 .. code-block:: python

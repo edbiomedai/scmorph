@@ -18,11 +18,15 @@ To find out what scmorph can do for you, head to :doc:`usage`.
    usage
    installation
    tutorials
-   api
    changelog
    contributing
    references
 
+.. toctree::
+   :maxdepth: 2
+   :caption: API reference
+
+   api
 
 .. |logo| image:: _static/img/scmorph_logo.svg
              :width: 50 %

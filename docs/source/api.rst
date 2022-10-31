@@ -10,14 +10,14 @@ Import ``scmorph`` as:
     import scmorph as sm
 
 
-Reading and writing data
+Reading and writing data: ``io``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``scmorph`` processes `csv` files created with CellProfiler's ``ExportToSpreadsheet`` module into a file format called ``h5ad``.
-This has the advantage of being a fast, standard format that can be used with many existing single-cell tools, such as :ref:`scanpy:index`.
+``scmorph`` processes ``csv`` files created with CellProfiler's ``ExportToSpreadsheet`` module into a file format called ``h5ad``.
+This has the advantage of being a fast, standard format that can be used with many existing single-cell tools, such as :doc:`scanpy <scanpy:index>`.
 
 .. note::
-   If you would like to learn more about the ``h5ad`` file format, please see :ref:`anndata`, which is used to read and write these files.
+   If you would like to learn more about the ``h5ad`` file format, please see :doc:`anndata <anndata:index>`, which is used to read and write these files.
 
 .. note::
     scmorph only processes continuous, non-radial features, i.e. features like number of nearest neighbors (discrete),
@@ -101,7 +101,7 @@ Quality Control: ``qc``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tools to filter cells and images based on quality control metrics and morphological profiles.
-For cells, unsupervised filtering is done using :ref:`pyod` through ``qc.filter_outliers``.
+For cells, unsupervised filtering is done using :doc:`pyod <pyod:index>` through ``qc.filter_outliers``.
 For images, semi-supervised filtering is done using machine-learning methods trained on
 image-level data and a subset of labels with ``qc.qc_images``.
 
@@ -119,7 +119,7 @@ Visualization: ``pl``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tools to plot data, often from dimensionality-reduction techniques.
-Most of these functions are wrappers around :ref:`scanpy` functions.
+Most of these functions are wrappers around :doc:`scanpy <scanpy:index>` functions.
 
 .. autosummary::
     :toctree: generated/
