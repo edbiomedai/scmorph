@@ -19,7 +19,7 @@ def slingshot(
 
     Parameters
     ----------
-    adata : AnnData
+    adata : :class:`~anndata.AnnData`
         AnnData object
     cluster_labels : str
         Column name in `obs` defining clusters
@@ -53,7 +53,7 @@ def slingshot(
 
     log.info("Running Slingshot...")
     with localconverter(default_converter + none_cv):
-        r_res = r_slingshot(X_pca, cluster, start_clus, end_clus)  # type: ignore
+        r_res = r_slingshot(X_pca, cluster, start_clus, end_clus)
 
     adata.uns["slingshot_object"] = r_res[0]
     adata.uns["slingshot_curve_coords"] = np.array(r_res[1])
@@ -81,7 +81,7 @@ def _test_condiments(
 
     if "slingshot_object" not in adata.uns.keys():
         log.error(
-            "Slingshot assignments not found in `.uns`. Please run `slingshot` first."
+            "Slingshot assignments not found in `.uns`. Please run :func:`scmorph.tl.slingshot` first."
         )
         raise KeyError("adata.uns['slingshot_object'] not found.")
 
@@ -97,19 +97,15 @@ def _test_condiments(
             )
 
     if fun == "test_common_trajectory":
-        r_res = r_test_fun(  # type: ignore
-            adata.uns["slingshot_object"], conditions, parallel=parallel
-        )
+        r_res = r_test_fun(adata.uns["slingshot_object"], conditions, parallel=parallel)
     elif fun == "test_differential_differentiation":
-        r_res = r_test_fun(  # type: ignore
-            weights, conditions, all_pairs, pairwise=pairwise
-        )
+        r_res = r_test_fun(weights, conditions, all_pairs, pairwise=pairwise)
     elif fun == "test_differential_progression":
         with localconverter(default_converter + pandas2ri.converter):
             pseudotime = ro.conversion.py2rpy(
                 pd.DataFrame(adata.obsm["slingshot_pseudotime"])
             )
-        r_res = r_test_fun(  # type: ignore
+        r_res = r_test_fun(
             weights, pseudotime, conditions, all_pairs, lineages=lineages
         )
     else:
@@ -130,11 +126,11 @@ def test_common_trajectory(
     adata: AnnData, conditions: Union[pd.Series, np.array], parallel: bool = True
 ) -> None:
     """
-    Test for common trajectory using condiments' `topologyTest
+    Test for common trajectory using condiments' `topologyTest`
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions
@@ -175,7 +171,7 @@ def test_differential_progression(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions
@@ -213,7 +209,7 @@ def test_differential_differentiation(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions

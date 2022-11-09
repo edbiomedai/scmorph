@@ -10,11 +10,11 @@ __all__ = ["pca", "umap", "cumulative_density", "ridge_plot"]
 
 pca = functools.partial(sc.pl.pca, annotate_var_explained=True)
 pca.__doc__ = (
-    "| Copied from :ref:`scanpy.pl.pca`, but with annotate_var_explained=True by default. [Wolf18]_"
+    "| Copied from :ref:`scanpy.pl.pca`, but with annotate_var_explained=True by default. [Wolf18]_\n"
     + sc.pl.pca.__doc__
 )
 umap = sc.pl.umap
-umap.__doc__ = "| Copied from :ref:`scanpy.pl.umap`. [Wolf18]_" + umap.__doc__
+umap.__doc__ = "| Copied from :ref:`scanpy.pl.umap`. [Wolf18]_\n" + umap.__doc__
 
 
 def cumulative_density(
@@ -32,7 +32,7 @@ def cumulative_density(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             AnnData object
 
     x : Union[int, str, List[int], List[str]]

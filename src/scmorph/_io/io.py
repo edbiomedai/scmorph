@@ -29,7 +29,7 @@ Key components:
 
 Note that some of these functions consume a lot of memory when reading in large .csv files.
 For the creation of file-backed AnnData files it is thus advisable to use environments
-with a lot of available RAM. Alternatively, `read_cellprofiler_from_path` automatically
+with a lot of available Rsm. Alternatively, :func:`scmorph.read_cellprofiler_from_path` automatically
 discovers csv files and iteratively creates an AnnData object from the files. This is
 memory-friendly but relies on you having one file per well.
 """
@@ -306,13 +306,13 @@ def read_cellprofiler(
 
     Returns
     ----------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
 
     Note
     ----------
     Depending on the size of the input matrix, this function can take a lot of memory.
     If needed, try exporting CellProfiler in batches of smaller csv files and read them in using
-    :func:`read_cellprofiler_batch`.
+    :func:`scmorph.read_cellprofiler_batch`.
     """
     # TODO: think about having temporary file-backing to lower memory usage
     df = _parse_csv(filename, n_headers, sep=sep, backup_url=backup_url)
@@ -363,7 +363,7 @@ def read_cellprofiler_batches(
 
     Returns
     ----------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
     import anndata as ad
     import h5py
@@ -613,7 +613,7 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
 
     Returns
     -------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
     import re
     import sqlite3
@@ -682,11 +682,11 @@ def read(filename: str, **kwargs: Any) -> AnnData:
             Path to .csv or h5ad file
 
     kwargs : Any
-            Other parameters passed to `read_cellprofiler` or `read_h5ad`
+            Other parameters passed to :func:`scmorph.read_cellprofiler` or :func:`scmorph.read_h5ad`
 
     Returns
     -------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
     _, fileending = os.path.splitext(filename)
     if fileending == ".csv":

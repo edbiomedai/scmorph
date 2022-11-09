@@ -25,7 +25,7 @@ def compute_batch_effects(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             Annotated data matrix
 
     bio_key : str
@@ -117,13 +117,13 @@ def remove_batch_effects(
     Remove batch effects using scone's method of deconvoluting technical from biological effects
     through linear modeling. Note that this preserves biological differences and only
     removes technical effects. If no biological differences are expected (e.g. because data
-    is all from the same cell line), set ``bio_key`` to None.
+    is all from the same cell line), set `bio_key` to None.
 
     For details on scone, see [Cole19]_.
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             Annotated data matrix
 
     bio_key : _type_
@@ -138,12 +138,13 @@ def remove_batch_effects(
 
     Returns
     -------
-    adata : :class:`~AnnData`
-            Annotated data matrix with batch effects removed. If ``copy`` is False, will modify in-place and not return anything.
+    adata : :class:`~anndata.AnnData`
+            Annotated data matrix with batch effects removed. If `copy` is False, will modify in-place and not return anything.
     """
-    _, gammas = compute_batch_effects(adata, bio_key, batch_key)
+    betas, gammas = compute_batch_effects(adata, bio_key, batch_key)
     if copy:
         adata = adata.copy()
+    adata.uns["batch_effects"] = (betas, gammas)
     group_obs_fun_inplace(
         adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
     )

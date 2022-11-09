@@ -3,13 +3,11 @@ import scanpy as sc
 from anndata import AnnData
 
 pca = sc.pp.pca
-pca.__doc__ = "| Copied from :ref:`scanpy.pp.pca` [Wolf18]_." + pca.__doc__
+pca.__doc__ = "| Copied from scanpy [Wolf18]_.\n" + pca.__doc__
 neighbors = sc.pp.neighbors
-neighbors.__doc__ = (
-    "| Copied from :ref:`scanpy.pp.neighbors` [Wolf18]_." + neighbors.__doc__
-)
+neighbors.__doc__ = "| Copied from scanpy [Wolf18]_." + neighbors.__doc__
 umap = sc.tl.umap
-umap.__doc__ = "| Copied from :ref:`scanpy.pp.umap` [Wolf18]_." + umap.__doc__
+umap.__doc__ = "| Copied from scanpy [Wolf18]_." + umap.__doc__
 
 
 def scale(adata: AnnData, chunked: bool = False) -> AnnData:
@@ -18,15 +16,15 @@ def scale(adata: AnnData, chunked: bool = False) -> AnnData:
 
     Parameters
     ----------
-    model : AnnData
-            Object as returned by `read_cellprofiler`. Represents AnnData object populated with data.
+    adata :class:`~anndata.AnnData`
+            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with data.
 
     chunked: bool
             Whether to save memory by processing in chunks. This is slower but less memory intensive.
 
     Returns
     ----------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
 
     if not chunked:
@@ -55,8 +53,8 @@ def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> Ann
 
     Parameters
     ----------
-    adata : AnnData
-            Object as returned by `read_cellprofiler`. Represents AnnData object populated with data.
+    adata :class:`~anndata.AnnData`
+            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with data.
 
     batch_key : str
             Name of the column in the AnnData object that contains the batch information.
@@ -66,7 +64,7 @@ def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> Ann
 
     Returns
     -------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
 
     Note
     -------
@@ -90,7 +88,7 @@ def drop_na(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
         The (annotated) data matrix of shape `n_obs` × `n_vars`.
             Rows correspond to cells and columns to genes.
 
@@ -104,7 +102,7 @@ def drop_na(
         Whether to drop the features and/or cells inplace.
     Returns
     -------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
 
     isna = np.bitwise_or(np.isinf(adata.X), np.isnan(adata.X))

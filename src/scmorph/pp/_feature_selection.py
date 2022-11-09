@@ -14,7 +14,7 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             The (annotated) data matrix of shape `n_obs` × `n_vars`.
             Rows correspond to cells and columns to genes.
 
@@ -22,12 +22,12 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
             One of "pearson", "spearman" and "chatterjee" ([Lin21]_), by default "pearson"
 
     M : int
-            Number of right nearest neighbors to use for chatterjee correlation.
+            Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    adata : :class:`~AnnData`
-        Feature correlations saved in ``.varm`` slot
+    adata : :class:`~anndata.AnnData`
+        Feature correlations saved in `.varm` slot
     """
     adata.varm[method] = corr(adata.X, method=method, M=M)
     return adata.varm[method]
@@ -80,7 +80,7 @@ def select_features(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             The (annotated) data matrix of shape ``n_obs`` × ``n_vars``.
             Rows correspond to cells and columns to genes.
 
@@ -93,20 +93,20 @@ def select_features(
             higher than it are removed. Must be between 0 and 1.
 
     fraction: float
-            Subsample to this `fraction` of the number of observations.
+            Subsample to this ``fraction`` of the number of observations.
 
     n_obs : int
             Subsample to this number of observations.
 
     copy : bool
-            Whether to return a copy or modify `adata` inplace, by default False
+            Whether to return a copy or modify ``adata`` inplace, by default False
             (i.e. operate inplace)
 
     Returns
     -------
-    adata : :class:`~AnnData`
-        Feature correlations saved in `.varm` slot
-        and feature selection saved in `.var` slot.
+    adata : :class:`~anndata.AnnData`
+        Feature correlations saved in ``.varm`` slot
+        and feature selection saved in ``.var`` slot.
 
     """
 

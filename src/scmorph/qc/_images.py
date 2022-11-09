@@ -126,7 +126,7 @@ def read_image_qc(
 
     Returns
     ----------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
     df = pd.read_csv(filename, sep=sep)
     labels = df.pop(label_col)
@@ -152,11 +152,11 @@ def qc_images(
 
     Parameters
     ----------
-    adata : AnnData
-            Object as returned by `read_cellprofiler`. Represents AnnData object populated with single-cell data.
+    adata :class:`~anndata.AnnData`
+            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with single-cell data.
 
-    qc : AnnData
-            Object as returned by `read_image_qc`. Represents AnnData object populated with image-QC data.
+    qc :class:`~anndata.AnnData`
+            Object as returned by :func:`scmorph.read_image_qc`. Represents AnnData object populated with image-QC data.
 
     classifier : Classifier
             Classifier to use for prediction. If None, will use the LASSO classifier.
@@ -165,11 +165,11 @@ def qc_images(
             Label to use for passing images. Default: 1
 
     copy : bool
-            Return a copy instead of writing to ``adata``. Default: False
+            Return a copy instead of writing to `adata`. Default: False
 
     Returns
     -------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
 
     if "label" not in qc.obs.columns:

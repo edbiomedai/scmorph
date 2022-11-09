@@ -19,7 +19,7 @@ def filter_outliers(
 
     Note
     ----------
-    The ``outliers`` argument determines how many cells will be classified as outlier cells.
+    The `outliers` argument determines how many cells will be classified as outlier cells.
     Since it is an arbitrary threshold this will depend on your dataset and downstream analysis.
     We encourage you to try different values and see which one works best for your dataset.
 
@@ -46,7 +46,7 @@ def filter_outliers(
 
     Returns
     ----------
-    adata : :class:`~AnnData`
+    adata : :class:`~anndata.AnnData`
     """
     from pyod.models.ecod import ECOD
 

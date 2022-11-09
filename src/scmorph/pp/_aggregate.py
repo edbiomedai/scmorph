@@ -113,7 +113,7 @@ def aggregate(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
         Annotated data matrix
     well_key : str
         Name of column in metadata used to define wells. Default: "infer"
@@ -129,12 +129,12 @@ def aggregate(
     one group had a median absolute deviation of 0 for a feature. This means that this
     feature is constant in that group. However, this will produce missing values.
     Before proceeding, you should therefore use
-    `drop_na(adata, feature_threshold=1, cell_threshold=0)`
+    :func:`scmorph.pp.drop_na(adata, feature_threshold=1, cell_threshold=0)`
     to remove features with missing values.
 
     Returns
     ---------
-    dists : :class:`~AnnData`
+    dists : :class:`~anndata.AnnData`
             Aggregated annotated data matrix
     """
     if well_key == "infer":
@@ -162,7 +162,7 @@ def aggregate_mahalanobis(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str
@@ -277,7 +277,7 @@ def aggregate_pc(
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str
@@ -332,11 +332,11 @@ def aggregate_ttest(
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Measure per-feature distance between groups using t-statistics.
-    Can be aggregated to a single distance by using `tstat_distance`
+    Can be aggregated to a single distance by using :func:`scmorph.pp.tstat_distance`
 
     Parameters
     ----------
-    adata : AnnData
+    adata :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str
@@ -393,12 +393,12 @@ def aggregate_ttest(
 
 def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
     """
-    Summarize t-statistics into per group. See `aggregate_ttest` for details.
+    Summarize t-statistics into per group. See :func:`scmorph.pp.aggregate_ttest` for details.
 
     Parameters
     ----------
     tstats : pd.DataFrame
-        t-statistics computed with `aggregate_test`
+        t-statistics computed with :func:`scmorph.pp.aggregate_test`
 
     Returns
     -------
