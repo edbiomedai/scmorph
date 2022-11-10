@@ -312,7 +312,7 @@ def read_cellprofiler(
     ----------
     Depending on the size of the input matrix, this function can take a lot of memory.
     If needed, try exporting CellProfiler in batches of smaller csv files and read them in using
-    :func:`scmorph.read_cellprofiler_batch`.
+    :func:`scmorph.read_cellprofiler_batches`.
     """
     # TODO: think about having temporary file-backing to lower memory usage
     df = _parse_csv(filename, n_headers, sep=sep, backup_url=backup_url)
@@ -347,7 +347,7 @@ def read_cellprofiler_batches(
             Pattern to match .csv files. Default: "Nuclei.csv"
 
     n_headers : int
-            Number of header rows. Default: 2
+            Number of header rows. Default: 1
 
     meta_cols: list
             Names of metadata columns. None for automatic detection. Default: None
