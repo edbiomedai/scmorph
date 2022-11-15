@@ -58,7 +58,7 @@ def grouped_obs_fun(
 
     for group, idx in grouped.indices.items():
         X = getX(adata[idx], layer)
-        out[group] = np.ravel(fun(X))
+        out[group] = fun(X).toarray()
     return out
 
 
