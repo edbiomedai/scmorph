@@ -88,11 +88,11 @@ def grouped_op(
     elif operation == "mad_scaled":
         from scipy.stats import median_abs_deviation as mad
 
-        f1 = partial(mad, axis=0, **kwargs)
+        f1 = partial(mad, axis=0, scale="normal", **kwargs)
         f2 = partial(np.median, axis=0, **kwargs)
 
         def fun(x: np.array) -> np.array:  # type: ignore
-            return f2(x) / f1(x) * 1.4826  # Chung 2008
+            return f2(x) / f1(x)  # Chung 2008
 
     else:
         raise ValueError(
