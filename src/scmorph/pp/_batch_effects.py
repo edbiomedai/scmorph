@@ -141,10 +141,10 @@ def remove_batch_effects(
     adata : :class:`~anndata.AnnData`
             Annotated data matrix with batch effects removed. If `copy` is False, will modify in-place and not return anything.
     """
-    betas, gammas = compute_batch_effects(adata, bio_key, batch_key)
     if copy:
         adata = adata.copy()
-    adata.uns["batch_effects"] = (betas, gammas)
+    betas, gammas = compute_batch_effects(adata, bio_key, batch_key)
+    adata.uns["batch_effects"] = pd.concat((betas, gammas), axis=1)
     group_obs_fun_inplace(
         adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
     )
