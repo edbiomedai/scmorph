@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -112,6 +112,7 @@ def remove_batch_effects(
     bio_key: Optional[str] = None,
     batch_key: str = "infer",
     copy: Optional[bool] = False,
+    **kwargs: Any,
 ) -> AnnData:
     """
     Remove batch effects using scone's method of deconvoluting technical from biological effects
@@ -136,6 +137,9 @@ def remove_batch_effects(
     copy : bool
             If False, will perform operation in-place, else return a modified copy of the data.
 
+    kwargs: dict
+            Other parameter passed to :func:`compute_batch_effects`
+
     Returns
     -------
     adata : :class:`~anndata.AnnData`
@@ -143,7 +147,7 @@ def remove_batch_effects(
     """
     if copy:
         adata = adata.copy()
-    betas, gammas = compute_batch_effects(adata, bio_key, batch_key)
+    betas, gammas = compute_batch_effects(adata, bio_key, batch_key, **kwargs)
     adata.uns["batch_effects"] = pd.concat((betas, gammas), axis=1)
     group_obs_fun_inplace(
         adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
