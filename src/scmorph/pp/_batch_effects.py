@@ -62,7 +62,7 @@ def compute_batch_effects(
     joint_keys = [i for i in [bio_key, batch_key] if i is not None]
 
     if treatment_key is not None:
-        adata = adata[adata.obs[treatment_key == control], :]
+        adata = adata[adata.obs[treatment_key] == control, :]
 
     data = grouped_op(
         adata, joint_keys, "mean"
