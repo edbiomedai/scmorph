@@ -92,7 +92,9 @@ def grouped_op(
         f2 = partial(np.median, axis=0, **kwargs)
 
         def fun(x: np.array) -> np.array:  # type: ignore
-            return f2(x) / f1(x)  # Chung 2008
+            return (x - f2(x)) / (
+                f1(x) + 1e-18
+            )  # Chung 2008, following https://github.com/cytomining/pycytominer/blob/master/pycytominer/operations/transform.py#L175
 
     else:
         raise ValueError(
