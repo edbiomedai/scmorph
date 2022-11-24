@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph._utils import _infer_names, group_obs_fun_inplace, grouped_op
+from scmorph._utils import _infer_names, get_grouped_op, group_obs_fun_inplace
 
 """Functions to remove batch effects from morphological datasets."""
 
@@ -64,8 +64,8 @@ def compute_batch_effects(
     if treatment_key is not None:
         adata = adata[adata.obs[treatment_key] == control, :]
 
-    data = grouped_op(
-        adata, joint_keys, "mean"
+    data = get_grouped_op(
+        adata, group_key=joint_keys, operation="mean"
     )  # compute average feature per batch/bio group
 
     data = data.loc[adata.var.index]  # ensure correct feature order
@@ -85,22 +85,21 @@ def compute_batch_effects(
     # extract parameters into beta and gammas
     gamma_ind = np.where(dmatrix.columns.str.contains(batch_key))[0]
 
+    batch_groups = groups[batch_key].drop_duplicates().to_list()
+    contrast_gamma = Treatment(reference=0).code_without_intercept(batch_groups)
+    gammas = (contrast_gamma.matrix @ params[gamma_ind, :]).T
+
+    betas = []
     if withbio:
         beta_ind = np.where(dmatrix.columns.str.contains(bio_key))[0]
         bio_groups = groups[bio_key].drop_duplicates().to_list()
         contrast_beta = Treatment(reference=0).code_without_intercept(bio_groups)
         betas = (contrast_beta.matrix @ params[beta_ind, :]).T
-    else:
-        betas = []
 
-    batch_groups = groups[batch_key].drop_duplicates().to_list()
-    contrast_gamma = Treatment(reference=0).code_without_intercept(batch_groups)
-    gammas = (contrast_gamma.matrix @ params[gamma_ind, :]).T
-
-    # convert to DataFrame's to store metadata
-    gammas_df = pd.DataFrame(gammas, columns=batch_groups, index=data.index)
+    # convert to DataFrames to store metadata
+    gammas_df = pd.DataFrame(gammas, columns=sorted(batch_groups), index=data.index)
     betas_df = (
-        pd.DataFrame(betas, columns=bio_groups, index=data.index)
+        pd.DataFrame(betas, columns=sorted(bio_groups), index=data.index)
         if len(betas) != 0
         else []
     )
@@ -147,8 +146,12 @@ def remove_batch_effects(
     """
     if copy:
         adata = adata.copy()
-    betas, gammas = compute_batch_effects(adata, bio_key, batch_key, **kwargs)
-    adata.uns["batch_effects"] = pd.concat((betas, gammas), axis=1)
+    betas, gammas = compute_batch_effects(
+        adata, **kwargs, bio_key=bio_key, batch_key=batch_key
+    )
+    adata.uns["batch_effects"] = (
+        pd.concat((betas, gammas), axis=1) if len(betas) > 0 else gammas
+    )
     group_obs_fun_inplace(
         adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
     )
