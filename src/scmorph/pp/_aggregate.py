@@ -215,8 +215,7 @@ def aggregate_mahalanobis(
 
     # compute dists on PCs
     if not per_treatment and not cov_from_single_cell:
-        dists = _pca_mahalanobis(agg_adata, treatment_col[0], control)
-        return dists
+        return _pca_mahalanobis(agg_adata, treatment_col[0], control)
 
     adata_control, adata_drugs, _ = _split_adata_control_drugs(
         agg_adata, treatment_col[0], control, well_key
@@ -237,29 +236,27 @@ def aggregate_mahalanobis(
         try:
             vi = np.linalg.inv(cov)
         except np.linalg.LinAlgError as e:
-            if "Singular matrix" in str(e):
-                logger = get_logger()
-                logger.warning(
-                    f"Covariance matrix estimated from single cells of {control} was not invertible."
-                    + "This is likely because there are very few cells."
-                    + " Falling back to estimating covariance matrix from aggregate data."
-                )
-                cov_from_single_cell = False
+            if "Singular matrix" not in str(e):
+                raise e
+
+            logger = get_logger()
+            logger.warning(
+                f"Covariance matrix estimated from single cells of {control} was not invertible."
+                + " This is likely because there are very few cells. Falling back to estimating covariance matrix from aggregate data."
+            )
+
+            cov_from_single_cell = False
+
+    if cov_from_single_cell:  # check that covariance matrix was invertible
+        control_centroid = np.median(adata_control.X, axis=0)
+        for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():
+            drug_idx = adata_drugs.obs[treatment_col[0]] == cur_treatment
+            if sum(drug_idx) == 1:
+                drug_centroid = adata_drugs[drug_idx].X
             else:
-                raise
+                drug_centroid = np.median(adata_drugs[drug_idx].X, axis=0).flatten()
 
-        if cov_from_single_cell:  # check that covariance matrix was invertible
-            control_centroid = np.median(adata_control.X, axis=0)
-            for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():
-                drug_idx = adata_drugs.obs[treatment_col[0]] == cur_treatment
-                if sum(drug_idx) == 1:
-                    drug_centroid = adata_drugs[drug_idx].X
-                else:
-                    drug_centroid = np.median(adata_drugs[drug_idx].X, axis=0).flatten()
-
-                dists[cur_treatment] = mahalanobis(
-                    control_centroid, drug_centroid, VI=vi
-                )
+            dists[cur_treatment] = mahalanobis(control_centroid, drug_centroid, VI=vi)
 
     if not cov_from_single_cell:
         for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():

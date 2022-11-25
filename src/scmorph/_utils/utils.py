@@ -10,25 +10,25 @@ from anndata import AnnData
 from scmorph._logging import get_logger
 
 
-def _infer_names(type: str, options: Iterable[str]) -> Sequence[str]:
+def _infer_names(target: str, options: Iterable[str]) -> Sequence[str]:
     logger = get_logger()
 
-    if type == "batch":
+    if target == "batch":
         reg = re.compile("batch|plate")
-    elif type in {"well", "group"}:
+    elif target in {"well", "group"}:
         reg = re.compile("well$")
-    elif type == "treatment":
+    elif target == "treatment":
         reg = re.compile("treatment", re.IGNORECASE)
-    elif type == "site":
+    elif target == "site":
         reg = re.compile("site$")
     else:
         raise ValueError("type must be one of 'batch', 'well', 'treatment', 'site'")
     res = [x for x in options if reg.search(x)]
     if len(res) > 1:
         logger.warning(
-            f"Found multiple {type} columns, are these duplicates?\n"
+            f"Found multiple {target} columns, are these duplicates?\n"
             + "Will just use the first one, if that is not desired please specify "
-            + f"the correct column name using the {type}_key argument.\n"
+            + f"the correct column name using the {target}_key argument.\n"
             + f"Problematic columns were: {', '.join(res)}"
         )
         res = [res[0]]
