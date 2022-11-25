@@ -71,7 +71,7 @@ def cumulative_density(
     if layer == "X":
         x_vals = adata[:, x].to_df()
     else:
-        adlayer = "X_" + layer
+        adlayer = f"X_{layer}"
         if isinstance(x[0], int):  # type: ignore[index]
             x_vals = adata.obsm[adlayer][:, x]
         else:
@@ -107,9 +107,10 @@ def cumulative_density(
     if col_name == "UMAP":
         df.loc[:, col_name] = df.loc[:, col_name] + 1
 
-    fg = sns.FacetGrid(df, col=col_name, hue=color, col_wrap=n_col, **kwargs)
-    fg.map(sns.ecdfplot, "value")
-    fg.add_legend()
+    fg = sns.displot(
+        df, x="value", kind="ecdf", col=col_name, hue=color, col_wrap=n_col, **kwargs
+    )
+    sns.move_legend(fg, "center right", bbox_to_anchor=(1, 0.5))
     fg.set(ylim=(0, 1.1))
     fg.set(xlabel=xlabel)
     if xlim:
