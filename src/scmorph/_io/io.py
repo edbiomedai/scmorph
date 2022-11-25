@@ -74,8 +74,7 @@ def _parse_csv_headers(
         reg = r"(.*)\.[^.]*$"
         df.replace(reg, r"\1", regex=True, inplace=True)
 
-    out = df.agg("_".join, axis=0).tolist()
-    return out
+    return df.agg("_".join, axis=0).tolist()
 
 
 def _parse_csv(
@@ -162,7 +161,7 @@ def _split_feature_names(
 
     df = features.str.split(feature_delim, expand=True)  # split feature names
     df.index = features
-    df.columns = ["feature_" + str(i) for i in df.columns]  # ensure str columns
+    df.columns = [f"feature_{str(i)}" for i in df.columns]
     return df
 
 
@@ -317,10 +316,7 @@ def read_cellprofiler(
     # TODO: think about having temporary file-backing to lower memory usage
     df = _parse_csv(filename, n_headers, sep=sep, backup_url=backup_url)
 
-    # convert df to AnnData objects
-    ad = _make_AnnData(df, meta_cols=meta_cols, feature_delim=feature_delim)
-
-    return ad
+    return _make_AnnData(df, meta_cols=meta_cols, feature_delim=feature_delim)
 
 
 def read_cellprofiler_batches(
@@ -471,8 +467,7 @@ def _match_drop(
     import re
 
     re_drop = _drop_terms()
-    drop_cols = [col for col in header if re.search(re_drop, col)]
-    return drop_cols
+    return [col for col in header if re.search(re_drop, col)]
 
 
 def _read_csv_columns(
@@ -507,8 +502,7 @@ def _read_csv_columns(
     parseopts = csv.ParseOptions(delimiter=sep)
     readopts = csv.ReadOptions(skip_rows=n_headers, column_names=column_names)
     convopts = csv.ConvertOptions(include_columns=columns)
-    tab = csv.read_csv(path, readopts, parseopts, convopts)
-    return tab
+    return csv.read_csv(path, readopts, parseopts, convopts)
 
 
 def _cache_file(path: str, backup_url: Optional[str]) -> None:
@@ -595,8 +589,7 @@ def read_X(
     tab = _read_csv_columns(
         path=path, columns=columns, column_names=header, sep=sep, n_headers=n_headers
     )
-    arr = np.array(tab, dtype="float32").T
-    return arr
+    return np.array(tab, dtype="float32").T
 
 
 def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
@@ -615,7 +608,6 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
     -------
     adata : :class:`~anndata.AnnData`
     """
-    import re
     import sqlite3
 
     _cache_file(filename, backup_url=backup_url)
@@ -627,8 +619,7 @@ def read_sql(filename: str, backup_url: Optional[str] = None) -> AnnData:
     tables = [i[0] for i in c.fetchall()]
 
     # sanity check
-    unknown_tables = list(set(tables) - set(known_tables))
-    if unknown_tables:
+    if unknown_tables := list(set(tables) - set(known_tables)):
         log.warning(f"Unknown tables found in SQL database: {unknown_tables}")
 
     keep_tables = list(set(tables) & set(known_tables))

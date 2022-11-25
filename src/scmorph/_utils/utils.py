@@ -15,7 +15,7 @@ def _infer_names(type: str, options: Iterable[str]) -> Sequence[str]:
 
     if type == "batch":
         reg = re.compile("batch|plate")
-    elif type in ["well", "group"]:
+    elif type in {"well", "group"}:
         reg = re.compile("well$")
     elif type == "treatment":
         reg = re.compile("treatment", re.IGNORECASE)
@@ -205,10 +205,10 @@ def get_grouped_op(
 
     if store:
         if "grouped_ops" not in adata.uns:
-            adata.uns["grouped_ops"] = dict()
+            adata.uns["grouped_ops"] = {}
 
         if keys_tuple not in adata.uns["grouped_ops"]:
-            adata.uns["grouped_ops"][keys_tuple] = dict()
+            adata.uns["grouped_ops"][keys_tuple] = {}
 
         if operation in adata.uns["grouped_ops"][keys_tuple]:
             stored_present = True
@@ -220,10 +220,7 @@ def get_grouped_op(
         if store:
             adata.uns["grouped_ops"][keys_tuple][operation] = res
 
-    if as_anndata:
-        return grouped_op_to_anndata(res, group_key)
-
-    return res
+    return grouped_op_to_anndata(res, group_key) if as_anndata else res
 
 
 def grouped_op_to_anndata(df: pd.DataFrame, group_key: List[str]) -> AnnData:
