@@ -15,6 +15,7 @@ def compute_batch_effects(
     batch_key: str = "infer",
     treatment_key: Optional[str] = None,
     control: str = "DMSO",
+    progress: bool = True,
 ) -> Tuple[np.array, np.array]:
     """
     Compute batch effects using scone's method of deconvoluting technical from biological effects
@@ -43,12 +44,15 @@ def compute_batch_effects(
     control: str
             Name of control treatment. Must be valid value in `treatment_key`.
 
-     Returns
-     -------
-     betas : :class:`~numpy.array`
-            Biological effects, i.e. how much each feature varied because of biological differences
-     gammas: :class:`~numpy.array`
-            Technical effects, i.e. batch effects.
+    progress: bool
+            Whether to show a progress bar, by default True
+
+    Returns
+    -------
+    betas : :class:`~numpy.array`
+        Biological effects, i.e. how much each feature varied because of biological differences
+    gammas: :class:`~numpy.array`
+        Technical effects, i.e. batch effects.
     """
     from formulaic import Formula
     from patsy.contrasts import Treatment
@@ -65,7 +69,7 @@ def compute_batch_effects(
         adata = adata[adata.obs[treatment_key] == control, :]
 
     data = get_grouped_op(
-        adata, group_key=joint_keys, operation="mean"
+        adata, group_key=joint_keys, operation="mean", progress=progress
     )  # compute average feature per batch/bio group
 
     data = data.loc[adata.var.index]  # ensure correct feature order

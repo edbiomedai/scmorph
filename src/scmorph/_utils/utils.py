@@ -40,11 +40,13 @@ def grouped_obs_fun(
     group_key: Union[str, List[str]],
     fun: Callable[..., Any],
     layer: Optional[str] = None,
+    progress: bool = True,
 ) -> pd.DataFrame:
     """
     Slightly adapted from https://github.com/scverse/scanpy/issues/181#issuecomment-534867254
     All copyright lies with Isaac Virshup.
     """
+    from tqdm import tqdm
 
     def getX(adata: AnnData, layer: Union[None, str]) -> np.array:
         return adata.X if layer is None else adata.layers[layer]
@@ -55,10 +57,16 @@ def grouped_obs_fun(
         columns=list(grouped.groups.keys()),
         index=adata.var_names,
     )
+    items = (
+        tqdm(grouped.indices.items(), unit=" groups")
+        if progress
+        else grouped.indices.items()
+    )
 
-    for group, idx in grouped.indices.items():
+    for group, idx in items:
         X = getX(adata[idx], layer)
         out[group] = np.array(fun(X))
+
     return out
 
 
@@ -67,6 +75,7 @@ def grouped_op(
     group_key: Union[str, List[str]],
     operation: str,
     layer: Optional[str] = None,
+    progress: bool = True,
     **kwargs: Any,
 ) -> pd.DataFrame:
     if operation == "mean":
@@ -100,13 +109,14 @@ def grouped_op(
             "Operation must be one of 'mean', 'median', 'std', 'var', 'sem', 'mad', 'mad_scaled'"
         )
 
-    return grouped_obs_fun(adata, group_key, fun=fun, layer=layer)
+    return grouped_obs_fun(adata, group_key, fun=fun, layer=layer, progress=progress)
 
 
 def group_obs_fun_inplace(
     adata: AnnData,
     group_key: Union[str, List[str]],
     fun: Callable[..., Any],
+    progress: bool = True,
 ) -> AnnData:
     """
     Alter adata.X inplace by performing fun in each group
@@ -129,11 +139,16 @@ def group_obs_fun_inplace(
     AnnData
         Annotated data matrix object after the operation
     """
+    from tqdm import tqdm
+
     grouped = adata.obs.groupby(group_key)
 
     takes_group = len(signature(fun).parameters) > 1
 
-    for group, idx in grouped.indices.items():
+    items = grouped.indices.items()
+    items = tqdm(items, unit=" groups") if progress else items
+
+    for group, idx in items:
         X = adata[idx].X
         adata[idx].X = fun(X, group) if takes_group else fun(X)
 
@@ -175,6 +190,7 @@ def get_grouped_op(
     as_anndata: bool = False,
     layer: Optional[str] = None,
     store: bool = True,
+    progress: bool = True,
 ) -> pd.DataFrame:
     """
     Retrieve from cache or compute a grouped operation
@@ -193,6 +209,8 @@ def get_grouped_op(
         Which layer to retrieve data from, by default None
     store : bool
         Whether to retrieve from/save to cache the result, by default True
+    progress : bool
+        Whether to show a progress bar, by default True
 
     Returns
     -------
@@ -215,7 +233,13 @@ def get_grouped_op(
             res = adata.uns["grouped_ops"][keys_tuple][operation]
 
     if not stored_present:
-        res = grouped_op(adata, group_key, operation, layer)
+        res = grouped_op(
+            adata,
+            group_key=group_key,
+            operation=operation,
+            layer=layer,
+            progress=progress,
+        )
 
         if store:
             adata.uns["grouped_ops"][keys_tuple][operation] = res

@@ -107,6 +107,7 @@ def aggregate(
     well_key: str = "infer",
     group_keys: Optional[Union[str, List[str]]] = None,
     method: str = "median",
+    progress: bool = True,
 ) -> AnnData:
     """
     Aggregate single-cell measurements into well-level profiles
@@ -122,7 +123,8 @@ def aggregate(
     method : str,
         Which aggregation to perform. Must be one of 'mean', 'median', 'std',
         'var', 'sem', 'mad', and 'mad_scaled' (i.e. median/mad)
-
+    progress : bool
+        Whether to show a progress bar, by default True
     Note
     ---------
     If this function produces warnings about dividing by zero, this means that at least
@@ -145,7 +147,9 @@ def aggregate(
 
     group_keys = [well_key, *group_keys]
 
-    return get_grouped_op(adata, group_keys, operation=method, as_anndata=True)
+    return get_grouped_op(
+        adata, group_keys, operation=method, as_anndata=True, progress=progress
+    )
 
 
 def aggregate_mahalanobis(
@@ -156,6 +160,7 @@ def aggregate_mahalanobis(
     per_treatment: bool = False,
     cov_include_treatment: bool = False,
     cov_from_single_cell: bool = False,
+    progress: bool = True,
 ) -> pd.DataFrame:
     """
     Measure distance between groups using mahalanobis distance
@@ -187,6 +192,9 @@ def aggregate_mahalanobis(
             Whether to compute covariance matrix from single cells. This computes distances directly on features
             with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignore (both False).
 
+    progress : bool
+            Whether to show a progress bar, by default True
+
     Returns
     ----------
     dists : :class:`~pandas.DataFrame`
@@ -197,7 +205,7 @@ def aggregate_mahalanobis(
     group_keys, treatment_col = get_group_keys(adata, treatment_key, well_key)
 
     # aggregate
-    agg_data = get_grouped_op(adata, group_keys, "median")
+    agg_data = get_grouped_op(adata, group_keys, "median", progress=progress)
     X = agg_data.T
     # TODO: the multiindex only works if well_key was passed
     meta_cols = pd.MultiIndex.from_tuples([*X.index]).to_frame().reset_index(drop=True)
@@ -271,6 +279,7 @@ def aggregate_pc(
     treatment_key: str = "infer",
     control: str = "DMSO",
     cum_var_explained: float = 0.9,
+    progress: bool = True,
 ) -> pd.Series:
     """
     Measure distance between groups using principle components weighted by variance explained
@@ -291,6 +300,9 @@ def aggregate_pc(
             It will select the first n PCs until at least this sum of variance has been explained.
             Must be a value between 0 and 1.
 
+    progress : bool
+            Whether to show a progress bar, by default True
+
     Returns
     ----------
     dists : :class:`~pandas.Series`
@@ -299,7 +311,7 @@ def aggregate_pc(
 
     group_keys, treatment_col = get_group_keys(adata, treatment_key, None)
 
-    agg_data = get_grouped_op(adata, group_keys, "median")
+    agg_data = get_grouped_op(adata, group_keys, "median", progress=progress)
     X = agg_data.T
     meta_cols = pd.DataFrame(X.index, columns=group_keys)
     meta_cols.index = meta_cols.index.astype(str)  # avoid conversion warnings
