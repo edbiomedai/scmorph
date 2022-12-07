@@ -73,6 +73,10 @@ def xim(X: np.array, Y: Union[None, np.array] = None, M: int = 5) -> np.array:
     orders = X.argsort(axis=0)
     ranks = orders.argsort(axis=0)
 
+    # TODO: this assumes that XIM is symmetric, which is not true
+    # To fix this, remove upper=True.
+    # However, this will come with a speed penalty.
+
     cormat_1d = np.array(
         [
             _comp_coef(orders[:, i], ranks[:, j], M=M)
