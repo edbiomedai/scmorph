@@ -157,7 +157,7 @@ def group_obs_fun_inplace(
 
 def get_group_keys(
     adata: AnnData,
-    treatment_key: Union[str, List[str]],
+    treatment_key: Optional[Union[str, List[str]]],
     group_key: Optional[Union[str, List[str]]],
 ) -> Tuple[List[str], List[str]]:
     # convert to list
@@ -170,12 +170,20 @@ def get_group_keys(
             treatment_col = _infer_names("treatment", adata.obs.columns)
         else:
             treatment_col = [treatment_key]
+    elif treatment_key is None:
+        treatment_col = []
+    else:
+        treatment_col = treatment_key
 
     if isinstance(group_key, str):
         if group_key == "infer":
             group_col = _infer_names("group", adata.obs.columns)  # type: ignore
         else:
             group_col = [group_key]
+    elif group_key is None:
+        group_col = []
+    else:
+        group_col = group_key  # type: ignore
     # end inference
 
     group_keys = [*treatment_col, *group_col]
