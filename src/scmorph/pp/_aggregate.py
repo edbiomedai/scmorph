@@ -93,7 +93,7 @@ def _pca_mahalanobis(
     # add back information about drugs, then collapse drugs with multiple measurements
     dists = (
         pd.Series(
-            dists, index=pd.Series(drug_adata.obs[treatment_col[0]]), name="mahalanobis"
+            dists, index=pd.Series(drug_adata.obs[treatment_col]), name="mahalanobis"
         )
         .groupby(level=0)
         .mean()
@@ -205,13 +205,9 @@ def aggregate_mahalanobis(
     group_keys, treatment_col = get_group_keys(adata, treatment_key, well_key)
 
     # aggregate
-    agg_data = get_grouped_op(adata, group_keys, "median", progress=progress)
-    X = agg_data.T
-    # TODO: the multiindex only works if well_key was passed
-    meta_cols = pd.MultiIndex.from_tuples([*X.index]).to_frame().reset_index(drop=True)
-    meta_cols.columns = group_keys
-    meta_cols.index = meta_cols.index.astype(str)  # avoid conversion warnings
-    agg_adata = AnnData(X=X.to_numpy(), obs=meta_cols)
+    agg_adata = get_grouped_op(
+        adata, group_keys, "median", progress=progress, as_anndata=True, store=False
+    )
 
     # compute dists on PCs
     if not per_treatment and not cov_from_single_cell:
