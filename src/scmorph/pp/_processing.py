@@ -1,16 +1,52 @@
+from typing import Optional
+
 import numpy as np
 import scanpy as sc
 from anndata import AnnData
+from scanpy._utils import AnyRandom
 
-pca = sc.pp.pca
-pca.__doc__ = "| Copied from scanpy [Wolf18]_.\n" + pca.__doc__
 neighbors = sc.pp.neighbors
 neighbors.__doc__ = "| Copied from scanpy [Wolf18]_." + neighbors.__doc__
 umap = sc.tl.umap
 umap.__doc__ = "| Copied from scanpy [Wolf18]_." + umap.__doc__
 
 
-def scale(adata: AnnData, chunked: bool = False) -> AnnData:
+def pca(
+    adata: AnnData,
+    n_comps: Optional[int] = None,
+    whiten: bool = False,
+    zero_center: Optional[bool] = True,
+    svd_solver: str = "arpack",
+    random_state: AnyRandom = 0,
+    dtype: str = "float32",
+    copy: bool = False,
+    chunked: bool = False,
+    chunk_size: Optional[int] = None,
+) -> AnnData:
+    adata = adata.copy() if copy else adata
+    sc.pp.pca(
+        adata,
+        n_comps=n_comps,
+        zero_center=zero_center,
+        svd_solver=svd_solver,
+        random_state=random_state,
+        dtype=dtype,
+        copy=False,
+        chunked=chunked,
+        chunk_size=chunk_size,
+    )
+
+    if whiten:
+        adata.obsm["X_pca"] /= np.sqrt(adata.uns["pca"]["variance"])
+    return adata if copy else None
+
+
+pca.__doc__ = (
+    "| Copied from scanpy [Wolf18]_ with added whitening.\n" + sc.pp.pca.__doc__
+)
+
+
+def scale(adata: AnnData, chunked: bool = False) -> None:
     """
     Scale data to unit variance per feature while maintaining a low memory footprint
 
@@ -44,10 +80,9 @@ def scale(adata: AnnData, chunked: bool = False) -> AnnData:
             x /= x.std()
 
         np.apply_along_axis(scaler, 0, adata.X)
-    return adata
 
 
-def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> AnnData:
+def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> None:
     """
     Scale data to unit variance per batch
 
@@ -73,8 +108,6 @@ def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> Ann
 
     for _, idx in adata.obs.groupby(batch_key).indices.items():
         scale(adata[idx, :], chunked=chunked)
-
-    return adata
 
 
 def drop_na(
