@@ -111,7 +111,7 @@ def cumulative_density(
         df, x="value", kind="ecdf", col=col_name, hue=color, col_wrap=n_col, **kwargs
     )
     sns.move_legend(fg, "center right", bbox_to_anchor=(1, 0.5))
-    fg.set(ylim=(0, 1.1))
+    fg.set(ylim=(0, 1))
     fg.set(xlabel=xlabel)
     if xlim:
         fg.set(xlim=xlim)
