@@ -160,7 +160,7 @@ def aggregate_mahalanobis(
     per_treatment: bool = False,
     cov_include_treatment: bool = False,
     cov_from_single_cell: bool = False,
-    progress: bool = True,
+    progress: bool = False,
 ) -> pd.DataFrame:
     """
     Measure distance between groups using mahalanobis distance
@@ -193,7 +193,7 @@ def aggregate_mahalanobis(
             with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignore (both False).
 
     progress : bool
-            Whether to show a progress bar, by default True
+            Whether to show a progress bar, by default False
 
     Returns
     ----------
@@ -248,7 +248,7 @@ def aggregate_mahalanobis(
         for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():
             drug_idx = adata_drugs.obs[treatment_col[0]] == cur_treatment
             if sum(drug_idx) == 1:
-                drug_centroid = adata_drugs[drug_idx].X
+                drug_centroid = adata_drugs[drug_idx].X.flatten()
             else:
                 drug_centroid = np.median(adata_drugs[drug_idx].X, axis=0).flatten()
 
