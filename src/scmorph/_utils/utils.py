@@ -80,6 +80,11 @@ def grouped_op(
 ) -> pd.DataFrame:
     if operation == "mean":
         fun = partial(np.mean, axis=0, dtype=np.float64, **kwargs)
+    elif operation == "logmean":
+
+        def fun(x):  # type: ignore
+            return np.mean(np.log1p(x), axis=0, dtype=np.float64, **kwargs)
+
     elif operation == "median":
         fun = partial(np.median, axis=0, **kwargs)
     elif operation == "std":

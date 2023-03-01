@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Any, Optional, Tuple
 
 import numpy as np
@@ -13,6 +14,7 @@ def compute_batch_effects(
     adata: AnnData,
     bio_key: Optional[str] = None,
     batch_key: str = "infer",
+    log: Optional[bool] = False,
     treatment_key: Optional[str] = None,
     control: str = "DMSO",
     progress: bool = True,
@@ -36,8 +38,12 @@ def compute_batch_effects(
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
             no argument is given. Default: "infer"
 
+    log : bool
+            Whether to compute log1p-transformed batch effects. Caution: this will throw out any feature with values smaller
+            than -0.99, because it would result in non-finite values. Default: False
+
     treatment_key: str
-            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+            Name of column used to delineate treatments. This is used when computing batch effects across drug-treated plates.
             In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
             If using, please also see `control`.
 
@@ -51,7 +57,8 @@ def compute_batch_effects(
     -------
     betas : :class:`~numpy.array`
         Biological effects, i.e. how much each feature varied because of biological differences
-    gammas: :class:`~numpy.array`
+
+    gammas : :class:`~numpy.array`
         Technical effects, i.e. batch effects.
     """
     from formulaic import Formula
@@ -67,9 +74,13 @@ def compute_batch_effects(
 
     if treatment_key is not None:
         adata = adata[adata.obs[treatment_key] == control, :]
-
+    fun = "logmean" if log else "mean"
+    if log:
+        adata = adata[
+            :, ~np.any(adata.X < -0.99, axis=0)
+        ]  # remove features with values < -0.99
     data = get_grouped_op(
-        adata, group_key=joint_keys, operation="mean", progress=progress
+        adata, group_key=joint_keys, operation=fun, progress=progress
     )  # compute average feature per batch/bio group
 
     data = data.loc[adata.var.index]  # ensure correct feature order
@@ -114,6 +125,7 @@ def remove_batch_effects(
     adata: AnnData,
     bio_key: Optional[str] = None,
     batch_key: str = "infer",
+    log: Optional[bool] = False,
     copy: Optional[bool] = False,
     **kwargs: Any,
 ) -> AnnData:
@@ -137,6 +149,10 @@ def remove_batch_effects(
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
             no argument is given. Default: "infer"
 
+    log : bool
+            Whether to compute log-transformed batch effects. Caution: this will throw out any feature with values smaller
+            than -0.99, because it would result in non-finite values. Default: False
+
     copy : bool
             If False, will perform operation in-place, else return a modified copy of the data.
 
@@ -151,11 +167,18 @@ def remove_batch_effects(
     if copy:
         adata = adata.copy()
     betas, gammas = compute_batch_effects(
-        adata, **kwargs, bio_key=bio_key, batch_key=batch_key
+        adata, **kwargs, log=log, bio_key=bio_key, batch_key=batch_key
     )
     adata.uns["batch_effects"] = (
         pd.concat((betas, gammas), axis=1) if len(betas) > 0 else gammas
     )
+
+    def batch_corrector(x, group, log):  # type: ignore
+        if log:
+            return x - np.power(np.e, gammas[group].to_numpy())
+        return x - gammas[group].to_numpy()
+
+    batch_corrector = partial(batch_corrector, log=log)
     group_obs_fun_inplace(
         adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
     )
