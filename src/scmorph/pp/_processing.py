@@ -69,9 +69,9 @@ def scale(adata: AnnData, chunked: bool = False) -> None:
         scaler = StandardScaler(copy=False)
         if adata.isbacked:
             for i in range(adata.shape[1]):
-                scaler.fit_transform(adata[:, i].X)
+                adata[:, i] = scaler.fit_transform(adata[:, i].X)
         else:
-            scaler.fit_transform(adata.X)
+            adata.X = scaler.fit_transform(adata.X)
 
     else:
         # process one feature at a time
@@ -79,7 +79,7 @@ def scale(adata: AnnData, chunked: bool = False) -> None:
             x -= x.mean()
             x /= x.std()
 
-        np.apply_along_axis(scaler, 0, adata.X)
+        adata.X = np.apply_along_axis(scaler, 0, adata.X)
 
 
 def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> None:
