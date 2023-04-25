@@ -79,6 +79,7 @@ def compute_batch_effects(
         adata = adata[
             :, ~np.any(adata.X < -0.99, axis=0)
         ]  # remove features with values < -0.99
+    print("Computing batch effects...")
     data = get_grouped_op(
         adata, group_key=joint_keys, operation=fun, progress=progress
     )  # compute average feature per batch/bio group
@@ -179,8 +180,7 @@ def remove_batch_effects(
         return x - gammas[group].to_numpy()
 
     batch_corrector = partial(batch_corrector, log=log)
-    group_obs_fun_inplace(
-        adata, batch_key, lambda x, group: x - gammas[group].to_numpy()
-    )
+    print("Removing batch effects...")
+    group_obs_fun_inplace(adata, batch_key, lambda x, group: batch_corrector)
     if copy:
         return adata
