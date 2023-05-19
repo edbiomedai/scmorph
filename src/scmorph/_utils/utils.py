@@ -165,9 +165,6 @@ def get_group_keys(
     treatment_key: Optional[Union[str, List[str]]],
     group_key: Optional[Union[str, List[str]]],
 ) -> Tuple[List[str], List[str]]:
-    # convert to list
-    if not isinstance(group_key, list):
-        group_col = [group_key]
 
     # inferring treatment names if necessary
     if isinstance(treatment_key, str):
@@ -182,16 +179,14 @@ def get_group_keys(
 
     if isinstance(group_key, str):
         if group_key == "infer":
-            group_col = _infer_names("group", adata.obs.columns)  # type: ignore
+            group_key = _infer_names("group", adata.obs.columns)  # type: ignore
         else:
-            group_col = [group_key]
+            group_key = [group_key]
     elif group_key is None:
-        group_col = []
-    else:
-        group_col = group_key  # type: ignore
+        group_key = []
     # end inference
 
-    group_keys = [*treatment_col, *group_col]
+    group_keys = [*treatment_col, *group_key]
     group_keys = [x for x in group_keys if x]  # remove None's
     return group_keys, treatment_col  # type: ignore
 
