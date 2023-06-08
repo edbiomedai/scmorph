@@ -181,6 +181,6 @@ def remove_batch_effects(
 
     batch_corrector = partial(batch_corrector, log=log)
     print("Removing batch effects...")
-    group_obs_fun_inplace(adata, batch_key, lambda x, group: batch_corrector)
+    group_obs_fun_inplace(adata, batch_key, batch_corrector)
     if copy:
         return adata
