@@ -81,7 +81,7 @@ def compute_batch_effects(
         ]  # remove features with values < -0.99
     print("Computing batch effects...")
     data = get_grouped_op(
-        adata, group_key=joint_keys, operation=fun, progress=progress
+        adata, group_key=joint_keys, operation=fun, progress=progress, store=False
     )  # compute average feature per batch/bio group
 
     data = data.loc[adata.var.index]  # ensure correct feature order
