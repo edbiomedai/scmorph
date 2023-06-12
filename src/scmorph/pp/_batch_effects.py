@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Any, Optional, Tuple
 
 import numpy as np
@@ -174,12 +173,16 @@ def remove_batch_effects(
         pd.concat((betas, gammas), axis=1) if len(betas) > 0 else gammas
     )
 
-    def batch_corrector(x, group, log):  # type: ignore
-        if log:
-            return x - np.power(np.e, gammas[group].to_numpy())
-        return x - gammas[group].to_numpy()
+    if log:
 
-    batch_corrector = partial(batch_corrector, log=log)
+        def batch_corrector(x: np.array, group: str) -> np.array:
+            return x - np.power(np.e, gammas[group].to_numpy())
+
+    else:
+
+        def batch_corrector(x: np.array, group: str) -> np.array:
+            return x - gammas[group].to_numpy()
+
     print("Removing batch effects...")
     group_obs_fun_inplace(adata, batch_key, batch_corrector)
     if copy:
