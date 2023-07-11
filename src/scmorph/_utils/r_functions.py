@@ -1,14 +1,11 @@
 from types import NoneType
-from typing import Dict, List, Optional, Union
-
-import rpy2.robjects as ro
+from typing import List, Optional, Union
 
 
 def _initialize_r_functions() -> None:
     """
     Create R functions from raw text to avoid the complexity of shipping R files
-    in a Python package. The R code will be provided in a separate repository
-    for better readability.
+    in a Python package.
     """
     from rpy2 import robjects as ro
 
@@ -89,12 +86,9 @@ def _clean_R_env(except_obj: Optional[Union[str, List[str]]] = None) -> None:
         rm_fun(except_obj)  # type: ignore
 
 
-def _load_R_functions(
+def _load_R_functions(  # type: ignore
     function: str = "all",
-) -> Union[
-    ro.functions.SignatureTranslatedFunction,
-    Dict[str, ro.functions.SignatureTranslatedFunction],
-]:
+):
     from rpy2 import ro
 
     _initialize_r_functions()  # initialize functions in R global environment
@@ -117,7 +111,7 @@ def _load_R_functions(
     return all_funcs
 
 
-def _None_converter() -> ro.conversion.Converter:
+def _None_converter():  # type: ignore
     """Adapted from https://stackoverflow.com/a/65810724 by Mike Krassowski"""
     import rpy2.robjects as ro
 
