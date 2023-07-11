@@ -32,9 +32,13 @@ def _pca_aggregate(
     weights = adata.uns["pca"]["variance_ratio"]
 
     pc_cutoff = np.where(np.cumsum(weights) > cum_var_explained)[0]
-    if pc_cutoff.size > 0:  # sum of variance explained is more than cum_var_explained
-        weights = weights[: pc_cutoff[0]]
-        adata.obsm["X_pca"] = adata.obsm["X_pca"][:, : pc_cutoff[0]]
+
+    # check if sum of variance explained is more than cum_var_explained
+    # and if not just take all PCs
+    pc_cutoff = pc_cutoff[0] if pc_cutoff.size > 0 else len(weights)
+
+    weights = weights[:pc_cutoff]
+    adata.obsm["X_pca"] = adata.obsm["X_pca"][:, :pc_cutoff]
 
     return adata, weights
 
@@ -190,7 +194,7 @@ def aggregate_mahalanobis(
 
     cov_from_single_cell : bool
             Whether to compute covariance matrix from single cells. This computes distances directly on features
-            with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignore (both False).
+            with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignored (both False).
 
     progress : bool
             Whether to show a progress bar, by default False
@@ -201,8 +205,10 @@ def aggregate_mahalanobis(
             Mahalanobis distances between treatments
     """
     import anndata
+    from tqdm import tqdm
 
     group_keys, treatment_col = get_group_keys(adata, treatment_key, well_key)
+    treatment_col = treatment_col[0]
 
     # aggregate
     agg_adata = get_grouped_op(
@@ -211,22 +217,24 @@ def aggregate_mahalanobis(
 
     # compute dists on PCs
     if not per_treatment and not cov_from_single_cell:
-        return _pca_mahalanobis(agg_adata, treatment_col[0], control)
+        return _pca_mahalanobis(agg_adata, treatment_col, control)
 
     adata_control, adata_drugs, _ = _split_adata_control_drugs(
-        agg_adata, treatment_col[0], control, well_key
+        agg_adata, treatment_col, control, well_key
     )
 
     dists = pd.Series(
-        index=adata_drugs.obs[treatment_col[0]].unique(),
+        index=adata_drugs.obs[treatment_col].unique(),
         name="mahalanobis",
         dtype=np.float64,
     )
+    iterator = tqdm(dists.index) if progress else dists.index
+
     if cov_from_single_cell:
         from scipy.spatial.distance import mahalanobis
 
         adata_control_sc, _, _ = _split_adata_control_drugs(
-            adata, treatment_col[0], control, well_key
+            adata, treatment_col, control, well_key
         )
         cov = np.cov(adata_control_sc.X, rowvar=False)
         try:
@@ -245,24 +253,26 @@ def aggregate_mahalanobis(
 
     if cov_from_single_cell:  # check that covariance matrix was invertible
         control_centroid = np.median(adata_control.X, axis=0)
-        for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():
-            drug_idx = adata_drugs.obs[treatment_col[0]] == cur_treatment
+
+        for cur_treatment in iterator:
+            drug_idx = adata_drugs.obs[treatment_col] == cur_treatment
             if sum(drug_idx) == 1:
                 drug_centroid = adata_drugs[drug_idx].X.flatten()
             else:
                 drug_centroid = np.median(adata_drugs[drug_idx].X, axis=0).flatten()
 
             dists[cur_treatment] = mahalanobis(control_centroid, drug_centroid, VI=vi)
+        return dists
 
+    # only per_treatment = True and cov_from_single_cell = True remaining
+    # (or cov_from_single_cell = True but covariance matrix not invertible)
     if not cov_from_single_cell:
-        for cur_treatment in adata_drugs.obs[treatment_col[0]].unique():
-            drug_idx = adata_drugs.obs[treatment_col[0]] == cur_treatment
-
+        for cur_treatment in iterator:
+            drug_idx = adata_drugs.obs[treatment_col] == cur_treatment
             joint_adata = anndata.concat([adata_control, adata_drugs[drug_idx]])
-
             dists[cur_treatment] = _pca_mahalanobis(
-                joint_adata, treatment_col[0], control, cov_include_treatment
-            )
+                joint_adata, treatment_col, control, cov_include_treatment
+            )[0]
 
     return dists
 
