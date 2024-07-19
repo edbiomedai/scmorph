@@ -1,4 +1,4 @@
-from typing import Any, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -127,7 +127,8 @@ def remove_batch_effects(
     batch_key: str = "infer",
     log: Optional[bool] = False,
     copy: Optional[bool] = False,
-    **kwargs: Any,
+    treatment_key: Optional[str] = None,
+    control: str = "DMSO",
 ) -> AnnData:
     """
     Remove batch effects using scone's method of deconvoluting technical from biological effects
@@ -156,8 +157,13 @@ def remove_batch_effects(
     copy : bool
             If False, will perform operation in-place, else return a modified copy of the data.
 
-    kwargs: dict
-            Other parameter passed to :func:`compute_batch_effects`
+    treatment_key: str
+            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+            If using, please also see `control`.
+
+    control: str
+            Name of control treatment. Must be valid value in `treatment_key`.
 
     Returns
     -------
@@ -167,7 +173,12 @@ def remove_batch_effects(
     if copy:
         adata = adata.copy()
     betas, gammas = compute_batch_effects(
-        adata, **kwargs, log=log, bio_key=bio_key, batch_key=batch_key
+        adata,
+        bio_key=bio_key,
+        batch_key=batch_key,
+        log=log,
+        treatment_key=treatment_key,
+        control=control,
     )
     adata.uns["batch_effects"] = (
         pd.concat((betas, gammas), axis=1) if len(betas) > 0 else gammas
