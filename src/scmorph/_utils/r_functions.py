@@ -1,4 +1,3 @@
-from types import NoneType
 from typing import List, Optional, Union
 
 
@@ -115,7 +114,7 @@ def _None_converter():  # type: ignore
     """Adapted from https://stackoverflow.com/a/65810724 by Mike Krassowski"""
     import rpy2.robjects as ro
 
-    def _none2null(none_obj: NoneType) -> ro.NULL:
+    def _none2null(none_obj) -> ro.NULL:  # type: ignore
         return ro.r("NULL")
 
     none_converter = ro.conversion.Converter("None converter")
