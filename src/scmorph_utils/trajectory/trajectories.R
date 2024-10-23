@@ -4,7 +4,7 @@
 
 Note: these functions are not actually being called from this file!
 They are here for easier reference, but are actually defined in and sourced from
-`_utils/r_functions.py`. Reason: we do not want to ship R files in a Python package,
+`utils/r_functions.py`. Reason: we do not want to ship R files in a Python package,
 as that makes distribution harder. Therefore, take these functions only as reference
 that should be in sync with those used in scmorph.
 """

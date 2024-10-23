@@ -1,14 +1,10 @@
----
-title: scmorph
----
-
-# Single-cell morphological analysis
+# scmorph - Single-cell morphological analysis
 
 scmorph is a **Python library** to process **CellPainting** or any
 morphological data. It unlocks single-cell data to model heterogenity.
 
 scmorph differs from the popular
-[pyCytominer](https://github.com/cytomining/pycytominer) package in the
+[PyCytominer](https://github.com/cytomining/pycytominer) package in the
 following ways:
 
 -   **Single-cell**: Enables efficient analysis of single-cell data

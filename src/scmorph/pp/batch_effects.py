@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph._utils import _infer_names, get_grouped_op, group_obs_fun_inplace
+from scmorph.utils import _infer_names, get_grouped_op, group_obs_fun_inplace
 
 
 def compute_batch_effects(
