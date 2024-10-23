@@ -3,7 +3,7 @@ import random
 import numpy as np
 import pytest
 
-from scmorph.pp._correlation import xim
+from scmorph.pp.correlation import xim
 
 """
 XIM correlation coefficient tests adopted from https://github.com/czbiohub/xicor/blob/master/tests/xi_test.py
@@ -38,18 +38,10 @@ def anscombes_xis(anscombes_quartet):
     random.seed(2020)
     np.random.seed(2020)
     xis = {
-        "xi_1": xim(
-            np.array(anscombes_quartet["x_1"]), np.array(anscombes_quartet["y_1"]), 1
-        )[0, 1],
-        "xi_2": xim(
-            np.array(anscombes_quartet["x_2"]), np.array(anscombes_quartet["y_2"]), 1
-        )[0, 1],
-        "xi_3": xim(
-            np.array(anscombes_quartet["x_3"]), np.array(anscombes_quartet["y_3"]), 1
-        )[0, 1],
-        "xi_4": xim(
-            np.array(anscombes_quartet["x_4"]), np.array(anscombes_quartet["y_4"]), 1
-        )[0, 1],
+        "xi_1": xim(np.array(anscombes_quartet["x_1"]), np.array(anscombes_quartet["y_1"]), 1)[0, 1],
+        "xi_2": xim(np.array(anscombes_quartet["x_2"]), np.array(anscombes_quartet["y_2"]), 1)[0, 1],
+        "xi_3": xim(np.array(anscombes_quartet["x_3"]), np.array(anscombes_quartet["y_3"]), 1)[0, 1],
+        "xi_4": xim(np.array(anscombes_quartet["x_4"]), np.array(anscombes_quartet["y_4"]), 1)[0, 1],
     }
     return xis
 

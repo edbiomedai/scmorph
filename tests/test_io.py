@@ -16,9 +16,7 @@ meta_cols, feature_cols = 9, 920
 
 
 def test_parse_csv_header():
-    header = sm._io.io._parse_csv_headers(
-        filename, n_headers=n_headers, sanitize=True, sep=","
-    )
+    header = sm._io.io._parse_csv_headers(filename, n_headers=n_headers, sanitize=True, sep=",")
     assert isinstance(header, list) and len(header) == raw_cols
 
 

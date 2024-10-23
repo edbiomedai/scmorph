@@ -1,0 +1,30 @@
+{
+  "template": "https://github.com/scverse/cookiecutter-scverse",
+  "commit": "61456cb46cd1c83442e14236f16138725472c6ef",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "scmorph",
+      "package_name": "scmorph",
+      "project_description": "Single-cell morphological analysis",
+      "author_full_name": "Jesko Wagner",
+      "author_email": "35219306+jeskowagner@users.noreply.github.com",
+      "github_user": "jeskowagner",
+      "github_repo": "scmorph",
+      "license": "MIT License",
+      "ide_integration": true,
+      "_copy_without_render": [
+        ".github/workflows/build.yaml",
+        ".github/workflows/test.yaml",
+        "docs/_templates/autosummary/**.rst"
+      ],
+      "_render_devdocs": false,
+      "_jinja2_env_vars": {
+        "lstrip_blocks": true,
+        "trim_blocks": true
+      },
+      "_template": "https://github.com/scverse/cookiecutter-scverse"
+    }
+  },
+  "directory": null
+}

@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: ["3.8", "3.9", "3.10"]
         platform:
           - ubuntu-latest
           - macos-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Activate LFS
         uses: actions/checkout@v2
         with:
-            lfs: 'true'
+          lfs: "true"
       - name: Checkout LFS
         run: git lfs pull
       - name: Test with tox and pytest
