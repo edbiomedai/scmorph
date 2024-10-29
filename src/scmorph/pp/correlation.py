@@ -69,15 +69,19 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
         X = np.column_stack((X, Y))
 
     # pseudorandom tie breaker based on adding random noise
-    X = X + np.random.uniform(-0.000001, 0.000001, X.shape)
+    rng = np.random.default_rng(seed=2024)
+    X = X + rng.uniform(-0.000001, 0.000001, X.shape)
     orders = X.argsort(axis=0)
     ranks = orders.argsort(axis=0)
 
+    # compute 1D correlation vector of pairwise comparisons
     cormat_1d = np.array([_comp_coef(orders[:, i], ranks[:, j], M=M) for i, j in _iter_cols(X, upper=False)])
 
-    cormat_2d = np.eye(X.shape[1])
-    cormat_2d[np.triu_indices(cormat_2d.shape[0], k=1)] = cormat_1d
-    cormat_2d[np.tril_indices(cormat_2d.shape[0], k=-1)] = cormat_1d.T
+    # reshape to 2D correlation matrix
+    cormat_2d = cormat_1d.reshape(X.shape[1], X.shape[1])
+
+    # force xim=1 for diagonal elements
+    np.fill_diagonal(cormat_2d, 1)
 
     return cormat_2d
 

@@ -217,7 +217,7 @@ def get_grouped_op(
     layer: str | None = None,
     store: bool = True,
     progress: bool = True,
-) -> pd.DataFrame:
+) -> pd.DataFrame | AnnData:
     """
     Retrieve from cache or compute a grouped operation
 

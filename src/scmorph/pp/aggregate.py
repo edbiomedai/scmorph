@@ -115,6 +115,7 @@ def aggregate(
         'var', 'sem', 'mad', and 'mad_scaled' (i.e. median/mad)
     progress : bool
         Whether to show a progress bar, by default True
+
     Note
     ---------
     If this function produces warnings about dividing by zero, this means that at least
@@ -289,12 +290,7 @@ def aggregate_pc(
     """
     group_keys, treatment_col = _get_group_keys(adata, treatment_key, None)
 
-    agg_data = get_grouped_op(adata, group_keys, "median", progress=progress)
-    X = agg_data.T
-    meta_cols = pd.DataFrame(X.index, columns=group_keys)
-    meta_cols.index = meta_cols.index.astype(str)  # avoid conversion warnings
-    agg_adata = AnnData(X=X.to_numpy(), obs=meta_cols)
-    drop_na(agg_adata, 0, 1)  # drop NA columns
+    agg_adata = get_grouped_op(adata, group_keys, "median", progress=progress, as_anndata=True)
     agg_adata, weights = _pca_aggregate(agg_adata, cum_var_explained)
 
     # determine reference point

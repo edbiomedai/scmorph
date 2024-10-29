@@ -210,8 +210,8 @@ def make_AnnData(
     if dropcols:
         log.warning(
             "Non-continous and rotation-variant features are not currently supported and "
-            + "will be discarded! The following features are dropped:\n"
-            + "\n".join(dropcols)
+            "will be discarded! The following features are dropped:\n%s",
+            "\n".join(dropcols),
         )
         df.drop(columns=dropcols, inplace=True)
 
@@ -221,7 +221,6 @@ def make_AnnData(
         X=X.to_numpy(),
         obs=meta.to_dict("list"),  # avoid conversion bugs
         var=featData,
-        dtype="float32",  # avoid future warning
     )
 
     return ad
@@ -363,7 +362,7 @@ def read_cellprofiler_batches(
 
     sample_file = files[0]
 
-    log.info(f"Found {len(files)} files")
+    log.info("Found %s files", len(files))
     log.info("Reading in all metadata...")
 
     # read in obs metadata
@@ -437,16 +436,12 @@ def _drop_terms() -> re.Pattern[str]:
 
 
 def _match_meta(header: list[str], meta_cols: None | list[str] = None) -> list[str]:
-    import re
-
     re_meta = _meta_terms()
     meta_cols = [col for col in header if re.search(re_meta, col)]
     return meta_cols
 
 
-def _match_drop(header: list[str], meta_cols: None | list[str] = None) -> list[str]:
-    import re
-
+def _match_drop(header: list[str]) -> list[str]:
     re_drop = _drop_terms()
     return [col for col in header if re.search(re_drop, col)]
 
@@ -509,7 +504,7 @@ def _cache_file(path: str, backup_url: str | None) -> None:
     is_present = _check_datafile_present_and_download(path, backup_url=backup_url)
 
     if not is_present:
-        log.error(f"{path} not found, and could not be downloaded.")
+        log.error("%s not found, and could not be downloaded.", path)
 
 
 def read_meta(
@@ -545,7 +540,7 @@ def read_X(
     meta_cols: list[str] | None = None,
     n_headers: int = 1,
     sep: str = ",",
-) -> np.array:
+) -> np.ndarray:
     """
     Read X from a .csv file
 
@@ -563,7 +558,7 @@ def read_X(
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
-    drop_cols = _match_drop(header, meta_cols)
+    drop_cols = _match_drop(header)
     columns = [col for col in header if col not in meta_cols + drop_cols]
     tab = _read_csv_columns(path=path, columns=columns, column_names=header, sep=sep, n_headers=n_headers)
     return np.array(tab, dtype="float32").T
@@ -597,7 +592,7 @@ def read_sql(filename: str, backup_url: str | None = None) -> AnnData:
 
     # sanity check
     if unknown_tables := list(set(tables) - set(known_tables)):
-        log.warning(f"Unknown tables found in SQL database: {unknown_tables}")
+        log.warning("Unknown tables found in SQL database: %s", unknown_tables)
 
     keep_tables = list(set(tables) & set(known_tables))
 
@@ -625,9 +620,8 @@ def read_sql(filename: str, backup_url: str | None = None) -> AnnData:
         meta_regex_keep = r"^Metadata|TableNumber|Count_Cells|Count_Cytoplasm|Count_Nuclei"
         meta_cols_keep = [i for i in meta.columns if re.match(meta_regex_keep, i)]
         log.info(
-            "Metadata found in SQL database, adding to AnnData object."
-            + " Will only keep the following columns: "
-            + ", ".join(meta_cols_keep)
+            "Metadata found in SQL database, adding to AnnData object. Will only keep the following columns: %s",
+            ", ".join(meta_cols_keep),
         )
 
         adata.obs = pd.merge(adata.obs, meta[meta_cols_keep])
