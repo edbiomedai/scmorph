@@ -4,7 +4,7 @@ from packaging.version import Version
 from scanpy import read_h5ad, write
 
 from scmorph import datasets, logging, pl, pp, qc, tl
-from scmorph.io import read, read_cellprofiler, read_cellprofiler_batches, read_sql
+from scmorph.io import read, read_cellprofiler_batches, read_cellprofiler_csv, read_sql
 
 try:
     md = metadata.metadata(__name__)

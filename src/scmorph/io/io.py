@@ -130,7 +130,7 @@ def _parse_csv(
     return df
 
 
-def _split_feature_names(features: pd.Series | list["str"], feature_delim: str = "_") -> pd.DataFrame:
+def split_feature_names(features: pd.Series | list["str"], feature_delim: str = "_") -> pd.DataFrame:
     """
     Split feature names into pd.DataFrame
 
@@ -215,7 +215,7 @@ def make_AnnData(
         )
         df.drop(columns=dropcols, inplace=True)
 
-    featData = _split_feature_names(X.columns, feature_delim=feature_delim)
+    featData = split_feature_names(X.columns, feature_delim=feature_delim)
 
     ad = AnnData(
         X=X.to_numpy(),
@@ -259,7 +259,7 @@ def _find_files(path: str | list["str"], suffix: str = ".csv") -> list["str"]:
     return np.hstack(files).tolist()
 
 
-def read_cellprofiler(
+def read_cellprofiler_csv(
     filename: str,
     n_headers: int = 1,
     meta_cols: list[str] | None = None,
@@ -350,8 +350,12 @@ def read_cellprofiler_batches(
     """
     import anndata as ad
     import h5py
-    from anndata.experimental import write_elem
     from tqdm import tqdm
+
+    try:
+        from anndata.io import write_elem
+    except ImportError:
+        from anndata.experimental import write_elem
 
     tqdm = functools.partial(tqdm, unit=" files", dynamic_ncols=True, mininterval=1)
 
@@ -373,7 +377,7 @@ def read_cellprofiler_batches(
     obs.index = obs.index.astype(str)
 
     # extract var metadata from first file
-    var = read_cellprofiler(sample_file, sep=sep, n_headers=n_headers).var
+    var = read_cellprofiler_csv(sample_file, sep=sep, n_headers=n_headers).var
     var.fillna("", inplace=True)
     var.index = var.index.astype(str)
 
@@ -650,7 +654,7 @@ def read(filename: str, **kwargs: Any) -> AnnData:
     """
     _, fileending = os.path.splitext(filename)
     if fileending == ".csv":
-        return read_cellprofiler(filename, **kwargs)
+        return read_cellprofiler_csv(filename, **kwargs)
     elif fileending == ".h5ad":
         return read_h5ad(filename, **kwargs)
     elif fileending in [".sql", ".sqlite"]:

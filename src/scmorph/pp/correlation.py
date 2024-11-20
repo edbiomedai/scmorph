@@ -56,7 +56,7 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
             coef_sum_temp = np.sum(np.minimum(yrank[: (n - m)], yrank[m:n]) + 1)
             coef_sum_temp = coef_sum_temp + np.sum(yrank[(n - m) : n] + 1)
             coef_sum = coef_sum + coef_sum_temp
-        return -2 + 6 * coef_sum / ((n + 1) * (n * M + M * (M + 1) / 4))
+        return float(-2 + 6 * coef_sum / ((n + 1) * (n * M + M * (M + 1) / 4)))
 
     if len(X.shape) > 1:
         if Y is not None:
