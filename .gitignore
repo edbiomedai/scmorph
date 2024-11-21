@@ -3,6 +3,10 @@
 *~
 buck-out/
 
+# Dataset files
+*.csv
+*.h5ad
+
 # Compiled files
 .venv/
 __pycache__/
