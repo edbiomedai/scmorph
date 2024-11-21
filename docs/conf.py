@@ -115,6 +115,9 @@ html_css_files = ["css/custom.css"]
 
 html_title = project_name
 
+html_show_sphinx = False
+html_logo = "_static/img/scmorph_logo.png"
+
 html_theme_options = {
     "repository_url": repository_url,
     "use_repository_button": True,

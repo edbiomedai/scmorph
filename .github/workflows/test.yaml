@@ -5,63 +5,85 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  schedule:
-    - cron: "0 5 1,15 * *"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash -e {0} # -e to fail on error
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -e {0} # -e to fail on error
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            python: "3.10"
-          - os: ubuntu-latest
-            python: "3.12"
-          - os: ubuntu-latest
-            python: "3.12"
-            pip-flags: "--pre"
-            name: PRE-RELEASE DEPENDENCIES
-
-    name: ${{ matrix.name }} Python ${{ matrix.python }}
-
+        python: ["3.10", "3.12"]
+        os: [ubuntu-latest]
+        # one that matches "project-name".lower().replace('-', '_'), one that doesn’t:
+        package-name: [project_name, package_alt]
     env:
-      OS: ${{ matrix.os }}
-      PYTHON: ${{ matrix.python }}
+      PROJECT_ROOT: project-name
 
     steps:
+      # Setup
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           cache: "pip"
-          cache-dependency-path: "**/pyproject.toml"
-
-      - name: Install test dependencies
+          cache-dependency-path: "scmorph/pyproject.toml"
+      - name: Install Ubuntu system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install pandoc
+      - name: Install build & check dependencies
+        run: python -m pip install --upgrade pip wheel cookiecutter pre-commit
+      # Build
+      - name: Build from template
+        shell: python
         run: |
-          python -m pip install --upgrade pip wheel
-      - name: Install dependencies
+          from cookiecutter.main import cookiecutter
+          overrides = dict(package_name='${{ matrix.package-name }}')
+          cookiecutter('.', no_input=True, extra_context=overrides)
+      # Check
+      - name: Set up pre-commit cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-3|${{ matrix.python }}|${{ hashFiles(format('{0}/.pre-commit-config.yaml', env.PROJECT_ROOT)) }}
+      - name: Run pre-commit
         run: |
-          pip install ${{ matrix.pip-flags }} ".[dev,test]"
-      - name: Test
+          cd "$PROJECT_ROOT"
+          git add .
+          pre-commit run --verbose --color=always --show-diff-on-failure --all-files
+      - name: Install the package
+        run: |
+          cd $PROJECT_ROOT
+          pip install ".[doc]"
+          python -c "import ${{ matrix.package-name }}"
+      # Docs
+      - name: Build the documentation
         env:
-          MPLBACKEND: agg
-          PLATFORM: ${{ matrix.os }}
-          DISPLAY: :42
+          SPHINXOPTS: -W --keep-going
         run: |
-          coverage run -m pytest -v --color=yes
-      - name: Report coverage
-        run: |
-          coverage report
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+          cd "$PROJECT_ROOT/docs"
+          make html
+
+  test-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "**/pyproject.toml"
+      - name: set python default branch
+        run: git config --global init.defaultBranch main
+      - name: Install build dependencies
+        run: python -m pip install --upgrade pip wheel
+      - name: Install package
+        run: pip install ./scripts[test]
+      - name: Run tests
+        run: pytest -v --color=yes ./scripts

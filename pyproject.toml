@@ -24,16 +24,17 @@ classifiers = [
 
 dynamic = [ "version" ]
 dependencies = [
-  "anndata",
+  "anndata>=0.8",
   "formulaic",
-  "matplotlib",
-  "numpy",
-  "pandas",
+  "matplotlib>=3.6",
+  "numba>=0.56",
+  "numpy>=1.23",
+  "pandas>=1.5",
   "patsy",
   "pyarrow",
   "pyod",
   "scanpy",
-  "scikit-learn",
+  "scikit-learn>=1.1",
   "seaborn",
   "session-info",
   #"rpy2",
