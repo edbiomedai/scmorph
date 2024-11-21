@@ -50,19 +50,21 @@ def test_aggregate_pc(adata_treat):
     assert agg.shape == (2,)
 
 
+@pytest.mark.filterwarnings("ignore:Precision loss")
 def test_aggregate_tstat(adata_treat):
     agg = sm.pp.aggregate_ttest(adata_treat, treatment_key="TARGETGENE")
-    assert agg[0].shape == (adata_treat.shape[1], 2)
+    assert agg[0].shape == (adata_treat.shape[1], 1)  # one treatment in test data
     assert 0 <= agg[1].max().max() <= 1  # test p-values are valid
 
 
+@pytest.mark.filterwarnings("ignore:Precision loss")
 def test_aggregate_ttest_summary(adata_treat):
     agg = sm.pp.aggregate_ttest(adata_treat, treatment_key="TARGETGENE")[0]
     t = sm.pp.tstat_distance(agg)
-    assert t.shape == (2,)
+    assert t.shape == (1,)
 
 
-def test_scale_by_plate(rohban):
-    sm.pp.scale_by_batch(rohban, batch_key="Image_Metadata_Plate")
-    X = pd.concat([rohban.obs["Image_Metadata_Plate"], rohban[:, 0].to_df()], axis=1)
-    assert all(X.groupby("Image_Metadata_Plate").mean() < 1e7)
+def test_scale_by_plate(adata):
+    sm.pp.scale_by_batch(adata, batch_key="Image_Metadata_Plate")
+    X = pd.concat([adata.obs["Image_Metadata_Plate"], adata[:, 0].to_df()], axis=1)
+    assert all(X.groupby("Image_Metadata_Plate").mean() < 1e-7)

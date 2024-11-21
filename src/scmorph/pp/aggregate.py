@@ -346,6 +346,8 @@ def aggregate_ttest(
     import scipy
     from statsmodels.stats.multitest import fdrcorrection
 
+    logger = get_logger()
+
     adata_control, adata_drugs, group_keys = _split_adata_control_drugs(adata, treatment_key, control, group_key)
 
     tstats = {}
@@ -362,6 +364,17 @@ def aggregate_ttest(
         tstats[group] = tstat
 
     pvalsdf = pd.DataFrame(pvals, index=adata.var.index).T
+
+    # When feature is similar between treatment and control
+    # the p-value is nan. When doing FDR, this forces all pvals
+    # to nan. We replace these with 1.
+    if np.isnan(pvalsdf.values).any():
+        logger.warning(
+            "Some p-values are NaN. This is likely due to constant features between control and treatment."
+            + " These will be replaced with 1."
+        )
+        pvalsdf.fillna(1, inplace=True)
+
     qvalsdf = pd.DataFrame(
         fdrcorrection(np.ravel(pvalsdf))[1].reshape(pvalsdf.shape),
         columns=pvalsdf.columns,
@@ -373,7 +386,7 @@ def aggregate_ttest(
     # verify that all rows and columns are in correct order
     qvalsdf = qvalsdf.reindex_like(tstatsdf, copy=False)
 
-    return tstatsdf.T, qvalsdf.T  # transpose to match new implementation
+    return tstatsdf.T, qvalsdf.T
 
 
 def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
