@@ -100,7 +100,7 @@ def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> Non
     -------
     Initial idea taken from https://github.com/scverse/scanpy/issues/2142#issuecomment-1041591406
     """
-    for _, idx in adata.obs.groupby(batch_key).indices.items():
+    for _, idx in adata.obs.groupby(batch_key, observed=True).indices.items():
         scale(adata[idx, :], chunked=chunked)
 
 

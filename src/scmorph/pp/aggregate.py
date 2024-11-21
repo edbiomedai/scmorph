@@ -357,7 +357,7 @@ def aggregate_ttest(
         tstat, pval = scipy.stats.ttest_ind(control, drug, axis=0, equal_var=False)
         return tstat, pval
 
-    for group, idx in adata_drugs.obs.groupby(group_keys).groups.items():
+    for group, idx in adata_drugs.obs.groupby(group_keys, observed=True).groups.items():
         cur_drug = adata_drugs[idx, :]
         tstat, pval = _get_stats(adata_control.X, cur_drug.X)
         pvals[group] = pval

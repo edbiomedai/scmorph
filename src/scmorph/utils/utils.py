@@ -54,7 +54,7 @@ def _grouped_obs_fun(
     def getX(adata: AnnData, layer: None | str) -> np.ndarray:
         return adata.X if layer is None else adata.layers[layer]
 
-    grouped = adata.obs.groupby(group_key)
+    grouped = adata.obs.groupby(group_key, observed=True)
     out = pd.DataFrame(
         np.zeros((adata.shape[1], len(grouped)), dtype=np.float64),
         columns=list(grouped.groups.keys()),
@@ -165,7 +165,7 @@ def group_obs_fun_inplace(
     """
     from tqdm import tqdm
 
-    grouped = adata.obs.groupby(group_key)
+    grouped = adata.obs.groupby(group_key, observed=True)
 
     takes_group = len(signature(fun).parameters) > 1
 
