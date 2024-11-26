@@ -10,9 +10,7 @@ license = { file = "LICENSE" }
 maintainers = [
   { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.ccom" },
 ]
-authors = [
-  { name = "Jesko Wagner" },
-]
+authors = [ { name = "Jesko Wagner" } ]
 requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -41,11 +39,8 @@ dependencies = [
   "tqdm",
 ]
 
-optional-dependencies.dev = [
-  "pre-commit",
-  "setuptools-scm",
-  "twine>=4.0.2",
-]
+optional-dependencies.dev = [ "pre-commit", "setuptools-scm", "twine>=4.0.2" ]
+
 optional-dependencies.doc = [
   "docutils>=0.8,!=0.18.*,!=0.19.*",
   "ipykernel",
@@ -53,8 +48,6 @@ optional-dependencies.doc = [
   "myst-nb>=1.1",
   "pandas",
   "scmorph",
-  # Until pybtex >0.23.0 releases: https://bitbucket.org/pybtex-devs/pybtex/issues/169/
-  "setuptools",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
   "sphinx-book-theme>=1",
@@ -63,11 +56,7 @@ optional-dependencies.doc = [
   "sphinxcontrib-bibtex>=1",
   "sphinxext-opengraph",
 ]
-optional-dependencies.test = [
-  "coverage",
-  "pytest",
-  "scmorph",
-]
+optional-dependencies.test = [ "coverage", "pytest", "scmorph" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/jeskowagner/scmorph"
@@ -89,7 +78,8 @@ scripts.build = "sphinx-build -M html docs docs/_build {args}"
 scripts.open = "python -m webbrowser -t docs/_build/html/index.html"
 scripts.clean = "git clean -fdX -- {args:docs}"
 
-[tool.hatch.envs.hatch-test]
+[[tool.hatch.envs.hatch-test.matrix]]
+python = [ "3.10", "3.11", "3.12" ]
 features = [ "test" ]
 
 [tool.ruff]
@@ -141,9 +131,7 @@ addopts = [
 
 [tool.coverage.run]
 source = [ "scmorph" ]
-omit = [
-  "**/test_*.py",
-]
+omit = [ "**/test_*.py" ]
 
 [tool.cruft]
 skip = [
