@@ -123,7 +123,7 @@ html_css_files = ["css/custom.css"]
 html_title = project_name
 
 html_show_sphinx = False
-html_logo = "_static/img/scmorph_logo.png"
+html_logo = "_static/img/scmorph_logo_embeddedFont.svg"
 
 html_theme_options = {
     "navigation_depth": 4,
