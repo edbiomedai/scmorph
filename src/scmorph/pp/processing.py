@@ -44,19 +44,16 @@ pca.__doc__ = "| Copied from scanpy [Wolf18]_ with added whitening.\n" + str(sc.
 
 def scale(adata: AnnData, chunked: bool = False) -> None:
     """
-    Scale data to unit variance per feature while maintaining a low memory footprint
+    Scale data to unit variance per feature while maintaining a low memory footprint (operates in-place).
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
-            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with data.
+    adata : :class:`~anndata.AnnData`
+            Annotated data matrix.
 
-    chunked: bool
+    chunked : bool
             Whether to save memory by processing in chunks. This is slower but less memory intensive.
 
-    Returns
-    -------
-    adata : :class:`~anndata.AnnData`
     """
     if not chunked:
         from sklearn.preprocessing import StandardScaler
@@ -79,22 +76,18 @@ def scale(adata: AnnData, chunked: bool = False) -> None:
 
 def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> None:
     """
-    Scale data to unit variance per batch
+    Scale data to zero-center and unit variance per batch in-place.
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
-            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with data.
+    adata : :class:`~anndata.AnnData`
+            Annotated data matrix.
 
     batch_key : str
             Name of the column in the AnnData object that contains the batch information.
 
     chunked : bool
             Whether to save memory by processing in chunks. This is slower but less memory intensive.
-
-    Returns
-    -------
-    adata : :class:`~anndata.AnnData`
 
     Note
     -------
@@ -109,15 +102,15 @@ def drop_na(
     feature_threshold: float = 0.9,
     cell_threshold: float = 0,
     inplace: bool = True,
-) -> AnnData:
+) -> None | AnnData:
     """
     Drop features with many NAs, then drop cells with any NAs (or infinite values)
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         The (annotated) data matrix of shape `n_obs` × `n_vars`.
-            Rows correspond to cells and columns to genes.
+        Rows correspond to cells and columns to genes.
 
     feature_threshold : float
         Features whose fraction of cells with NA is higher than this will be discarded.
@@ -130,7 +123,7 @@ def drop_na(
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    Depending on `inplace`, returns or updates `adata` with the filtered data.
     """
     isna = np.bitwise_or(np.isinf(adata.X), np.isnan(adata.X))
 

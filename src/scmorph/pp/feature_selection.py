@@ -12,7 +12,7 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             The (annotated) data matrix of shape `n_obs` × `n_vars`.
             Rows correspond to cells and columns to genes.
 
@@ -78,7 +78,7 @@ def select_features(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             The (annotated) data matrix of shape ``n_obs`` × ``n_vars``.
             Rows correspond to cells and columns to genes.
 

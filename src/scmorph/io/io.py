@@ -6,8 +6,8 @@ Key components:
 - make_AnnData : lower-level wrapper to create AnnData objects from pd.DataFrames stored in memory
 
 Note that some of these functions consume a lot of memory when reading in large .csv files.
-For the creation of file-backed AnnData files it is thus advisable to use environments
-with a lot of available Rsm. Alternatively, :func:`scmorph.read_cellprofiler_from_path` automatically
+For the creation of file-backed AnnData files it is thus advisable to use machines
+with a lot of available RAM. Alternatively, :func:`scmorph.read_cellprofiler_from_path` automatically
 discovers csv files and iteratively creates an AnnData object from the files. This is
 memory-friendly but relies on you having one file per well.
 """
@@ -132,11 +132,11 @@ def _parse_csv(
 
 def split_feature_names(features: pd.Series | list["str"], feature_delim: str = "_") -> pd.DataFrame:
     """
-    Split feature names into pd.DataFrame
+    Split feature names into a :class:`~pandas.DataFrame`
 
     Parameters
     ----------
-    features : pd.Series or list
+    features : :class:`~pandas.Series` or list
             Feature names
 
     feature_delim : str
@@ -144,7 +144,7 @@ def split_feature_names(features: pd.Series | list["str"], feature_delim: str = 
 
     Returns
     -------
-    pd.DataFrame of feature names split into columns
+    Feature names split into columns of a DataFrame
     """
     features = pd.Series(features)
 
@@ -188,7 +188,7 @@ def make_AnnData(
     feature_delim: str = "_",
 ) -> AnnData:
     """
-    Make annotated data matrix from pd.DataFrame
+    Make annotated data matrix from :class:`~pandas.DataFrame`
 
     Parameters
     ----------
@@ -270,6 +270,12 @@ def read_cellprofiler_csv(
     """
     Read a matrix from a .csv file created with CellProfiler
 
+    Note
+    -----
+    Depending on the CellProfiler version, you may have one or two header rows.
+    Before using this function, do check the csv file to see if feature names
+    are contained only in the first row or split over two and set `n_headers` accordingly.
+
     Parameters
     ----------
     filename : str
@@ -292,13 +298,13 @@ def read_cellprofiler_csv(
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    The read in AnnData object
 
     Note
     ----------
     Depending on the size of the input matrix, this function can take a lot of memory.
     If needed, try exporting CellProfiler in batches of smaller csv files and read them in using
-    :func:`scmorph.read_cellprofiler_batches`.
+    :func:`.io.read_cellprofiler_batches`.
     """
     # TODO: think about having temporary file-backing to lower memory usage
     df = _parse_csv(filename, n_headers, sep=sep, backup_url=backup_url)
@@ -475,7 +481,7 @@ def _read_csv_columns(
 
     Returns
     -------
-    Pyarrow table
+    Table with the requested columns
     """
     from pyarrow import csv
 
@@ -530,7 +536,7 @@ def read_meta(
 
     Returns
     -------
-    meta : :class:`~pandas.DataFrame`
+    The read in metadata table.
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
@@ -558,7 +564,7 @@ def read_X(
 
     Returns
     -------
-    X : :class:`~numpy.array`
+    The read in feature matrix.
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
@@ -637,7 +643,8 @@ def read(filename: str, **kwargs: Any) -> AnnData:
     """
     Read csv, h5ad or sql files.
 
-    This function wraps read_cellprofiler, read_h5ad, and read_sql and uses to appropriate one depending on file ending.
+    This function wraps :func:`~.read_cellprofiler_csv`, :func:`~.read_sql`
+    and :func:`~scanpy.read_h5ad` and uses to appropriate one depending on file ending.
     For details, see the respective functions.
 
     Parameters
@@ -646,11 +653,11 @@ def read(filename: str, **kwargs: Any) -> AnnData:
             Path to .csv or h5ad file
 
     kwargs : Any
-            Other parameters passed to :func:`scmorph.read_cellprofiler` or :func:`scmorph.read_h5ad`
+            Other parameters passed to the corresponding functions.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    The read in AnnData object, possibly after conversion.
     """
     _, fileending = os.path.splitext(filename)
     if fileending == ".csv":

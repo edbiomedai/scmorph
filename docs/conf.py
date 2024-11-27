@@ -6,9 +6,9 @@
 
 # -- Path setup --------------------------------------------------------------
 import sys
+from pathlib import Path
 from datetime import datetime
 from importlib.metadata import metadata
-from pathlib import Path
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE / "extensions"))
@@ -30,6 +30,8 @@ repository_url = urls["Source"]
 release = info["Version"]
 
 bibtex_bibfiles = ["references.bib"]
+bibtex_reference_style = "author_year"
+
 templates_path = ["_templates"]
 nitpicky = True  # Warn about broken links
 needs_sphinx = "4.0"
@@ -40,6 +42,7 @@ html_context = {
     "github_repo": project_name,
     "github_version": "main",
     "conf_py_path": "/docs/",
+    "accent_color": "#B6C6E6",
 }
 
 # -- General configuration ---------------------------------------------------
@@ -53,12 +56,14 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
+    "sphinx.ext.mathjax",
     "sphinxcontrib.bibtex",
     "sphinx_autodoc_typehints",
     "sphinx_tabs.tabs",
     "sphinx.ext.mathjax",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinxext.opengraph",
+    "matplotlib.sphinxext.plot_directive",
     *[p.stem for p in (HERE / "extensions").glob("*.py")],
 ]
 
@@ -68,6 +73,7 @@ default_role = "literal"
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = False
+napoleon_custom_sections = [("Params", "Parameters")]
 napoleon_use_rtype = True  # having a separate entry generally helps readability
 napoleon_use_param = True
 myst_heading_anchors = 6  # create anchors for h1-h6
@@ -92,11 +98,12 @@ source_suffix = {
 }
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-    "anndata": ("https://anndata.readthedocs.io/en/stable/", None),
-    "scanpy": ("https://scanpy.readthedocs.io/en/stable/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
+    "anndata": ("https://anndata.readthedocs.io/en/latest/", None),
+    "scanpy": ("https://scanpy.readthedocs.io/en/latest/", None),
+    "pyod": ("https://pyod.readthedocs.io/en/latest/", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
 }
+
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -119,6 +126,7 @@ html_show_sphinx = False
 html_logo = "_static/img/scmorph_logo.png"
 
 html_theme_options = {
+    "navigation_depth": 4,
     "repository_url": repository_url,
     "use_repository_button": True,
     "path_to_docs": "docs/",
@@ -127,8 +135,11 @@ html_theme_options = {
 
 pygments_style = "default"
 
-nitpick_ignore = [
-    # If building the documentation fails because of a missing link that is outside your control,
-    # you can add an exception to this list.
-    #     ("py:class", "igraph.Graph"),
-]
+nitpick_ignore = [[("py:class", "matplotlib.*")]]
+
+# Options for plot output
+plot_include_source = True
+plot_formats = [("png", 150)]
+plot_html_show_formats = False
+plot_html_show_source_link = False
+plot_working_directory = HERE.parent  # Project root

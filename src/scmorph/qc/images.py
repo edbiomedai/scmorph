@@ -76,7 +76,7 @@ def _prob_to_pred(pred: np.ndarray, decision_boundary: float = 0.5) -> np.ndarra
 
     Returns
     -------
-    adata : :class:`~numpy.ndarray`
+    adata : :class:`~np.ndarray`
         Array of binary labels
     """
     # Check if predictions are strings, in which case just return them
@@ -151,14 +151,14 @@ def qc_images(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
-            Object as returned by :func:`scmorph.read_cellprofiler`. Represents AnnData object populated with single-cell data.
+    adata : :class:`~anndata.AnnData`
+            AnnData object with single-cell data.
 
-    qc :class:`~anndata.AnnData`
-            Object as returned by :func:`scmorph.read_image_qc`. Represents AnnData object populated with image-QC data.
+    qc : :class:`~anndata.AnnData`
+            AnnData object with image-level data.
 
-    classifier : Classifier
-            Classifier to use for prediction. If None, will use the LASSO classifier.
+    classifier : _Classifier
+            Classifier to use for prediction. If `None`, will use the LASSO classifier.
 
     passing_label : int
             Label to use for passing images. Default: 1

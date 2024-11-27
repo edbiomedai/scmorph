@@ -23,42 +23,42 @@ def cumulative_density(
     color: str | None = None,
     n_col: int = 3,
     xlim: tuple[float, float] | None = None,
-    xlabel: str | None = "value",
+    xlabel: str | None = None,
     **kwargs: Any,
-) -> plt.figure:
+) -> plt.Figure:
     """
     Plot cumulative densities of variables in AnnData
 
     Parameters
     ----------
     adata :class:`~anndata.AnnData`
-            AnnData object
+        AnnData object
 
     x : Union[int, str, List[int], List[str]]
-            Name or index of variable(s) to plot
+        Name or index of variable(s) to plot
 
     layer : str
-            Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
-            (default: "X")
+        Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
+        (default: "X")
 
     color : str
-             Variable in "obs" to color by (default: None)
+        Variable in "obs" to color by (default: None)
 
     n_col : int
-            Number of columns to facet by (default: 3)
+        Number of columns to facet by (default: 3)
 
     xlim : Tuple[float, float]
-            Limits of x-axis (default: None)
+        Limits of x-axis (default: None)
 
     xlabel : str
-            Label for x-axis (default: "value")
+        Label for x-axis (default: None)
 
     kwargs : Any
-            Other arguments passed to seaborn.FacetGrid
+        Other arguments passed to seaborn.FacetGrid
 
     Returns
     -------
-    plt.figure
+    plt.Figure
         Plots of cumulative densities of variables in AnnData
     """
     import numpy as np
@@ -110,37 +110,38 @@ def cumulative_density(
 
     sns.move_legend(fg, "center right", bbox_to_anchor=(1, 0.5))
     fg.set(ylim=(0, 1))
-    fg.set(xlabel=xlabel)
+    if xlabel:
+        fg.set(xlabel=xlabel)
     if xlim:
         fg.set(xlim=xlim)
     return fg
 
 
 # Plot individual features
-def ridge_plot(df: pd.DataFrame, x: str, y: str, n_col: int = 1, **kwargs: Any) -> plt.figure:
+def ridge_plot(df: pd.DataFrame, x: str, y: str, n_col: int = 1, **kwargs: Any) -> plt.Figure:
     """
     Plot features as ridge plot
 
     Parameters
     ----------
-    df : pd.DataFrame
-            Long DataFrame containing features and categories to include in ridge plot
+    df : :class:`pandas.DataFrame`
+        Long DataFrame containing features and categories to include in ridge plot
 
     x : str
-            Name of column containing feature values
+        Name of column containing feature values
 
     y : str
-            Name of column containing category values
+        Name of column containing category values
 
     n_col : int
-            How many columns to plot over (default: 1)
+        How many columns to plot over (default: 1)
 
     kwargs : Any
-            Other arguments passed to seaborn.FacetGrid
+        Other arguments passed to seaborn.FacetGrid
 
     Returns
     -------
-    plt.figure
+    :class:`matplotlib.pyplot.Figure`
         Plots of cumulative densities of variables in AnnData
     """
     import warnings

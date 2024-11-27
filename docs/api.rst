@@ -12,12 +12,17 @@ Import ``scmorph`` as:
 
 Reading and writing data: ``io``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: scmorph.io
 
-``scmorph`` processes ``csv`` files created with CellProfiler's ``ExportToSpreadsheet`` module into a file format called ``h5ad``.
-This has the advantage of being a fast, standard format that can be used with many existing single-cell tools, such as :doc:`scanpy <scanpy:index>`.
+
+``scmorph`` can read data from a variety of sources, including data exported by CellProfiler.
+Once loaded in, all data is treated as an :doc:`AnnData <anndata:index>` object.
+This has the advantage of being a fast, standard format that can be used with many
+existing single-cell tools, such as :doc:`scanpy <scanpy:index>`.
 
 .. note::
-   If you would like to learn more about the ``h5ad`` file format, please see :doc:`anndata <anndata:index>`, which is used to read and write these files.
+   If you would like to learn more about the ``h5ad`` file format, please see
+   :doc:`anndata <anndata:index>`, which is used to read and write these files.
 
 .. note::
     scmorph only processes continuous, non-radial features, i.e. features like number of nearest neighbors (discrete),
@@ -27,15 +32,16 @@ This has the advantage of being a fast, standard format that can be used with ma
 .. autosummary::
     :toctree: generated/
 
-    io.read
-    io.read_cellprofiler_csv
-    io.read_cellprofiler_batches
-    io.read_sql
-    io.make_AnnData
-    io.split_feature_names
+    read
+    read_cellprofiler_csv
+    read_cellprofiler_batches
+    read_sql
+    make_AnnData
+    split_feature_names
 
 Preprocessing: ``pp``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: scmorph.pp
 
 Preprocessing tools that do not produce output, but modify the data to prepare it for downstream analysis.
 
@@ -45,9 +51,9 @@ Basic Preprocessing
 .. autosummary::
     :toctree: generated/
 
-    pp.drop_na
-    pp.scale
-    pp.scale_by_batch
+    drop_na
+    scale
+    scale_by_batch
 
 Batch Effects
 -------------------
@@ -57,7 +63,7 @@ Tools to remove batch effects from single-cell morphological data.
 .. autosummary::
     :toctree: generated/
 
-    pp.remove_batch_effects
+    remove_batch_effects
 
 Feature Selection
 -------------------
@@ -67,25 +73,25 @@ Tools to reduce number of features based on correlations.
 .. autosummary::
     :toctree: generated/
 
-    pp.select_features
-    pp.corr
+    select_features
+    corr
 
 Aggregation
 -------------------
 
 Tools to compare aggregate profiles.
 Additionally, different distance metrics are available.
-For a simple aggregation, use ``pp.aggregate``. For a statistically robust distance
-metric, use ``pp.aggregate_mahalanobis``.
+For a simple aggregation, use ``aggregate``. For a statistically robust distance
+metric, use ``aggregate_mahalanobis``.
 
 .. autosummary::
     :toctree: generated/
 
-    pp.aggregate
-    pp.aggregate_ttest
-    pp.tstat_distance
-    pp.aggregate_pc
-    pp.aggregate_mahalanobis
+    aggregate
+    aggregate_ttest
+    tstat_distance
+    aggregate_pc
+    aggregate_mahalanobis
 
 Dimensionality-reduction
 ----------------------------
@@ -95,17 +101,18 @@ Tools to perform dimensionality-reduction.
 .. autosummary::
     :toctree: generated/
 
-    pp.pca
-    pp.neighbors
-    pp.umap
+    pca
+    neighbors
+    umap
 
 Quality Control: ``qc``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: scmorph.qc
 
 Tools to filter cells and images based on quality control metrics and morphological profiles.
-For cells, unsupervised filtering is done using :doc:`pyod <pyod:index>` through ``qc.filter_outliers``.
+For cells, unsupervised filtering is done using :doc:`pyod <pyod:index>` through ``filter_outliers``.
 For images, semi-supervised filtering is done using machine-learning methods trained on
-image-level data and a subset of labels with ``qc.qc_images``.
+image-level data and a subset of labels with ``qc_images``.
 
 While the former can be performed on any dataset, it is likely not as accurate and
 may remove underrepresented cell types.
@@ -113,12 +120,13 @@ may remove underrepresented cell types.
 .. autosummary::
     :toctree: generated/
 
-    qc.filter_outliers
-    qc.read_image_qc
-    qc.qc_images
+    filter_outliers
+    read_image_qc
+    qc_images
 
 Visualization: ``pl``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: scmorph.pl
 
 Tools to plot data, often from dimensionality-reduction techniques.
 Most of these functions are wrappers around :doc:`scanpy <scanpy:index>` functions.
@@ -126,7 +134,7 @@ Most of these functions are wrappers around :doc:`scanpy <scanpy:index>` functio
 .. autosummary::
     :toctree: generated/
 
-    pl.pca
-    pl.umap
-    pl.cumulative_density
-    pl.ridge_plot
+    pca
+    umap
+    cumulative_density
+    ridge_plot

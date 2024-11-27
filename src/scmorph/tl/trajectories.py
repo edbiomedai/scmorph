@@ -117,7 +117,7 @@ def test_common_trajectory(adata: AnnData, conditions: pd.Series | np.ndarray, p
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions
@@ -156,7 +156,7 @@ def test_differential_progression(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions
@@ -193,7 +193,7 @@ def test_differential_differentiation(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         AnnData object
     conditions : Union[pd.Series, np.array]
         Column name in `obs` defining conditions

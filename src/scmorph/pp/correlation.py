@@ -26,7 +26,7 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
 
     Parameters
     ----------
-    X, Y: 1D or 2D array_like, Y is optional
+    X, Y: np.ndarray
             One or two 1-D or 2-D arrays containing multiple variables and observations.
             When these are 1-D, each represents a vector of observations of a single variable.
             In the 2-D case, each row is assumed to contain an observation.
@@ -92,7 +92,7 @@ def corr(X: np.ndarray, Y: np.ndarray | None = None, method: str = "pearson", M:
 
     Parameters
     ----------
-    X, Y : 1D or 2D array_like, Y is optional
+    X, Y : np.ndarray
             One or two 1-D or 2-D arrays containing multiple variables and observations.
             When these are 1-D, each represents a vector of observations of a single variable.
             In the 2-D case, each row is assumed to contain an observation.

@@ -27,7 +27,7 @@ def compute_batch_effects(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
     bio_key : str
@@ -119,8 +119,8 @@ def remove_batch_effects(
     adata: AnnData,
     bio_key: str | None = None,
     batch_key: str = "infer",
-    log: bool | None = False,
-    copy: bool | None = False,
+    log: bool = False,
+    copy: bool = False,
     treatment_key: str | None = None,
     control: str = "DMSO",
 ) -> None | AnnData:
@@ -132,14 +132,14 @@ def remove_batch_effects(
     removes technical effects. If no biological differences are expected (e.g. because data
     is all from the same cell line), set `bio_key` to None.
 
-    For details on scone, see [Cole19]_.
+    For details on scone, see :cite:t:`ColeEtAl2019`.
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
-    bio_key : _type_
+    bio_key : str | None
             Name of column used to delineate biological entities, e.g. cell lines. Default: None
 
     batch_key : str
@@ -147,7 +147,7 @@ def remove_batch_effects(
             no argument is given. Default: "infer"
 
     log : bool
-            Whether to compute log-transformed batch effects. Caution: this will throw out any feature with values smaller
+            Whether to compute log-transformed batch effects. Caution: this will drop any feature with values smaller
             than -0.99, because it would result in non-finite values. Default: False
 
     copy : bool
@@ -163,8 +163,7 @@ def remove_batch_effects(
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
-            Annotated data matrix with batch effects removed. If `copy` is False, will modify in-place and not return anything.
+    Annotated data matrix with batch effects removed. If `copy` is False, will modify in-place and not return anything.
     """
     if copy:
         adata = adata.copy()

@@ -7,7 +7,7 @@ def calculate_qc_metrics(adata: AnnData) -> AnnData:
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
     Returns

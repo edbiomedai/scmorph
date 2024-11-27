@@ -104,7 +104,7 @@ def aggregate(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         Annotated data matrix
     well_key : str
         Name of column in metadata used to define wells. Default: "infer"
@@ -122,7 +122,7 @@ def aggregate(
     one group had a median absolute deviation of 0 for a feature. This means that this
     feature is constant in that group. However, this will produce missing values.
     Before proceeding, you should therefore use
-    :func:`scmorph.pp.drop_na(adata, feature_threshold=1, cell_threshold=0)`
+    :func:`~.pp.drop_na(adata, feature_threshold=1, cell_threshold=0)`
     to remove features with missing values.
 
     Returns
@@ -156,7 +156,7 @@ def aggregate_mahalanobis(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str
@@ -266,7 +266,7 @@ def aggregate_pc(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str
@@ -323,7 +323,7 @@ def aggregate_ttest(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
             Annotated data matrix
 
     treatment_key : str

@@ -147,7 +147,7 @@ def group_obs_fun_inplace(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         Annotated data matrix object
 
     group_key : Union[str, List[str]]
@@ -223,7 +223,7 @@ def get_grouped_op(
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata : :class:`~anndata.AnnData`
         AnnData object
     group_key : List[str]
         Column name in `obs` metadata to group by
