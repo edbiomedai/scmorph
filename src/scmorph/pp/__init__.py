@@ -1,5 +1,5 @@
 from .correlation import corr
-from .processing import drop_na, neighbors, pca, scale, scale_by_batch, umap
+from .processing import drop_na, leiden, neighbors, pca, scale, scale_by_batch, umap
 
 # split the isort section to avoid circular imports
 # isort: split

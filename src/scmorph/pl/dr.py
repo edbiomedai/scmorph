@@ -1,60 +1,106 @@
-import functools
+import warnings
 from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import scanpy as sc
+import seaborn as sns
 from anndata import AnnData
+from matplotlib.axes import Axes
+from seaborn.axisgrid import FacetGrid
 
 __all__ = ["pca", "umap", "cumulative_density", "ridge_plot"]
 
-pca = functools.partial(sc.pl.pca, annotate_var_explained=True)
-pca.__doc__ = "| Copied from :ref:`scanpy.pl.pca`, but with annotate_var_explained=True by default.\n" + str(
-    sc.pl.pca.__doc__
-)
-umap = sc.pl.umap
-umap.__doc__ = "| Copied from :ref:`scanpy.pl.umap`.\n" + str(umap.__doc__)
+
+def pca(adata: AnnData, annotate_var_explained: bool = True, **kwargs) -> Axes | list[Axes] | None:
+    """
+    Principal component analysis :cite:p:`Pedregosa2011`.
+
+    This function wraps the higher-level function :func:`~scanpy.pl.pca` (:cite:p:`Wolf18`).
+
+    Parameters
+    ----------
+    adata
+        AnnData object
+
+    annotate_var_explained
+        Annotate the variance explained by each component in the plot axis labels.
+
+    kwargs
+        Additional arguments passed to :func:`~scanpy.pl.pca`.
+    """
+    return sc.pl.pca(
+        adata,
+        annotate_var_explained=annotate_var_explained,
+        **kwargs,
+    )
+
+
+def umap(adata: AnnData, **kwargs: Any) -> Axes | list[Axes] | None:
+    """
+    Uniform Manifold Approximation and Projection :cite:p:`McInnes2018`.
+
+    This function wraps the higher-level function :func:`~scanpy.pl.pca` (:cite:p:`Wolf18`).
+
+    Parameters
+    ----------
+    adata
+        AnnData object
+
+    kwargs
+        Additional arguments passed to :func:`~scanpy.pl.umap`.
+
+    Returns
+    -------
+    Axes | list[Axes] | None
+        UMAP plot
+    """
+    return sc.pl.umap(adata, **kwargs)
 
 
 def cumulative_density(
     adata: AnnData,
-    x: int | str | list[int] | list[str],
+    x: int | str | list[int | str],
     layer: str = "X",
     color: str | None = None,
     n_col: int = 3,
     xlim: tuple[float, float] | None = None,
     xlabel: str | None = None,
+    show: bool = True,
     **kwargs: Any,
-) -> plt.Figure:
+) -> FacetGrid:
     """
     Plot cumulative densities of variables in AnnData
 
     Parameters
     ----------
-    adata :class:`~anndata.AnnData`
+    adata
         AnnData object
 
-    x : Union[int, str, List[int], List[str]]
+    x
         Name or index of variable(s) to plot
 
-    layer : str
+    layer
         Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
         (default: "X")
 
-    color : str
+    color
         Variable in "obs" to color by (default: None)
 
-    n_col : int
+    n_col
         Number of columns to facet by (default: 3)
 
-    xlim : Tuple[float, float]
+    xlim
         Limits of x-axis (default: None)
 
-    xlabel : str
+    xlabel
         Label for x-axis (default: None)
 
-    kwargs : Any
-        Other arguments passed to seaborn.FacetGrid
+    show
+        Show the plot (default: True)
+
+    kwargs
+        Other arguments passed to :func:`~seaborn.FacetGrid`
 
     Returns
     -------
@@ -65,16 +111,16 @@ def cumulative_density(
     import seaborn as sns
 
     if not isinstance(x, list):
-        x = [x]  # type: ignore[assignment]
-    n_col = min(n_col, len(x))  # type: ignore[arg-type]
+        x = [x]
+    n_col = min(n_col, len(x))
     if layer == "X":
-        x_vals = adata[:, x].to_df()
+        x_vals = adata[:, x].to_df()  # type: ignore[index]
     else:
         adlayer = f"X_{layer}"
-        if isinstance(x[0], int):  # type: ignore[index]
-            x_vals = adata.obsm[adlayer][:, x]
+        if isinstance(x[0], int):
+            x_vals = adata.obsm[adlayer][:, x]  # type: ignore[index]
         else:
-            x_vals = adata.obsm[adlayer].loc[:, x]
+            x_vals = adata.obsm[adlayer].loc[:, x]  # type: ignore[index]
 
     if layer == "X":
         col_name = "var"
@@ -94,7 +140,7 @@ def cumulative_density(
 
     df = pd.melt(
         df,
-        id_vars=color,
+        id_vars=[color] if color else None,
         var_name=col_name,
         value_name="value",
     )
@@ -108,49 +154,61 @@ def cumulative_density(
 
     fg = sns.displot(df, x="value", kind="ecdf", col=col_name, hue=color, col_wrap=n_col, **kwargs)
 
-    sns.move_legend(fg, "center right", bbox_to_anchor=(1, 0.5))
+    if color is not None:
+        sns.move_legend(fg, "center right", bbox_to_anchor=(1, 0.5))
+
     fg.set(ylim=(0, 1))
     if xlabel:
         fg.set(xlabel=xlabel)
     if xlim:
         fg.set(xlim=xlim)
+
+    if show:
+        plt.show()
+
     return fg
 
 
-# Plot individual features
-def ridge_plot(df: pd.DataFrame, x: str, y: str, n_col: int = 1, **kwargs: Any) -> plt.Figure:
+def ridge_plot(adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1, **kwargs: Any) -> FacetGrid:
     """
-    Plot features as ridge plot
+    Plot features as ridge plot.
+
+    Helps to distinguish the distribution of a feature across different categories, such as plates.
 
     Parameters
     ----------
-    df : :class:`pandas.DataFrame`
-        Long DataFrame containing features and categories to include in ridge plot
+    adata : AnnData
+        Annotated data matrix.
 
     x : str
-        Name of column containing feature values
+        Name of column containing feature values.
 
     y : str
-        Name of column containing category values
+        Name of column containing category values.
+
+    layer : str, optional (default: "X")
+        Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
 
     n_col : int
-        How many columns to plot over (default: 1)
+        How many columns to plot over (default: 1).
 
     kwargs : Any
-        Other arguments passed to seaborn.FacetGrid
+        Other arguments passed to seaborn.FacetGrid.
 
     Returns
     -------
-    :class:`matplotlib.pyplot.Figure`
-        Plots of cumulative densities of variables in AnnData
+    A ridge plot with categories split out and colored by.
     """
-    import warnings
-
-    import seaborn as sns
-
     warnings.filterwarnings(action="ignore", category=UserWarning, module=r".*seaborn")
-    # Adapted from https://seaborn.pydata.org/examples/kde_ridgeplot.html
     sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
+
+    if layer == "X":
+        x_vals = adata[:, x].X.flatten()  # type: ignore[index]
+    else:
+        adlayer = f"X_{layer}"
+        x_vals = adata.obsm[adlayer][:, adata.var_names.get_loc(x)]  # type: ignore[index]
+
+    df = pd.DataFrame({x: x_vals, y: adata.obs[y].values})
 
     # Initialize the FacetGrid object
     g = sns.FacetGrid(df, col=y, hue=y, aspect=10, height=0.5, sharey=False, col_wrap=n_col, **kwargs)
@@ -158,7 +216,7 @@ def ridge_plot(df: pd.DataFrame, x: str, y: str, n_col: int = 1, **kwargs: Any) 
     # Draw the densities in a few steps
     g.map(
         sns.kdeplot,
-        "x",
+        x,
         bw_adjust=0.5,
         clip_on=False,
         fill=True,
@@ -184,7 +242,7 @@ def ridge_plot(df: pd.DataFrame, x: str, y: str, n_col: int = 1, **kwargs: Any) 
             transform=ax.transAxes,
         )
 
-    g.map(label, "x")
+    g.map(label, x)
 
     # Set the subplots to overlap
     g.figure.subplots_adjust(hspace=-0.25)
