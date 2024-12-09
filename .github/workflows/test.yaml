@@ -20,9 +20,9 @@ jobs:
         python: ["3.10", "3.12"]
         os: [ubuntu-latest]
         # one that matches "project-name".lower().replace('-', '_'), one that doesn’t:
-        package-name: [project_name, package_alt]
+        package-name: scmorph
     env:
-      PROJECT_ROOT: project-name
+      PROJECT_ROOT: scmorph
 
     steps:
       # Setup
