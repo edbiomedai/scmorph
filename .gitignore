@@ -25,3 +25,7 @@ __pycache__/
 
 # versioning
 **/_version.py
+
+# coverage
+.coverage*
+coverage.xml
