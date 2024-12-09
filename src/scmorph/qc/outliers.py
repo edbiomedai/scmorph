@@ -23,28 +23,28 @@ def filter_outliers(
 
     Parameters
     ----------
-    adata : AnnData,
+    adata
             Annotated data matrix.
 
-    outliers : float
+    outliers
             Expected fraction of outlier cells.
 
     fraction: float
             During training, subsample to this `fraction` of the number of observations.
 
-    n_obs : int
+    n_obs
             During training, subsample to this number of observations.
             We recommend 10,000 or fewer, as this results in faster training with adequate accuracy.
 
-    detect_only : bool,  optional
+    detect_only
             Whether to only detect outliers but not filter them.
 
-    n_cores : int
+    n_cores
             Number of cores to use for parallelization. -1 for all cores.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
     """
     from pyod.models.ecod import ECOD
 

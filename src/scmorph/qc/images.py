@@ -26,12 +26,12 @@ def _is_label_binary(labels: np.ndarray | pd.Series) -> bool:
 
     Parameters
     ----------
-    labels : ndarray or pd.Series
+    labels
             Vector of labels
 
     Returns
     -------
-    adata : :class:`~bool`
+    adata
             True if labels are binary
     """
     return len(set(labels)) == 2
@@ -43,12 +43,12 @@ def _default_qc_classifiers(binary: bool = True) -> _Classifier:
 
     Parameters
     ----------
-    binary : bool
+    binary
             Is the classification a binary problem?
 
     Returns
     -------
-    classifier : :class:`~Classifier`
+    classifier
         LDA in binary case, MultiTaskLasso in multiclass case.
     """
     if binary:
@@ -68,15 +68,15 @@ def _prob_to_pred(pred: np.ndarray, decision_boundary: float = 0.5) -> np.ndarra
 
     Parameters
     ----------
-    pred : np.array
+    pred
         Array of predicted labels
 
-    decision_boundary : float
+    decision_boundary
         Decision boundary for binary classification
 
     Returns
     -------
-    adata : :class:`~np.ndarray`
+    adata
         Array of binary labels
     """
     # Check if predictions are strings, in which case just return them
@@ -108,24 +108,24 @@ def read_image_qc(
 
     Parameters
     ----------
-    filename : str
+    filename
             Path to .csv file
 
-    meta_cols : list
-            Names of metadata columns. None for automatic detection. Default: None
+    meta_cols
+            Names of metadata columns. `None` for automatic detection.
 
-    label_col : str
+    label_col
             Column name of column containing labels
 
-    sep : str
+    sep
             Column deliminator
 
-    feature_delim : str
+    feature_delim
             Character delimiting feature names
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
     """
     df = pd.read_csv(filename, sep=sep)
     labels = df.pop(label_col)
@@ -151,24 +151,24 @@ def qc_images(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             AnnData object with single-cell data.
 
-    qc : :class:`~anndata.AnnData`
+    qc
             AnnData object with image-level data.
 
-    classifier : _Classifier
+    classifier
             Classifier to use for prediction. If `None`, will use the LASSO classifier.
 
-    passing_label : int
-            Label to use for passing images. Default: 1
+    passing_label
+            Label to use for passing images.
 
-    copy : bool
-            Return a copy instead of writing to `adata`. Default: False
+    copy
+            Return a copy instead of writing to `adata`.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
     """
     if "label" not in qc.obs.columns:
         raise ValueError("QC data must have a label column")

@@ -32,17 +32,17 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
             In the 2-D case, each row is assumed to contain an observation.
             Both arrays need to have the same length.
 
-    M : int
+    M
             Number of right nearest neighbors
 
     Returns
     -------
-    xim : :class:~`float`
+    xim
             Value of XIM
 
     Note
     ----------
-    This code is an implementation of [Lin21]_.
+    This code is an implementation of [:cite:p:`LinHan2021`]_.
     Implementation by Jesko Wagner.
     """
 
@@ -92,21 +92,21 @@ def corr(X: np.ndarray, Y: np.ndarray | None = None, method: str = "pearson", M:
 
     Parameters
     ----------
-    X, Y : np.ndarray
+    X, Y
             One or two 1-D or 2-D arrays containing multiple variables and observations.
             When these are 1-D, each represents a vector of observations of a single variable.
             In the 2-D case, each row is assumed to contain an observation.
             Both arrays need to have the same length.
 
-    method : str
-            One of "pearson", "spearman", or "chatterjee" ([Lin21]_), by default "pearson"
+    method
+            One of "pearson", "spearman", or "chatterjee" ([:cite:p:`LinHan2021`]_)
 
-    M : int
+    M
             Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    corr : :class:~`float`
+    corr
             Correlation coefficient
     """
     if method == "pearson":

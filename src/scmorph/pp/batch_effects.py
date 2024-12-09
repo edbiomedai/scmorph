@@ -27,19 +27,19 @@ def compute_batch_effects(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix
 
-    bio_key : str
-            Name of column used to delineate biological entities, e.g. cell lines. Default: None
+    bio_key
+            Name of column used to delineate biological entities, e.g. cell lines.
 
-    batch_key : str
+    batch_key
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
-            no argument is given. Default: "infer"
+            no argument is given.
 
-    log : bool
+    log
             Whether to compute log1p-transformed batch effects. Caution: this will throw out any feature with values smaller
-            than -0.99, because it would result in non-finite values. Default: False
+            than -0.99, because it would result in non-finite values.
 
     treatment_key: str
             Name of column used to delineate treatments. This is used when computing batch effects across drug-treated plates.
@@ -50,14 +50,14 @@ def compute_batch_effects(
             Name of control treatment. Must be valid value in `treatment_key`.
 
     progress: bool
-            Whether to show a progress bar, by default True
+            Whether to show a progress bar
 
     Returns
     -------
-    betas : :class:`~pandas.DataFrame`
+    betas
         Biological effects, i.e. how much each feature varied because of biological differences
 
-    gammas : :class:`~pandas.DataFrame`
+    gammas
         Technical effects, i.e. batch effects.
     """
     from formulaic import Formula
@@ -136,21 +136,21 @@ def remove_batch_effects(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix
 
-    bio_key : str | None
-            Name of column used to delineate biological entities, e.g. cell lines. Default: None
+    bio_key
+            Name of column used to delineate biological entities, e.g. cell lines.
 
-    batch_key : str
+    batch_key
             Name of column used to delineate batch effects, e.g. plates. Will try to guess if
-            no argument is given. Default: "infer"
+            no argument is given.
 
-    log : bool
+    log
             Whether to compute log-transformed batch effects. Caution: this will drop any feature with values smaller
-            than -0.99, because it would result in non-finite values. Default: False
+            than -0.99, because it would result in non-finite values.
 
-    copy : bool
+    copy
             If False, will perform operation in-place, else return a modified copy of the data.
 
     treatment_key: str

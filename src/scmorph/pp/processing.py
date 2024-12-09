@@ -38,7 +38,7 @@ def neighbors(
     use_rep
         Use the indicated representation. 'X' or any key for .obsm is valid.
         If None, the representation is chosen automatically:
-        For .n_vars < N_PCS (default: 50), .X is used, otherwise `X_pca` is used.
+        For .n_vars < N_PCS, .X is used, otherwise `X_pca` is used.
         If `X_pca` is not present, it`s computed with default parameters or n_pcs if present.
 
     copy
@@ -128,11 +128,7 @@ def pca(
 
     zero_center
         If `True`, compute standard PCA from covariance matrix (strongly recommended).
-        If `False`, omit zero-centering variables
-        (uses *scikit-learn* :class:`~sklearn.decomposition.TruncatedSVD` or
-        *dask-ml* :class:`~dask_ml.decomposition.TruncatedSVD`),
-        which allows to handle sparse input efficiently.
-        Passing `None` decides automatically based on sparseness of the data.
+        If `False`, omit zero-centering variable.
 
     random_state
         Change to use different initial states for the optimization.
@@ -168,59 +164,91 @@ def pca(
     return adata if copy else None
 
 
-def scale(adata: AnnData, chunked: bool = False) -> None:
+def scale(adata: AnnData, treatment_key: str | None = None, control: str | None = None, chunked: bool = False) -> None:
     """
     Scale data to unit variance per feature while maintaining a low memory footprint (operates in-place).
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix.
 
-    chunked : bool
+    batch_key
+            Name of the column in the AnnData object that contains the batch information.
+
+    treatment_key
+            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+            If using, please also see `control`.
+
+    chunked
             Whether to save memory by processing in chunks. This is slower but less memory intensive.
 
     """
     if not chunked:
         from sklearn.preprocessing import StandardScaler
 
-        scaler = StandardScaler(copy=False)
+        scaler = StandardScaler()
         if adata.isbacked:
             for i in range(adata.shape[1]):
-                adata[:, i] = scaler.fit_transform(np.array(adata[:, i].X))
+                if treatment_key and control:
+                    X_ctrl = adata[adata.obs[treatment_key] == control, i].X
+                    scaler.fit(np.array(X_ctrl))
+                else:
+                    scaler.fit(np.array(adata[:, i].X))
+                adata[:, i] = scaler.transform(np.array(adata[:, i].X))
         else:
-            adata.X = scaler.fit_transform(np.array(adata.X))
+            if treatment_key and control:
+                X_ctrl = adata[adata.obs[treatment_key] == control, :].X
+                scaler.fit(np.array(X_ctrl))
+                adata.X = scaler.transform(np.array(adata.X))
+            else:
+                adata.X = scaler.fit_transform(np.array(adata.X))
 
     else:
         # process one feature at a time
         def scale_func(x: np.ndarray) -> None:
-            x -= x.mean()
-            x /= x.std()
+            if treatment_key and control:
+                X_ctrl = x[adata.obs[treatment_key] == control, :]
+                x_mean = X_ctrl.mean()
+                x_std = X_ctrl.std()
+            else:
+                x_mean = x.mean()
+                x_std = x.std()
+
+            x -= x_mean
+            x /= x_std
 
         np.apply_along_axis(scale_func, 0, adata.X)  # type: ignore
 
 
-def scale_by_batch(adata: AnnData, batch_key: str, chunked: bool = False) -> None:
+def scale_by_batch(
+    adata: AnnData, batch_key: str, treatment_key: str | None = None, control: str | None = None, chunked: bool = False
+) -> None:
     """
     Scale data to zero-center and unit variance per batch in-place.
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix.
 
-    batch_key : str
+    batch_key
             Name of the column in the AnnData object that contains the batch information.
 
-    chunked : bool
-            Whether to save memory by processing in chunks. This is slower but less memory intensive.
+    treatment_key
+            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+            If using, please also see `control`.
 
-    Note
-    -------
-    Initial idea taken from https://github.com/scverse/scanpy/issues/2142#issuecomment-1041591406
+    control
+            Name of control treatment. Must be valid value in `treatment_key`.
+
+    chunked
+            Whether to save memory by processing in chunks. This is slower but less memory intensive.
     """
     for _, idx in adata.obs.groupby(batch_key, observed=True).indices.items():
-        scale(adata[idx, :], chunked=chunked)
+        scale(adata[idx, :], treatment_key=treatment_key, control=control, chunked=chunked)
 
 
 def drop_na(
@@ -234,17 +262,17 @@ def drop_na(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         The (annotated) data matrix of shape `n_obs` × `n_vars`.
         Rows correspond to cells and columns to genes.
 
-    feature_threshold : float
+    feature_threshold
         Features whose fraction of cells with NA is higher than this will be discarded.
 
-    cell_threshold : float
+    cell_threshold
         Cells whose fraction of features with NA is higher than this will be discarded.
 
-    inplace : bool
+    inplace
         Whether to drop the features and/or cells inplace.
 
     Returns

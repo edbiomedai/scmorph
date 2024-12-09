@@ -104,17 +104,17 @@ def aggregate(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         Annotated data matrix
-    well_key : str
-        Name of column in metadata used to define wells. Default: "infer"
-    group_keys : Optional[Union[str, List[str]]]
-        Other column names to group by, e.g. plate names, by default None
-    method : str,
+    well_key
+        Name of column in metadata used to define wells.
+    group_keys
+        Other column names to group by, e.g. plate names
+    method
         Which aggregation to perform. Must be one of 'mean', 'median', 'std',
         'var', 'sem', 'mad', and 'mad_scaled' (i.e. median/mad)
-    progress : bool
-        Whether to show a progress bar, by default True
+    progress
+        Whether to show a progress bar
 
     Note
     ---------
@@ -122,12 +122,12 @@ def aggregate(
     one group had a median absolute deviation of 0 for a feature. This means that this
     feature is constant in that group. However, this will produce missing values.
     Before proceeding, you should therefore use
-    :func:`~.pp.drop_na(adata, feature_threshold=1, cell_threshold=0)`
+    :func:`~.pp.drop_na` with `feature_threshold=1` and `cell_threshold=0`
     to remove features with missing values.
 
     Returns
     -------
-    dists : :class:`~anndata.AnnData`
+    dists
             Aggregated annotated data matrix
     """
     if well_key == "infer":
@@ -156,37 +156,37 @@ def aggregate_mahalanobis(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix
 
-    treatment_key : str
+    treatment_key
             Name of column in metadata used to define treatments
 
-    control : str
+    control
             Name of control treatment. Must be valid value in `treatment_key`.
 
-    well_key : str
+    well_key
             Name of column in metadata used to define wells. This is needed
             to define the covariance matrix for Mahalanobis distance.
 
-    per_treatment : bool
+    per_treatment
             Whether to compute PCA and Mahalanobis distance for each treatment separately.
 
-    cov_include_treatment : bool
+    cov_include_treatment
             Whether to compute covariance matrix from control alone (False) or control and treatment together (True).
             If True, covariance matrices are combined through a weighted sum, where weights represent the number of
             replicates for this drug.
 
-    cov_from_single_cell : bool
+    cov_from_single_cell
             Whether to compute covariance matrix from single cells. This computes distances directly on features
             with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignored (both False).
 
-    progress : bool
-            Whether to show a progress bar, by default False
+    progress
+            Whether to show a progress bar
 
     Returns
     -------
-    dists : :class:`~pandas.DataFrame`
+    dists
             Mahalanobis distances between treatments
     """
     import anndata
@@ -266,26 +266,26 @@ def aggregate_pc(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix
 
-    treatment_key : str
+    treatment_key
             Name of column in metadata used to define treatments
 
-    control : str
+    control
             Name of control treatment. Must be valid value in `treatment_key`.
 
-    cum_var_explained : float
+    cum_var_explained
             This allows thresholding how many PCs to use during computation of distances.
             It will select the first n PCs until at least this sum of variance has been explained.
             Must be a value between 0 and 1.
 
-    progress : bool
-            Whether to show a progress bar, by default True
+    progress
+            Whether to show a progress bar
 
     Returns
     -------
-    dists : :class:`~pandas.Series`
+    dists
             Weighted principal component distances to control
     """
     group_keys, treatment_col = _get_group_keys(adata, treatment_key, None)
@@ -323,21 +323,21 @@ def aggregate_ttest(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             Annotated data matrix
 
-    treatment_key : str
+    treatment_key
             Name of column in metadata used to define treatments
 
-    control : str
+    control
             Name of control treatment. Must be valid value in `treatment_key`.
 
-    group_key : str
+    group_key
             Name of column in metadata used to define groups
 
     Returns
     -------
-    dists : :class:`~pandas.DataFrame`
+    dists
             T-statistics between groups
 
     qvals: :class:`~pandas.DataFrame`
@@ -395,12 +395,12 @@ def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
 
     Parameters
     ----------
-    tstats : pd.DataFrame
-        t-statistics computed with :func:`scmorph.pp.aggregate_test`
+    tstats
+        t-statistics computed with :func:`scmorph.pp.aggregate_ttest`
 
     Returns
     -------
-    dists : :class:`~pandas.DataFrame`
+    dists
         Per-group t-statistic distances
     """
     # score[j] = sqrt(t_1^2 + ... + t_i^2)

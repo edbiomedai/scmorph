@@ -12,8 +12,8 @@ def set_logger(stream: TextIO = sys.stdout) -> None:
 
     Parameters
     ----------
-    stream : TextIO, optional
-        Output stream, by default sys.stdout
+    stream
+        Output stream
     """
     root = logging.getLogger(LOG_HANDLE)
     root.setLevel(LOG_LEVEL)

@@ -101,16 +101,16 @@ def quantile_norm(
 
     Parameters
     ----------
-    X : np.ndarray
+    X
         Data to be corrected
-    Z : pd.DataFrame | np.ndarray
+    Z
         Confounder/batch information
-    q : np.ndarray
+    q
         Quantiles to use for normalization
-    window : float, optional
-        Window size during quantile smoothing, by default 0.05
-    axis : int, optional
-        Axis to perform smoothing over, by default 0
+    window
+        Window size during quantile smoothing
+    axis
+        Axis to perform smoothing over
 
     Returns
     -------

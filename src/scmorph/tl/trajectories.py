@@ -17,15 +17,15 @@ def slingshot(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    cluster_labels : str
+    cluster_labels
         Column name in `obs` defining clusters
-    start_clus : Optional[int], optional
+    start_clus
         Start cluster label
-    end_clus : Optional[int], optional
+    end_clus
         End cluster label[s]
-    n_comps : int, optional
+    n_comps
         Number of principal components to use for trajectory inference. Default 10
 
     Returns
@@ -117,12 +117,12 @@ def test_common_trajectory(adata: AnnData, conditions: pd.Series | np.ndarray, p
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    conditions : Union[pd.Series, np.array]
+    conditions
         Column name in `obs` defining conditions
-    parallel : bool, optional
-        Use parallel processing. Default: True
+    parallel
+        Use parallel processing.
 
     Returns
     -------
@@ -156,14 +156,14 @@ def test_differential_progression(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    conditions : Union[pd.Series, np.array]
+    conditions
         Column name in `obs` defining conditions
-    all_pairs : bool, optional
-        Test all pairs of conditions. Default: True
-    lineages : bool, optional
-        Test all lineages independently. Default: True
+    all_pairs
+        Test all pairs of conditions.
+    lineages
+        Test all lineages independently.
 
     Returns
     -------
@@ -193,14 +193,14 @@ def test_differential_differentiation(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    conditions : Union[pd.Series, np.array]
+    conditions
         Column name in `obs` defining conditions
-    all_pairs : bool, optional
-        Test all pairs of conditions. Default: True
-    pairwise : bool, optional
-        Test all pairs independently. Default: True
+    all_pairs
+        Test all pairs of conditions.
+    pairwise
+        Test all pairs independently.
 
     Returns
     -------

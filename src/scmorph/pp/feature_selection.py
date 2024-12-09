@@ -12,19 +12,19 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             The (annotated) data matrix of shape `n_obs` × `n_vars`.
             Rows correspond to cells and columns to genes.
 
-    method : str
-            One of "pearson", "spearman" and "chatterjee" ([Lin21]_), by default "pearson"
+    method
+            One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
 
-    M : int
+    M
             Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
         Feature correlations saved in `.varm` slot
     """
     adata.varm[method] = corr(adata.X, method=method, M=M)
@@ -78,31 +78,31 @@ def select_features(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
             The (annotated) data matrix of shape ``n_obs`` × ``n_vars``.
             Rows correspond to cells and columns to genes.
 
-    method : str
+    method
             Which correlation coefficient to use for filtering.
-            One of "pearson", "spearman" and "chatterjee" ([Lin21]_), by default "pearson"
+            One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
 
-    cor_cutoff : tuple
+    cor_cutoff
             Cutoff beyond which features with a correlation coefficient
             higher than it are removed. Must be between 0 and 1.
 
     fraction: float
             Subsample to this ``fraction`` of the number of observations.
 
-    n_obs : int
+    n_obs
             Subsample to this number of observations.
 
-    copy : bool
-            Whether to return a copy or modify ``adata`` inplace, by default False
+    copy
+            Whether to return a copy or modify ``adata`` inplace
             (i.e. operate inplace)
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
         Feature correlations saved in ``.varm`` slot
         and feature selection saved in ``.var`` slot.
 

@@ -82,22 +82,22 @@ def cumulative_density(
 
     layer
         Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
-        (default: "X")
+
 
     color
-        Variable in "obs" to color by (default: None)
+        Variable in "obs" to color by
 
     n_col
-        Number of columns to facet by (default: 3)
+        Number of columns to facet by
 
     xlim
-        Limits of x-axis (default: None)
+        Limits of x-axis
 
     xlabel
-        Label for x-axis (default: None)
+        Label for x-axis
 
     show
-        Show the plot (default: True)
+        Show the plot
 
     kwargs
         Other arguments passed to :func:`~seaborn.FacetGrid`
@@ -177,22 +177,22 @@ def ridge_plot(adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1,
 
     Parameters
     ----------
-    adata : AnnData
+    adata
         Annotated data matrix.
 
-    x : str
+    x
         Name of column containing feature values.
 
-    y : str
+    y
         Name of column containing category values.
 
-    layer : str, optional (default: "X")
+    layer
         Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
 
-    n_col : int
-        How many columns to plot over (default: 1).
+    n_col
+        How many columns to plot over.
 
-    kwargs : Any
+    kwargs
         Other arguments passed to seaborn.FacetGrid.
 
     Returns
