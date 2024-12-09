@@ -22,3 +22,6 @@ __pycache__/
 # docs
 /docs/generated/
 /docs/_build/
+
+# versioning
+**/_version.py
