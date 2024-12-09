@@ -147,8 +147,6 @@ nitpick_ignore = [
     ("py:class", "matplotlib.*"),
     ("py:class", "seaborn.matrix.FacetGrid"),
     ("py:class", "scmorph.qc.images._Classifier"),
-    ("py:class", "typing.Optional"),
-    ("py:class", "typing.Any"),
 ]
 
 # Options for plot output
