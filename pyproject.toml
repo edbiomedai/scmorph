@@ -57,7 +57,7 @@ optional-dependencies.doc = [
   "sphinxcontrib-bibtex>=1",
   "sphinxext-opengraph",
 ]
-optional-dependencies.test = [ "coverage", "pytest", "scmorph" ]
+optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "scmorph" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/jeskowagner/scmorph"
