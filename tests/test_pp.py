@@ -9,12 +9,12 @@ data_nrows = 12352
 
 @pytest.fixture
 def adata():
-    return sm.datasets.rohban2018_minimal()
+    return sm.datasets.rohban2017_minimal()
 
 
 @pytest.fixture
 def adata_treat():
-    adata = sm.datasets.rohban2018_minimal()
+    adata = sm.datasets.rohban2017_minimal()
     adata.obs["TARGETGENE"] = adata.obs["TARGETGENE"].astype(str).replace("nan", "DMSO")
     return adata
 

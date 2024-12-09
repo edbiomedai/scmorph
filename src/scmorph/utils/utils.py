@@ -2,6 +2,7 @@ import re
 from collections.abc import Callable, Iterable, Sequence
 from functools import partial
 from inspect import signature
+from textwrap import dedent
 from typing import Any
 
 import numpy as np
@@ -82,17 +83,17 @@ def grouped_op(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    group_key : str | list[str]
+    group_key
         Column name in `obs` metadata to group by
-    operation : str
+    operation
         What operation to perform, one of "mean", "logmean", "median", "std",
         "var", "sem", "mad" and "mad_scaled".
-    layer : str | None, optional
-        Which layer ("X" or "X_pca", for example) to aggregate, by default None
-    progress : bool, optional
-         Whether to show a progress bar, by default True
+    layer
+        Which layer ("X" or "X_pca", for example) to aggregate
+    progress
+         Whether to show a progress bar
 
     Returns
     -------
@@ -147,13 +148,13 @@ def group_obs_fun_inplace(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         Annotated data matrix object
 
-    group_key : Union[str, List[str]]
+    group_key
         obs keys to group by
 
-    fun : Callable
+    fun
         Function that takes array and returns array of equal size.
         The function may either only take an array, or the array and the group key.
         In the latter case, the group key must be the second argument!
@@ -223,21 +224,21 @@ def get_grouped_op(
 
     Parameters
     ----------
-    adata : :class:`~anndata.AnnData`
+    adata
         AnnData object
-    group_key : List[str]
+    group_key
         Column name in `obs` metadata to group by
-    operation : str
+    operation
         What operation to perform, one of "mean", "logmean", "median", "std",
         "var", "sem", "mad" and "mad_scaled".
-    as_anndata : bool,
-        Whether to return an AnnData object, by default False
-    layer : Optional[str]
-        Which layer to retrieve data from, by default None
-    store : bool
-        Whether to retrieve from/save to cache the result, by default True
-    progress : bool
-        Whether to show a progress bar, by default True
+    as_anndata
+        Whether to return an AnnData object
+    layer
+        Which layer to retrieve data from
+    store
+        Whether to retrieve from/save to cache the result
+    progress
+        Whether to show a progress bar
 
     Returns
     -------
@@ -279,9 +280,9 @@ def grouped_op_to_anndata(df: pd.DataFrame, group_key: list[str]) -> AnnData:
 
     Parameters
     ----------
-    df : pd.DataFrame
+    df
             Result from grouped operation
-    group_key : List[str]
+    group_key
             Keys used for grouping
 
     Returns
@@ -302,3 +303,14 @@ def grouped_op_to_anndata(df: pd.DataFrame, group_key: list[str]) -> AnnData:
 def anndata_to_df(adata: AnnData) -> pd.DataFrame:
     """Convert an AnnData object to a pandas DataFrame, keeping .obs"""
     return pd.concat([adata.obs, adata.to_df()], axis=1)
+
+
+def _doc_params(**kwds):
+    """Document common parameters in docstrings."""
+
+    def dec(obj):
+        obj.__orig_doc__ = obj.__doc__
+        obj.__doc__ = dedent(obj.__doc__).format_map(kwds)
+        return obj
+
+    return dec

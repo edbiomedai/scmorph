@@ -16,12 +16,12 @@ meta_cols, feature_cols = 16, 1687
 
 @pytest.fixture
 def rohban():
-    return sm.datasets.rohban2018_minimal()
+    return sm.datasets.rohban2017_minimal()
 
 
 @pytest.fixture
 def rohban_minimal_csv_file():
-    return sm.datasets._datasets.rohban2018_minimal_csv()
+    return sm.datasets._datasets.rohban2017_minimal_csv()
 
 
 def test_parse_csv_header(rohban_minimal_csv_file):
