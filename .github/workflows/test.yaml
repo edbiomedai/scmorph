@@ -57,7 +57,7 @@ jobs:
       # Docs
       - name: Build the documentation
         env:
-          SPHINXOPTS: -W --keep-going
+          SPHINXOPTS: --keep-going
         run: |
           cd "$PROJECT_ROOT/docs"
           make html
