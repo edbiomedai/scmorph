@@ -9,16 +9,14 @@ import sys
 from typing import TYPE_CHECKING
 from pathlib import Path
 from datetime import datetime
-from functools import partial
 from importlib.metadata import metadata
 
-from docutils import nodes
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE / "extensions"))
 
 if TYPE_CHECKING:
-    from sphinx.application import Sphinx
+    pass
 
 
 # -- Project information -----------------------------------------------------
@@ -153,20 +151,3 @@ plot_formats = [("png", 150)]
 plot_html_show_formats = False
 plot_html_show_source_link = False
 plot_working_directory = HERE.parent  # Project root
-
-
-def setup(app: Sphinx):
-    """App setup hook."""
-    app.add_generic_role("small", partial(nodes.inline, classes=["small"]))
-    app.add_generic_role("smaller", partial(nodes.inline, classes=["smaller"]))
-    app.add_config_value(
-        "recommonmark_config",
-        {
-            "auto_toc_tree_section": "Contents",
-            "enable_auto_toc_tree": True,
-            "enable_math": True,
-            "enable_inline_math": False,
-            "enable_eval_rst": True,
-        },
-        True,
-    )
