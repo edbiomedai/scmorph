@@ -23,6 +23,7 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "anndata>=0.8",
+  "certifi",           # required by scanpy's download tool
   "formulaic",
   "matplotlib>=3.6",
   "numba>=0.56",
