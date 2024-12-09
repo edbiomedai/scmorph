@@ -1,3 +1,10 @@
+[![Stars](https://img.shields.io/github/stars/edbiomedai/scmorph?style=flat&logo=GitHub&color=yellow)](https://github.com/edbiomedai/scmorph/stargazers)
+[![PyPI](https://img.shields.io/pypi/v/scmorph?logo=PyPI)](https://pypi.org/project/scmorph)
+[![Downloads](https://static.pepy.tech/badge/scmorph)](https://pepy.tech/project/scmorph)
+[![Conda](https://img.shields.io/conda/dn/conda-forge/scmorph?logo=Anaconda)](https://anaconda.org/conda-forge/scmorph)
+[![Docs](https://readthedocs.org/projects/scmorph/badge/?version=latest)](https://scmorph.readthedocs.io)
+[![Chat](https://img.shields.io/badge/zulip-join_chat-%2367b08f.svg)](https://scverse.zulipchat.com)
+
 # scmorph - Single-cell morphological analysis
 
 scmorph is a **Python library** to process **CellPainting** or any
