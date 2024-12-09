@@ -1,17 +1,3 @@
-"""
-Functions to generate AnnData objects from a morphological datasets in .csv format
-
-Key components:
-- read_cellprofiler : convert .csv files produced by CellProfiler into AnnData objects
-- make_AnnData : lower-level wrapper to create AnnData objects from pd.DataFrames stored in memory
-
-Note that some of these functions consume a lot of memory when reading in large .csv files.
-For the creation of file-backed AnnData files it is thus advisable to use machines
-with a lot of available RAM. Alternatively, :func:`scmorph.read_cellprofiler_from_path` automatically
-discovers csv files and iteratively creates an AnnData object from the files. This is
-memory-friendly but relies on you having one file per well.
-"""
-
 import functools
 import glob
 import os
@@ -30,27 +16,27 @@ log = get_logger()
 
 
 def _parse_csv_headers(
-    filename: str | list["str"],
+    filename: str | list[str],
     n_headers: int = 1,
     sanitize: bool = True,
     sep: str = ",",
-) -> list["str"]:
+) -> list[str]:
     """
     Parses csv file headers with multiple headers.
 
     Parameters
     ----------
-    filename : str
-            Path to .csv file. If list is given, will return header of first file.
+    filename
+        Path to .csv file. If list is given, will return header of first file.
 
-    n_headers : int
-            1-indexed row number of last header
+    n_headers
+        1-indexed row number of last header
 
-    sanitize : bool
-            Remove everything after last dot of headers?
+    sanitize
+        Remove everything after last dot of headers?
 
-    sep : char
-            Column deliminator
+    sep
+        Column deliminator
 
     Returns
     -------
@@ -70,7 +56,7 @@ def _parse_csv_headers(
 
 
 def _parse_csv(
-    path: str | list["str"],
+    path: str | list[str],
     n_headers: int = 1,
     sep: str = ",",
     backup_url: str | None = None,
@@ -80,22 +66,18 @@ def _parse_csv(
 
     Parameters
     ----------
-    path : str
-            Path to .csv file. If list is given, will append files vertically and use
-            header of first file
+    path
+        Path to .csv file. If list is given, will append files vertically and use
+        header of first file
 
-    n_headers : int
-            1-indexed row number of last header
+    n_headers
+        1-indexed row number of last header
 
-    sep : str
-            Column deliminator
+    sep
+        Column deliminator
 
-    backup_url : str
-            Retrieve the file from an URL if not present on disk. Default: `None`
-
-    Returns
-    -------
-    pd.Dataframe
+    backup_url
+        Retrieve the file from an URL if not present on disk.
 
     Note
     ----------
@@ -130,17 +112,17 @@ def _parse_csv(
     return df
 
 
-def split_feature_names(features: pd.Series | list["str"], feature_delim: str = "_") -> pd.DataFrame:
+def split_feature_names(features: pd.Series | list[str], feature_delim: str = "_") -> pd.DataFrame:
     """
     Split feature names into a :class:`~pandas.DataFrame`
 
     Parameters
     ----------
-    features : :class:`~pandas.Series` or list
-            Feature names
+    features
+        Feature names
 
-    feature_delim : str
-            Character delimiting feature names
+    feature_delim
+        Character delimiting feature names
 
     Returns
     -------
@@ -154,21 +136,21 @@ def split_feature_names(features: pd.Series | list["str"], feature_delim: str = 
     return df
 
 
-def _split_meta(df: pd.DataFrame, meta_cols: list["str"] | None) -> tuple[pd.DataFrame, pd.DataFrame]:
+def _split_meta(df: pd.DataFrame, meta_cols: list[str] | None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Split pd.DataFrame into two, keeping metadata and measurements separate
+    Split DataFrame into two, keeping metadata and measurements separate
 
     Parameters
     ----------
-    df : pd.DataFrame
-            DataFrame with metadata and measurement columns
+    df
+        DataFrame with metadata and measurement columns
 
-    meta_cols : list
-            Names of metadata columns. None for automatic detection. Default: None
+    meta_cols
+        Names of metadata columns. `None` for automatic detection.
 
     Returns
     -------
-    Tuple of pd.DataFrames where first element represents metadata and second element is measurements.
+    Tuple of DataFrames where first element represents metadata and second element is measurements.
 
     Note
     ----------
@@ -184,7 +166,7 @@ def _split_meta(df: pd.DataFrame, meta_cols: list["str"] | None) -> tuple[pd.Dat
 
 def make_AnnData(
     df: pd.DataFrame,
-    meta_cols: list["str"] | None = None,
+    meta_cols: list[str] | None = None,
     feature_delim: str = "_",
 ) -> AnnData:
     """
@@ -192,13 +174,13 @@ def make_AnnData(
 
     Parameters
     ----------
-    df : pd.DataFrame
-            Phenotypic measurements, e.g. derived from CellProfiler
+    df
+        Phenotypic measurements, e.g. derived from CellProfiler
 
-    meta_cols : list
-        Names of metadata columns. None for automatic detection. Default: None
+    meta_cols
+        Names of metadata columns. `None` for automatic detection.
 
-    feature_delim : str
+    feature_delim
             Character delimiting feature names
 
     Returns
@@ -226,17 +208,17 @@ def make_AnnData(
     return ad
 
 
-def _find_files(path: str | list["str"], suffix: str = ".csv") -> list["str"]:
+def _find_files(path: str | list[str], suffix: str = ".csv") -> list[str]:
     """
     Find single-cell csv files recursively
 
     Parameters
     ----------
-    path : str
-            Path to input directory. If a path to a matching file is given, will return that path.
+    path
+        Path to input directory. If a path to a matching file is given, will return that path.
 
-    suffix : str
-            File suffix to match. Default: .csv
+    suffix
+        File suffix to match.
 
     Returns
     -------
@@ -278,23 +260,23 @@ def read_cellprofiler_csv(
 
     Parameters
     ----------
-    filename : str
-            Path to .csv file
+    filename
+        Path to .csv file
 
-    n_headers : int
-            Number of header rows. Default: 2
+    n_headers
+        Number of header rows.
 
     meta_cols: list
-            Names of metadata columns. None for automatic detection. Default: `None`
+        Names of metadata columns. `None` for automatic detection.
 
-    feature_delim : str
-            Feature deliminator. Default: "_"
+    feature_delim
+        Feature deliminator.
 
-    backup_url : str
-            Retrieve the file from an URL if not present on disk. Default: `None`
+    backup_url
+        Retrieve the file from an URL if not present on disk.
 
-    sep : str
-            Column deliminator. Default: ","
+    sep
+        Column deliminator.
 
     Returns
     -------
@@ -317,7 +299,7 @@ def read_cellprofiler_batches(
     output_file: str,
     file_pattern: str = "Nuclei.csv",
     n_headers: int = 1,
-    meta_cols: list["str"] | None = None,
+    meta_cols: list[str] | None = None,
     sep: str = ",",
 ) -> AnnData:
     """
@@ -325,34 +307,34 @@ def read_cellprofiler_batches(
 
     Parameters
     ----------
-    path : str
-            Path to a directory containing .csv files
+    path
+        Path to a directory containing .csv files
 
-    output_file : str
-            Path to output file, will create a .h5ad file. This is needed
-            to prevent large memory allocations.
+    output_file
+        Path to output file, will create a .h5ad file. This is needed
+        to prevent large memory allocations.
 
-    file_pattern : str
-            re.Pattern to match .csv files. Default: "Nuclei.csv"
+    file_pattern
+        re.Pattern to match .csv files.
 
-    n_headers : int
-            Number of header rows. Default: 1
+    n_headers
+        Number of header rows.
 
-    meta_cols: list
-            Names of metadata columns. None for automatic detection. Default: None
+    meta_cols
+        Names of metadata columns. `None` for automatic detection.
 
-    feature_delim : str
-            Feature deliminator. Default: "_"
+    feature_delim
+        Feature deliminator.
 
-    sep : str
-            Column deliminator. Default: ","
+    sep
+        Column deliminator.
 
-    progress : bool
-            Show progress bar. Default: True
+    progress
+        Show progress bar.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
     """
     import anndata as ad
     import h5py
@@ -468,16 +450,16 @@ def _read_csv_columns(
 
     Parameters
     ----------
-    path : str
+    path
         Path to csv file
-    columns : List[str]
+    columns
         Names of columns to include
-    column_names : List[str]
+    column_names
         Column names
-    n_headers : int
-        Number of headers, by default 1
-    sep : str
-        Column deliminiator, by default ","
+    n_headers
+        Number of headers
+    sep
+        Column deliminiator
 
     Returns
     -------
@@ -497,9 +479,9 @@ def _cache_file(path: str, backup_url: str | None) -> None:
 
     Parameters
     ----------
-    path : str
+    path
         Path to file
-    backup_url : str
+    backup_url
         URL to backup file
 
     Note
@@ -528,11 +510,11 @@ def read_meta(
 
     Parameters
     ----------
-    path : str
-            Path to .csv file
+    path
+        Path to .csv file
 
     meta_cols: list
-            Names of metadata columns. None for automatic detection. Default: None
+        Names of metadata columns. `None` for automatic detection.
 
     Returns
     -------
@@ -556,11 +538,11 @@ def read_X(
 
     Parameters
     ----------
-    path : str
-            Path to .csv file
+    path
+        Path to .csv file
 
     meta_cols: list
-            Names of metadata columns. None for automatic detection. Default: None
+        Names of metadata columns. `None` for automatic detection.
 
     Returns
     -------
@@ -580,15 +562,15 @@ def read_sql(filename: str, backup_url: str | None = None) -> AnnData:
 
     Parameters
     ----------
-    filename : str
+    filename
         Path to .sql file
 
-    backup_url : str
-        URL to backup file. Default: None
+    backup_url
+        URL to backup file.
 
     Returns
     -------
-    adata : :class:`~anndata.AnnData`
+    adata
     """
     import sqlite3
 
@@ -649,11 +631,11 @@ def read(filename: str, **kwargs: Any) -> AnnData:
 
     Parameters
     ----------
-    filename : str
-            Path to .csv or h5ad file
+    filename
+        Path to .csv or h5ad file
 
-    kwargs : Any
-            Other parameters passed to the corresponding functions.
+    kwargs
+        Other parameters passed to the corresponding functions.
 
     Returns
     -------
