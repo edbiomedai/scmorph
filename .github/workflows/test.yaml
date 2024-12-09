@@ -73,3 +73,8 @@ jobs:
           coverage report
       - name: Upload coverage
         uses: codecov/codecov-action@v5
+        with:
+          name: codecov-umbrella # optional
+          verbose: true # optional (default = false)
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
