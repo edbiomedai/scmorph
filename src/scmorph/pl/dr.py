@@ -100,7 +100,7 @@ def cumulative_density(
         Show the plot
 
     kwargs
-        Other arguments passed to :func:`~seaborn.FacetGrid`
+        Other arguments passed to :class:`~seaborn.FacetGrid`
 
     Returns
     -------
