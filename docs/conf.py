@@ -143,7 +143,13 @@ html_theme_options = {
 
 pygments_style = "default"
 
-nitpick_ignore = [[("py:class", "matplotlib.*")]]
+nitpick_ignore = [
+    ("py:class", "matplotlib.*"),
+    ("py:class", "seaborn.matrix.FacetGrid"),
+    ("py:class", "scmorph.qc.images._Classifier"),
+    ("py:class", "typing.Optional"),
+    ("py:class", "typing.Any"),
+]
 
 # Options for plot output
 plot_include_source = True
