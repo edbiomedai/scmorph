@@ -32,19 +32,12 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           cache: "pip"
-          cache-dependency-path: "scmorph/pyproject.toml"
+          cache-dependency-path: "**/pyproject.toml"
       - name: Install Ubuntu system dependencies
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install pandoc
       - name: Install build & check dependencies
         run: python -m pip install --upgrade pip wheel cookiecutter pre-commit
-      # Build
-      - name: Build from template
-        shell: python
-        run: |
-          from cookiecutter.main import cookiecutter
-          overrides = dict(package_name='${{ matrix.package-name }}')
-          cookiecutter('.', no_input=True, extra_context=overrides)
       # Check
       - name: Set up pre-commit cache
         uses: actions/cache@v3
