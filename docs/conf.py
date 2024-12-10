@@ -141,6 +141,11 @@ html_theme_options = {
     "navigation_with_keys": True,
 }
 
+ogp_social_cards = {
+    "image": "_static/img/scmorph_logo.png",
+}
+
+
 pygments_style = "default"
 
 nitpick_ignore = [
