@@ -60,8 +60,8 @@ optional-dependencies.doc = [
 optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "scmorph" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
-urls.Homepage = "https://github.com/jeskowagner/scmorph"
-urls.Source = "https://github.com/jeskowagner/scmorph"
+urls.Homepage = "https://github.com/edbiomedai/scmorph"
+urls.Source = "https://github.com/edbiomedai/scmorph"
 
 [tool.setuptools_scm]
 
