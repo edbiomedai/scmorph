@@ -30,4 +30,7 @@ Release in preparation for JOSS submission.
 -   Integrate trajectory inference
 -   Switch to scverse-cookiecutter template
 
+This is a minor release that addresses some issues with building documentation
+and continous integration.
+
 <!--next-version-placeholder-->
