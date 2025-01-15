@@ -166,7 +166,9 @@ def cumulative_density(
     return fg
 
 
-def ridge_plot(adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1, **kwargs: Any) -> FacetGrid:
+def ridge_plot(
+    adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1, **kwargs: Any
+) -> FacetGrid:
     """
     Plot features as ridge plot.
 
@@ -208,7 +210,9 @@ def ridge_plot(adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1,
     df = pd.DataFrame({x: x_vals, y: adata.obs[y].values})
 
     # Initialize the FacetGrid object
-    g = sns.FacetGrid(df, col=y, hue=y, aspect=10, height=0.5, sharey=False, col_wrap=n_col, **kwargs)
+    g = sns.FacetGrid(
+        df, col=y, hue=y, aspect=10, height=0.5, sharey=False, col_wrap=n_col, **kwargs
+    )
 
     # Draw the densities in a few steps
     g.map(

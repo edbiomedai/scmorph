@@ -25,7 +25,9 @@ def rohban_minimal_csv_file():
 
 
 def test_parse_csv_header(rohban_minimal_csv_file):
-    header = sm.io.io._parse_csv_headers(rohban_minimal_csv_file, n_headers=n_headers, sanitize=True, sep=",")
+    header = sm.io.io._parse_csv_headers(
+        rohban_minimal_csv_file, n_headers=n_headers, sanitize=True, sep=","
+    )
     assert isinstance(header, list) and len(header) == raw_cols
 
 

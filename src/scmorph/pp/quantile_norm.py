@@ -34,7 +34,9 @@ def _quantile(x: np.ndarray, q: np.ndarray, axis: int = 0) -> tuple[np.ndarray, 
 
 
 # 2. Quantile regression
-def _quantile_regression(Z: pd.DataFrame | np.ndarray, q: np.ndarray, axis: int = 0) -> tuple[np.ndarray, np.ndarray]:
+def _quantile_regression(
+    Z: pd.DataFrame | np.ndarray, q: np.ndarray, axis: int = 0
+) -> tuple[np.ndarray, np.ndarray]:
     if not isinstance(Z, pd.DataFrame):
         Z = pd.DataFrame(Z, columns=["Z"])
 
@@ -50,7 +52,9 @@ def _quantile_regression(Z: pd.DataFrame | np.ndarray, q: np.ndarray, axis: int 
 
 
 # 3. Compute residual components
-def _residuals(f: np.ndarray, fhat: np.ndarray, fbar: float, axis: int = 0) -> tuple[float, float, float]:
+def _residuals(
+    f: np.ndarray, fhat: np.ndarray, fbar: float, axis: int = 0
+) -> tuple[float, float, float]:
     SST = np.sum(np.power(f.T - fbar, 2), axis=axis)
     SSB = np.sum(np.power(fhat.T - fbar, 2), axis=axis)
     SSE = SST - SSB

@@ -132,7 +132,9 @@ def grouped_op(
             return f2(x) / (f1(x) + 1e-18)
 
     else:
-        raise ValueError("Operation must be one of 'mean', 'median', 'std', 'var', 'sem', 'mad', 'mad_scaled'")
+        raise ValueError(
+            "Operation must be one of 'mean', 'median', 'std', 'var', 'sem', 'mad', 'mad_scaled'"
+        )
 
     return _grouped_obs_fun(adata, group_key, fun=fun, layer=layer, progress=progress)
 

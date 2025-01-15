@@ -358,9 +358,9 @@ def read_cellprofiler_batches(
     log.info("Reading in all metadata...")
 
     # read in obs metadata
-    obs = pd.concat([read_meta(f, n_headers=n_headers, meta_cols=meta_cols, sep=sep) for f in tqdm(files)]).reset_index(
-        drop=True
-    )
+    obs = pd.concat(
+        [read_meta(f, n_headers=n_headers, meta_cols=meta_cols, sep=sep) for f in tqdm(files)]
+    ).reset_index(drop=True)
     obs.fillna("", inplace=True)
     obs.index = obs.index.astype(str)
 
@@ -522,7 +522,9 @@ def read_meta(
     """
     header = _parse_csv_headers(path, n_headers=n_headers, sep=sep)
     meta_cols = _match_meta(header, meta_cols)
-    df = _read_csv_columns(path=path, columns=meta_cols, column_names=header, sep=sep, n_headers=n_headers)
+    df = _read_csv_columns(
+        path=path, columns=meta_cols, column_names=header, sep=sep, n_headers=n_headers
+    )
     df = df.to_pandas()
     return df
 
@@ -552,7 +554,9 @@ def read_X(
     meta_cols = _match_meta(header, meta_cols)
     drop_cols = _match_drop(header)
     columns = [col for col in header if col not in meta_cols + drop_cols]
-    tab = _read_csv_columns(path=path, columns=columns, column_names=header, sep=sep, n_headers=n_headers)
+    tab = _read_csv_columns(
+        path=path, columns=columns, column_names=header, sep=sep, n_headers=n_headers
+    )
     return np.array(tab, dtype="float32").T
 
 

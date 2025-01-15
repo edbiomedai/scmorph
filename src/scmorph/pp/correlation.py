@@ -75,7 +75,9 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
     ranks = orders.argsort(axis=0)
 
     # compute 1D correlation vector of pairwise comparisons
-    cormat_1d = np.array([_comp_coef(orders[:, i], ranks[:, j], M=M) for i, j in _iter_cols(X, upper=False)])
+    cormat_1d = np.array(
+        [_comp_coef(orders[:, i], ranks[:, j], M=M) for i, j in _iter_cols(X, upper=False)]
+    )
 
     # reshape to 2D correlation matrix
     cormat_2d = cormat_1d.reshape(X.shape[1], X.shape[1])
@@ -86,7 +88,9 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
     return cormat_2d
 
 
-def corr(X: np.ndarray, Y: np.ndarray | None = None, method: str = "pearson", M: int = 5) -> np.ndarray:
+def corr(
+    X: np.ndarray, Y: np.ndarray | None = None, method: str = "pearson", M: int = 5
+) -> np.ndarray:
     """
     Compute pairwise correlations
 
@@ -116,5 +120,7 @@ def corr(X: np.ndarray, Y: np.ndarray | None = None, method: str = "pearson", M:
     elif method == "chatterjee":
         result = xim(X, Y, M=M)
     else:
-        raise ValueError(f"Method must be one of 'pearson', 'spearman', or 'chatterjee'. Received {method}")
+        raise ValueError(
+            f"Method must be one of 'pearson', 'spearman', or 'chatterjee'. Received {method}"
+        )
     return result

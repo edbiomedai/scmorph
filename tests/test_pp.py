@@ -34,13 +34,19 @@ def test_aggregate_modes(adata):
     modes = ["mean", "median", "std", "var", "sem", "mad", "mad_scaled"]
     for m in modes:
         agg = sm.pp.aggregate(
-            adata, method=m, group_keys=["Image_Metadata_Plate"], well_key="Image_Metadata_Well", progress=False
+            adata,
+            method=m,
+            group_keys=["Image_Metadata_Plate"],
+            well_key="Image_Metadata_Well",
+            progress=False,
         )
         assert agg.shape == (20, adata.shape[1])
 
 
 def test_aggregate_mahalanobis(adata_treat):
-    agg = sm.pp.aggregate_mahalanobis(adata_treat, treatment_key="TARGETGENE", well_key="Image_Metadata_Well")
+    agg = sm.pp.aggregate_mahalanobis(
+        adata_treat, treatment_key="TARGETGENE", well_key="Image_Metadata_Well"
+    )
     assert agg.shape == (1,)
 
 

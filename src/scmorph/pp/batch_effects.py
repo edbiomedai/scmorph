@@ -111,7 +111,9 @@ def compute_batch_effects(
 
     # convert to DataFrames to store metadata
     gammas_df = pd.DataFrame(gammas, columns=sorted(batch_groups), index=data.index)
-    betas_df = pd.DataFrame(betas, columns=sorted(bio_groups), index=data.index) if len(betas) != 0 else []
+    betas_df = (
+        pd.DataFrame(betas, columns=sorted(bio_groups), index=data.index) if len(betas) != 0 else []
+    )
     return betas_df, gammas_df
 
 

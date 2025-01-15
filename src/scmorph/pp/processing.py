@@ -60,7 +60,9 @@ def neighbors(
         neighbors parameters.
     """
     adata = adata.copy() if copy else adata
-    sc.pp.neighbors(adata, n_neighbors=n_neighbors, n_pcs=n_pcs, use_rep=use_rep, copy=False, **kwargs)
+    sc.pp.neighbors(
+        adata, n_neighbors=n_neighbors, n_pcs=n_pcs, use_rep=use_rep, copy=False, **kwargs
+    )
     return adata if copy else None
 
 
@@ -164,7 +166,12 @@ def pca(
     return adata if copy else None
 
 
-def scale(adata: AnnData, treatment_key: str | None = None, control: str | None = None, chunked: bool = False) -> None:
+def scale(
+    adata: AnnData,
+    treatment_key: str | None = None,
+    control: str | None = None,
+    chunked: bool = False,
+) -> None:
     """
     Scale data to unit variance per feature while maintaining a low memory footprint (operates in-place).
 
@@ -223,7 +230,11 @@ def scale(adata: AnnData, treatment_key: str | None = None, control: str | None 
 
 
 def scale_by_batch(
-    adata: AnnData, batch_key: str, treatment_key: str | None = None, control: str | None = None, chunked: bool = False
+    adata: AnnData,
+    batch_key: str,
+    treatment_key: str | None = None,
+    control: str | None = None,
+    chunked: bool = False,
 ) -> None:
     """
     Scale data to zero-center and unit variance per batch in-place.

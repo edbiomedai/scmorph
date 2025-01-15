@@ -78,7 +78,9 @@ def _test_condiments(
     log = get_logger()
 
     if "slingshot_object" not in adata.uns.keys():
-        log.error("Slingshot assignments not found in `.uns`. Please run :func:`scmorph.tl.slingshot` first.")
+        log.error(
+            "Slingshot assignments not found in `.uns`. Please run :func:`scmorph.tl.slingshot` first."
+        )
         raise KeyError("adata.uns['slingshot_object'] not found.")
 
     r_test_fun = _load_R_functions(fun)
@@ -99,7 +101,9 @@ def _test_condiments(
             pseudotime = ro.conversion.py2rpy(pd.DataFrame(adata.obsm["slingshot_pseudotime"]))
         r_res = r_test_fun(weights, pseudotime, conditions, all_pairs, lineages=lineages)
     else:
-        log.error("Function must be one of `test_differential_differentiation` or `test_differential_progression`")
+        log.error(
+            "Function must be one of `test_differential_differentiation` or `test_differential_progression`"
+        )
         r_res = None
 
     # convert to pandas
@@ -111,7 +115,9 @@ def _test_condiments(
     _clean_R_env()
 
 
-def test_common_trajectory(adata: AnnData, conditions: pd.Series | np.ndarray, parallel: bool = True) -> None:
+def test_common_trajectory(
+    adata: AnnData, conditions: pd.Series | np.ndarray, parallel: bool = True
+) -> None:
     """
     Test for common trajectory using condiments' `topologyTest`
 

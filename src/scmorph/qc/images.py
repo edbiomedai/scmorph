@@ -176,7 +176,9 @@ def qc_images(
     # merge QC metadata with model metadata
     qc_full = pd.merge(adata.obs, qc.obs.reset_index(), how="left")
     if qc_full["index"].isna().any():
-        raise ValueError("Some wells do not have corresponding QC data." + " Did you import the correct QC data?")
+        raise ValueError(
+            "Some wells do not have corresponding QC data." + " Did you import the correct QC data?"
+        )
 
     # extract train data indeces
 
@@ -201,7 +203,9 @@ def qc_images(
 
         meta_labelled = pd.concat([qc_train.obs, qc_pred.obs])
         # Save QC data to model's obsm slot
-        adata.obs["image_qc"] = pd.merge(adata.obs, meta_labelled, how="left")["assigned_label"].values
+        adata.obs["image_qc"] = pd.merge(adata.obs, meta_labelled, how="left")[
+            "assigned_label"
+        ].values
 
     if copy:
         return adata[adata.obs["image_qc"] == passing_label, :].copy()

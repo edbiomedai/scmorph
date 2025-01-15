@@ -84,10 +84,16 @@ def _pca_mahalanobis(
     else:
         cov_inv = np.array([1])
 
-    dists = np.apply_along_axis(lambda x: mahalanobis(control_centroid, x, cov_inv), axis=1, arr=drug_data)
+    dists = np.apply_along_axis(
+        lambda x: mahalanobis(control_centroid, x, cov_inv), axis=1, arr=drug_data
+    )
 
     # add back information about drugs, then collapse drugs with multiple measurements
-    dists = pd.Series(dists, index=pd.Series(drug_adata.obs[treatment_col]), name="mahalanobis").groupby(level=0).mean()
+    dists = (
+        pd.Series(dists, index=pd.Series(drug_adata.obs[treatment_col]), name="mahalanobis")
+        .groupby(level=0)
+        .mean()
+    )
 
     return dists
 
@@ -196,13 +202,17 @@ def aggregate_mahalanobis(
     treatment_col = treatment_col[0]
 
     # aggregate
-    agg_adata = get_grouped_op(adata, group_keys, "median", progress=progress, as_anndata=True, store=False)
+    agg_adata = get_grouped_op(
+        adata, group_keys, "median", progress=progress, as_anndata=True, store=False
+    )
 
     # compute dists on PCs
     if not per_treatment and not cov_from_single_cell:
         return _pca_mahalanobis(agg_adata, treatment_col, control)
 
-    adata_control, adata_drugs, _ = _split_adata_control_drugs(agg_adata, treatment_col, control, well_key)
+    adata_control, adata_drugs, _ = _split_adata_control_drugs(
+        agg_adata, treatment_col, control, well_key
+    )
 
     dists = pd.Series(
         index=adata_drugs.obs[treatment_col].unique(),
@@ -249,7 +259,9 @@ def aggregate_mahalanobis(
         for cur_treatment in iterator:
             drug_idx = adata_drugs.obs[treatment_col] == cur_treatment
             joint_adata = anndata.concat([adata_control, adata_drugs[drug_idx]])
-            dists[cur_treatment] = _pca_mahalanobis(joint_adata, treatment_col, control, cov_include_treatment)[0]
+            dists[cur_treatment] = _pca_mahalanobis(
+                joint_adata, treatment_col, control, cov_include_treatment
+            )[0]
 
     return dists
 
@@ -348,7 +360,9 @@ def aggregate_ttest(
 
     logger = get_logger()
 
-    adata_control, adata_drugs, group_keys = _split_adata_control_drugs(adata, treatment_key, control, group_key)
+    adata_control, adata_drugs, group_keys = _split_adata_control_drugs(
+        adata, treatment_key, control, group_key
+    )
 
     tstats = {}
     pvals = {}
