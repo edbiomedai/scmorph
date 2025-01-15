@@ -11,7 +11,6 @@ from pathlib import Path
 from datetime import datetime
 from importlib.metadata import metadata
 
-
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE / "extensions"))
 
@@ -43,7 +42,7 @@ needs_sphinx = "4.0"
 
 html_context = {
     "display_github": True,  # Integrate GitHub
-    "github_user": "jeskowagner",
+    "github_user": "edbiomedai",
     "github_repo": project_name,
     "github_version": "main",
     "conf_py_path": "/docs/",
