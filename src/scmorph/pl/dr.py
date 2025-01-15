@@ -52,8 +52,7 @@ def umap(adata: AnnData, **kwargs: Any) -> Axes | list[Axes] | None:
 
     Returns
     -------
-    Axes | list[Axes] | None
-        UMAP plot
+    UMAP plot
     """
     return sc.pl.umap(adata, **kwargs)
 
@@ -83,7 +82,6 @@ def cumulative_density(
     layer
         Where to find values for the variable. Useful if you want to plot "pca" or "umap" values.
 
-
     color
         Variable in "obs" to color by
 
@@ -104,8 +102,7 @@ def cumulative_density(
 
     Returns
     -------
-    plt.Figure
-        Plots of cumulative densities of variables in AnnData
+    Plots of cumulative densities of variables in AnnData
     """
     import numpy as np
     import seaborn as sns
