@@ -4,9 +4,9 @@
 
 ```{toctree}
 :hidden: true
-:maxdepth: 2
+:maxdepth: 1
 
-api.rst
+api/index.md
 tutorials/index.md
 changelog.md
 contributing.md
