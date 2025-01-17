@@ -180,13 +180,13 @@ def scale(
     adata
             Annotated data matrix.
 
-    batch_key
-            Name of the column in the AnnData object that contains the batch information.
-
     treatment_key
             Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
             In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
             If using, please also see `control`.
+
+    control
+            Name of control treatment. Must be valid value in `treatment_key`.
 
     chunked
             Whether to save memory by processing in chunks. This is slower but less memory intensive.
