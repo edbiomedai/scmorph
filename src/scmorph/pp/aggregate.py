@@ -163,37 +163,37 @@ def aggregate_mahalanobis(
     Parameters
     ----------
     adata
-            Annotated data matrix
+        Annotated data matrix
 
     treatment_key
-            Name of column in metadata used to define treatments
+        Name of column in metadata used to define treatments
 
     control
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
 
     well_key
-            Name of column in metadata used to define wells. This is needed
-            to define the covariance matrix for Mahalanobis distance.
+        Name of column in metadata used to define wells. This is needed
+        to define the covariance matrix for Mahalanobis distance.
 
     per_treatment
-            Whether to compute PCA and Mahalanobis distance for each treatment separately.
+        Whether to compute PCA and Mahalanobis distance for each treatment separately.
 
     cov_include_treatment
-            Whether to compute covariance matrix from control alone (False) or control and treatment together (True).
-            If True, covariance matrices are combined through a weighted sum, where weights represent the number of
-            replicates for this drug.
+        Whether to compute covariance matrix from control alone (False) or control and treatment together (True).
+        If True, covariance matrices are combined through a weighted sum, where weights represent the number of
+        replicates for this drug.
 
     cov_from_single_cell
-            Whether to compute covariance matrix from single cells. This computes distances directly on features
-            with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignored (both False).
+        Whether to compute covariance matrix from single cells. This computes distances directly on features
+        with no prior PCA. As a result, cov_include_treatment and per_treatment will be ignored (both False).
 
     progress
-            Whether to show a progress bar
+        Whether to show a progress bar
 
     Returns
     -------
     dists
-            Mahalanobis distances between treatments
+        Mahalanobis distances between treatments
     """
     import anndata
     from tqdm import tqdm
@@ -279,26 +279,26 @@ def aggregate_pc(
     Parameters
     ----------
     adata
-            Annotated data matrix
+        Annotated data matrix
 
     treatment_key
-            Name of column in metadata used to define treatments
+        Name of column in metadata used to define treatments
 
     control
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
 
     cum_var_explained
-            This allows thresholding how many PCs to use during computation of distances.
-            It will select the first n PCs until at least this sum of variance has been explained.
-            Must be a value between 0 and 1.
+        This allows thresholding how many PCs to use during computation of distances.
+        It will select the first n PCs until at least this sum of variance has been explained.
+        Must be a value between 0 and 1.
 
     progress
-            Whether to show a progress bar
+        Whether to show a progress bar
 
     Returns
     -------
     dists
-            Weighted principal component distances to control
+        Weighted principal component distances to control
     """
     group_keys, treatment_col = _get_group_keys(adata, treatment_key, None)
 
@@ -336,24 +336,24 @@ def aggregate_ttest(
     Parameters
     ----------
     adata
-            Annotated data matrix
+        Annotated data matrix
 
     treatment_key
-            Name of column in metadata used to define treatments
+        Name of column in metadata used to define treatments
 
     control
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
 
     group_key
-            Name of column in metadata used to define groups
+        Name of column in metadata used to define groups
 
     Returns
     -------
     dists
-            T-statistics between groups
+        T-statistics between groups
 
-    qvals: :class:`~pandas.DataFrame`
-            q-values (i.e. FDR-corrected p-values)
+    qvals
+        q-values (i.e. FDR-corrected p-values)
     """
     import scipy
     from statsmodels.stats.multitest import fdrcorrection
