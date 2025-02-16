@@ -16,7 +16,7 @@ def _infer_names(target: str, options: Iterable[str]) -> Sequence[str]:
     logger = get_logger()
 
     if target == "batch":
-        reg = re.compile("batch|plate")
+        reg = re.compile("batch|plate", re.IGNORECASE)
     elif target in {"well", "group"}:
         reg = re.compile("well$")
     elif target == "treatment":
