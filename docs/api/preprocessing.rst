@@ -27,13 +27,15 @@ Tools to remove batch effects from single-cell morphological data.
 Feature Selection
 -------------------
 
-Tools to reduce number of features based on correlations.
+Tools to reduce number of features based on correlation or confounder association.
 
 .. autosummary::
     :toctree: generated/
 
     select_features
     corr
+    kruskal_test
+    kruskal_filter
 
 Aggregation
 -------------------

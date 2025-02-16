@@ -11,4 +11,5 @@ from .aggregate import (
     tstat_distance,
 )
 from .batch_effects import remove_batch_effects
-from .feature_selection import select_features
+from .feature_selection import kruskal_filter, kruskal_test, select_features
+from .hit_calling import get_ks

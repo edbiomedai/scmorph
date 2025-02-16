@@ -1,7 +1,11 @@
+from types import SimpleNamespace
+
 import numpy as np
 import pandas as pd
 from anndata import AnnData
 from scanpy.pp import subsample
+from scipy.stats import kruskal, median_abs_deviation
+from tqdm.auto import tqdm
 
 from .correlation import corr
 
@@ -90,7 +94,7 @@ def select_features(
             Cutoff beyond which features with a correlation coefficient
             higher than it are removed. Must be between 0 and 1.
 
-    fraction: float
+    fraction
             Subsample to this ``fraction`` of the number of observations.
 
     n_obs
@@ -133,3 +137,108 @@ def select_features(
         return None
     else:
         return adata[:, keep].copy()
+
+
+def kruskal_test(
+    adata,
+    test_column="PlateID",
+) -> AnnData:
+    """
+    Perform Kruskal-Wallis H-test for each feature across batches.
+
+    This can help identify features that are associated with confounders, such
+    as batch and platemap effects.
+
+    Parameters
+    ----------
+    adata
+        Annotated data matrix.
+    test_column
+        The column name in `adata.obs` that contains the batch information.
+
+    Returns
+    -------
+    adata
+        The AnnData object with Kruskal-Wallis test results stored in `adata.uns["kruskal_test"]`.
+    """
+    confounder_X = adata.obs[test_column].astype(str).astype("category").values
+    test_results = {}
+
+    for selected_feature in tqdm(adata.var.index):
+        feature_X = adata[:, selected_feature].X[:, 0]
+        conf_indices_d = (
+            pd.DataFrame({test_column: confounder_X, "feature": feature_X})
+            .groupby(test_column, observed=True)
+            .indices
+        )
+        feature_split_by_conf = [*[feature_X[conf_indices_d[conf]] for conf in conf_indices_d]]
+        try:
+            res = kruskal(*feature_split_by_conf)
+        except ValueError:
+            res = SimpleNamespace(statistic=np.nan, pvalue=np.nan)
+        test_results[selected_feature] = res
+
+    kruskal_df = pd.DataFrame(
+        [
+            (
+                feature,
+                test_results[feature].statistic,
+                test_results[feature].pvalue,
+            )
+            for feature in test_results
+        ],
+        columns=["feature", "statistic", "pvalue"],
+    )
+    kruskal_df.metadata = SimpleNamespace(by=test_column, batch_feature=test_column)
+    if "kruskal_test" not in adata.uns:
+        adata.uns["kruskal_test"] = {}
+    adata.uns["kruskal_test"][test_column] = kruskal_df
+    return adata
+
+
+def kruskal_filter(adata, test_column="PlateID", sigma=1, sigma_function="mad") -> AnnData:
+    """
+    Filter features based on Kruskal-Wallis H-test statistics.
+
+    Parameters
+    ----------
+    adata
+        Annotated data matrix.
+    test_column
+        The column name in `adata.obs` that contains the batch information.
+    sigma
+        The number of standard deviations to use for the threshold.
+
+    Returns
+    -------
+    AnnData
+        The filtered or annotated AnnData object.
+    """
+
+    def threshold_statistic(adata, test_column):
+        df = adata.uns["kruskal_test"][test_column].dropna()
+        x = df["statistic"].values
+        med = np.median(x)
+        if sigma_function == "mad":
+            std = median_abs_deviation(x)
+        else:
+            std = np.std(x)
+        thresh = med + sigma * std
+
+        sn = adata.uns["kruskal_test"][test_column].metadata
+        new = SimpleNamespace(threshold=thresh, median=med, std=std)
+
+        adata.uns["kruskal_test"][test_column].metadata = SimpleNamespace(
+            **{**sn.__dict__, **new.__dict__}
+        )
+        return adata
+
+    def filter_threshold_statistic(adata, test_column):
+        df = adata.uns["kruskal_test"][test_column]
+        thresh = df.metadata.threshold
+        return df.loc[df["statistic"] < thresh, "feature"]
+
+    adata = threshold_statistic(adata, test_column)
+
+    feat_keep = filter_threshold_statistic(adata, test_column)
+    return adata[:, feat_keep]
