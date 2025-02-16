@@ -183,7 +183,10 @@ def qc_images(
     # extract train data indeces
 
     if not qc_full["label"].isna().any():
-        warn("All wells have complete QC data. No inference will be performed.", stacklevel=1)
+        warn(
+            "All wells have complete QC data. No inference will be performed.",
+            stacklevel=1,
+        )
         adata.obs["qc_label"] = qc_full["label"]
     else:
         train_ind = qc.obs.loc[~qc.obs["label"].isna()].index

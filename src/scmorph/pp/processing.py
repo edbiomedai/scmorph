@@ -61,7 +61,12 @@ def neighbors(
     """
     adata = adata.copy() if copy else adata
     sc.pp.neighbors(
-        adata, n_neighbors=n_neighbors, n_pcs=n_pcs, use_rep=use_rep, copy=False, **kwargs
+        adata,
+        n_neighbors=n_neighbors,
+        n_pcs=n_pcs,
+        use_rep=use_rep,
+        copy=False,
+        **kwargs,
     )
     return adata if copy else None
 
