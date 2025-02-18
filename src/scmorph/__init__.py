@@ -3,7 +3,7 @@ from importlib import metadata
 from packaging.version import Version
 from scanpy import read_h5ad, write
 
-from scmorph import datasets, logging, pl, pp, qc, tl
+from scmorph import datasets, io, logging, pl, pp, qc, tl
 from scmorph.io import read, read_cellprofiler_batches, read_cellprofiler_csv, read_sql
 
 try:
