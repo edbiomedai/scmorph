@@ -48,7 +48,7 @@ def rohban2017(backed=None) -> AnnData:
     ----------
     {backed}
     """
-    filename = HERE / "rohban2017_subset.h5ad"
+    filename = HERE / "rohban2017.h5ad"
     backup = "https://figshare.com/ndownloader/files/50650236"
     return read(filename, backup_url=backup, backed=backed)
 
