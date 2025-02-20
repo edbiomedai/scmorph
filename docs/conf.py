@@ -7,7 +7,7 @@
 # -- Path setup --------------------------------------------------------------
 import sys
 from typing import TYPE_CHECKING
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from datetime import datetime
 from importlib.metadata import metadata
 
@@ -67,6 +67,9 @@ extensions = [
     "sphinx.ext.mathjax",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinxext.opengraph",
+    "git_ref",  # needs to be before scanpydoc.rtd_github_links
+    "scanpydoc",  # needs to be before sphinx.ext.linkcode
+    "sphinx.ext.linkcode",
     "matplotlib.sphinxext.plot_directive",
     *[p.stem for p in (HERE / "extensions").glob("*.py")],
 ]
@@ -159,3 +162,6 @@ plot_formats = [("png", 150)]
 plot_html_show_formats = False
 plot_html_show_source_link = False
 plot_working_directory = HERE.parent  # Project root
+
+# link config
+rtd_links_prefix = PurePosixPath("src")

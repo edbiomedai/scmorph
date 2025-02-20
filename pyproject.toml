@@ -48,6 +48,7 @@ optional-dependencies.doc = [
   "ipython",
   "myst-nb>=1.1",
   "pandas",
+  "scanpydoc>=0.14.1",
   "scmorph",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
@@ -91,6 +92,7 @@ line-length = 100
 src = [ "src" ]
 extend-include = [ "*.ipynb" ]
 
+exclude = [ "docs/extensions" ]
 format.docstring-code-format = true
 
 lint.select = [
