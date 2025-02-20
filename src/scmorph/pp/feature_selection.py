@@ -208,6 +208,8 @@ def kruskal_filter(adata, test_column="PlateID", sigma=1, sigma_function="mad") 
         The column name in `adata.obs` that contains the batch information.
     sigma
         The number of standard deviations to use for the threshold.
+    sigma_function
+        The function to use for calculating the standard deviation. Either "mad" or "std".
 
     Returns
     -------
