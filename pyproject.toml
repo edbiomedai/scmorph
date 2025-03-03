@@ -103,6 +103,7 @@ lint.select = [
   "E",      # Error detected by Pycodestyle
   "F",      # Errors detected by Pyflakes
   "I",      # isort
+  "NPY201", # numpy 2
   "RUF100", # Report unused noqa directives
   "TID",    # flake8-tidy-imports
   "UP",     # pyupgrade
