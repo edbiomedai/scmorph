@@ -1,5 +1,6 @@
 import scanpy as sc
 
+from .hit_calling import get_ks
 from .trajectories import (
     slingshot,
     test_common_trajectory,

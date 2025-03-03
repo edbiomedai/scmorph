@@ -145,7 +145,7 @@ def cumulative_density(
     if col_name == "PC":
         var = np.round(adata.uns["pca"]["variance_ratio"] * 100, 1).astype(str)
         var = [f"{i}%" for i in var]
-        df.loc[:, col_name] = [f"{i+1}, ({var[i]})" for i in df.loc[:, col_name]]
+        df.loc[:, col_name] = [f"{i + 1}, ({var[i]})" for i in df.loc[:, col_name]]
     if col_name == "UMAP":
         df.loc[:, col_name] = df.loc[:, col_name] + 1
 

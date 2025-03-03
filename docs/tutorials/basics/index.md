@@ -5,4 +5,5 @@
 
 batch_effects
 feature_selection
+hit_calling
 ```

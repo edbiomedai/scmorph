@@ -33,4 +33,12 @@ Release in preparation for JOSS submission.
 This is a minor release that addresses some issues with building documentation
 and continous integration.
 
+## 0.3.0
+
+Release of hit calling tools.
+
+- Documentation for pseudotime module
+- Single-cell based hit calling integration
+- KW test & feature selection improvements
+
 <!--next-version-placeholder-->

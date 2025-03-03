@@ -13,5 +13,6 @@ io
 qc
 preprocessing
 plotting
+tools
 datasets
 ```

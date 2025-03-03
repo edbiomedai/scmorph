@@ -12,7 +12,7 @@ from .correlation import corr
 
 def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnData:
     """
-    correlate features and save in `.varm` slot
+    Correlate features and save in `.varm` slot
 
     Parameters
     ----------
