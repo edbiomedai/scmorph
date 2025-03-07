@@ -20,6 +20,7 @@ def test_plot_pca(pca_result, image_comparer):
     save_and_compare_images("pca")
 
 
+@pytest.mark.skip(reason="large deviance on GH runner")
 def test_plot_umap(umap_result, image_comparer):
     save_and_compare_images = partial(image_comparer, ROOT, tol=15)
     sm.pl.umap(umap_result, color="Image_Metadata_Plate", show=False)
