@@ -1,5 +1,4 @@
-import re
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable
 from functools import partial
 from inspect import signature
 from textwrap import dedent
@@ -8,33 +7,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from anndata import AnnData
-
-from scmorph.logging import get_logger
-
-
-def _infer_names(target: str, options: Iterable[str]) -> Sequence[str]:
-    logger = get_logger()
-
-    if target == "batch":
-        reg = re.compile("batch|plate", re.IGNORECASE)
-    elif target in {"well", "group"}:
-        reg = re.compile("well$")
-    elif target == "treatment":
-        reg = re.compile("treatment", re.IGNORECASE)
-    elif target == "site":
-        reg = re.compile("site$")
-    else:
-        raise ValueError("type must be one of 'batch', 'well', 'treatment', 'site'")
-    res = [x for x in options if reg.search(x)]
-    if len(res) > 1:
-        logger.warning(
-            f"Found multiple {target} columns, are these duplicates?\n"
-            + "Will just use the first one, if that is not desired please specify "
-            + f"the correct column name using the {target}_key argument.\n"
-            + f"Problematic columns were: {', '.join(res)}"
-        )
-        res = [res[0]]
-    return res
 
 
 def _grouped_obs_fun(
@@ -182,34 +154,16 @@ def group_obs_fun_inplace(
     return adata
 
 
-def _get_group_keys(
-    adata: AnnData,
-    treatment_key: str | None,
-    group_key: str | None | list[str],
-) -> tuple[list[str], list[str]]:
-    # inferring treatment names if necessary
-    if isinstance(treatment_key, str):
-        if treatment_key == "infer":
-            treatment_col = _infer_names("treatment", adata.obs.columns)
-        else:
-            treatment_col = [treatment_key]
-    elif treatment_key is None:
-        treatment_col = []
-    else:
-        treatment_col = treatment_key
-
-    if isinstance(group_key, str):
-        if group_key == "infer":
-            group_key = _infer_names("group", adata.obs.columns)  # type: ignore
-        else:
-            group_key = [group_key]
-    elif group_key is None:
-        group_key = []
-    # end inference
-
-    group_keys = [*treatment_col, *group_key]
-    group_keys = [x for x in group_keys if x]  # remove None's
-    return group_keys, treatment_col  # type: ignore
+def _flatten(x) -> list[Any]:
+    if x is None:
+        return []
+    if isinstance(x, str):
+        return [x]
+    if isinstance(x, Iterable):
+        res = [a for i in x for a in _flatten(i)]
+        res = [a for a in res if a is not None]
+        return res
+    return [x]
 
 
 def get_grouped_op(

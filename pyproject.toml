@@ -41,7 +41,6 @@ dependencies = [
 ]
 
 optional-dependencies.dev = [ "pre-commit", "setuptools-scm", "twine>=4.0.2" ]
-
 optional-dependencies.doc = [
   "docutils>=0.8,!=0.18.*,!=0.19.*",
   "ipykernel",
@@ -58,7 +57,7 @@ optional-dependencies.doc = [
   "sphinxcontrib-bibtex>=1",
   "sphinxext-opengraph",
 ]
-optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "scmorph" ]
+optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit", "scmorph" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/edbiomedai/scmorph"
@@ -79,6 +78,9 @@ features = [ "doc" ]
 scripts.build = "sphinx-build -M html docs docs/_build {args}"
 scripts.open = "python -m webbrowser -t docs/_build/html/index.html"
 scripts.clean = "git clean -fdX -- {args:docs}"
+
+[tool.hatch.envs.hatch-test]
+features = [ "test" ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = [ "3.10", "3.11", "3.12" ]
@@ -134,12 +136,14 @@ lint.pydocstyle.convention = "numpy"
 testpaths = [ "tests" ]
 xfail_strict = true
 addopts = [
-  "--import-mode=importlib", # allow using test files with same name
+  "--import-mode=importlib", # allow using test files with same name,
+  "--pyargs",
 ]
+nunit_attach_on = "fail"
 
 [tool.coverage.run]
 source = [ "scmorph" ]
-omit = [ "**/test_*.py" ]
+omit = [ "**/test_*.py", "*/datasets/_datasets.py" ]
 
 [tool.cruft]
 skip = [

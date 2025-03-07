@@ -33,7 +33,6 @@ Tools to reduce number of features based on correlation or confounder associatio
     :toctree: generated/
 
     select_features
-    corr
     kruskal_test
     kruskal_filter
 

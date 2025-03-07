@@ -126,7 +126,7 @@ def cumulative_density(
     elif layer == "umap":
         col_name = "UMAP"
     else:
-        col_name = layer[2:]
+        col_name = layer
 
     df = pd.DataFrame(x_vals)
     if color is not None:
@@ -167,7 +167,13 @@ def cumulative_density(
 
 
 def ridge_plot(
-    adata: AnnData, x: str, y: str, layer: str = "X", n_col: int = 1, **kwargs: Any
+    adata: AnnData,
+    x: str,
+    y: str,
+    layer: str = "X",
+    n_col: int = 1,
+    show=True,
+    **kwargs: Any,
 ) -> FacetGrid:
     """
     Plot features as ridge plot.
@@ -190,6 +196,9 @@ def ridge_plot(
 
     n_col
         How many columns to plot over.
+
+    show
+        Whether to show the plot.
 
     kwargs
         Other arguments passed to seaborn.FacetGrid.
@@ -253,4 +262,6 @@ def ridge_plot(
     g.set(yticks=[], ylabel="")
     g.despine(bottom=True, left=True)
 
+    if show:
+        plt.show()
     return g

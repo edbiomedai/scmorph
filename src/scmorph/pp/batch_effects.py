@@ -4,58 +4,59 @@ import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph.utils import _infer_names, get_grouped_op, group_obs_fun_inplace
+from scmorph.utils import get_grouped_op, group_obs_fun_inplace
 
 
 def compute_batch_effects(
     adata: AnnData,
+    batch_key: str,
     bio_key: str | None = None,
-    batch_key: str = "infer",
-    log: bool | None = False,
     treatment_key: str | None = None,
     control: str = "DMSO",
     progress: bool = True,
+    log: bool | None = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compute batch effects
 
     Compute batch effects using scone's method of deconvoluting technical from biological effects
     through linear modeling. If no biological differences are expected (e.g. because data is all from
-    the same cell line), set `bio_key` to None.
+    the same cell line), set `bio_key` to `None`.
 
     For details on scone, see [Cole19]_. For details on the results particularly view Eq. 3.
 
     Parameters
     ----------
     adata
-            Annotated data matrix
-
-    bio_key
-            Name of column used to delineate biological entities, e.g. cell lines.
+        Annotated data matrix
 
     batch_key
-            Name of column used to delineate batch effects, e.g. plates. Will try to guess if
-            no argument is given.
+        Name of column used to delineate batch effects, e.g. plates. Will try to guess if
+        no argument is given.
+
+    bio_key
+        Name of column used to delineate biological entities, e.g. cell lines.
+
+    treatment_key
+        Name of column used to delineate treatments. This is used when computing batch effects across drug-treated plates.
+        In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+        If using, please also see `control`.
+
+    control
+        Name of control treatment. Must be valid value in `treatment_key`.
+
+    progress
+        Whether to show a progress bar
 
     log
-            Whether to compute log1p-transformed batch effects. Caution: this will throw out any feature with values smaller
-            than -0.99, because it would result in non-finite values.
-
-    treatment_key: str
-            Name of column used to delineate treatments. This is used when computing batch effects across drug-treated plates.
-            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
-            If using, please also see `control`.
-
-    control: str
-            Name of control treatment. Must be valid value in `treatment_key`.
-
-    progress: bool
-            Whether to show a progress bar
+        Whether to compute log1p-transformed batch effects. Caution: this will throw out any feature with values smaller
+        than -0.99, because it would result in non-finite values.
 
     Returns
     -------
     betas
         Biological effects, i.e. how much each feature varied because of biological differences
+        If `bio_key` is None, this will be an empty DataFrame.
 
     gammas
         Technical effects, i.e. batch effects.
@@ -64,9 +65,6 @@ def compute_batch_effects(
     from patsy.contrasts import Treatment
 
     withbio = bio_key is not None
-
-    if batch_key == "infer":
-        batch_key = _infer_names("batch", adata.obs.columns)[0]
 
     # combine keys for batch and bio
     joint_keys = [i for i in [bio_key, batch_key] if i is not None]
@@ -119,12 +117,13 @@ def compute_batch_effects(
 
 def remove_batch_effects(
     adata: AnnData,
+    batch_key: str,
     bio_key: str | None = None,
-    batch_key: str = "infer",
-    log: bool = False,
-    copy: bool = False,
     treatment_key: str | None = None,
     control: str = "DMSO",
+    copy: bool = False,
+    progress: bool = False,
+    log: bool = False,
 ) -> None | AnnData:
     """
     Remove batch effects
@@ -139,29 +138,32 @@ def remove_batch_effects(
     Parameters
     ----------
     adata
-            Annotated data matrix
-
-    bio_key
-            Name of column used to delineate biological entities, e.g. cell lines.
+        Annotated data matrix
 
     batch_key
-            Name of column used to delineate batch effects, e.g. plates. Will try to guess if
-            no argument is given.
+        Name of column used to delineate batch effects, e.g. plates. Will try to guess if
+        no argument is given.
 
-    log
-            Whether to compute log-transformed batch effects. Caution: this will drop any feature with values smaller
-            than -0.99, because it would result in non-finite values.
-
-    copy
-            If False, will perform operation in-place, else return a modified copy of the data.
+    bio_key
+        Name of column used to delineate biological entities, e.g. cell lines.
 
     treatment_key: str
-            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
-            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
-            If using, please also see `control`.
+        Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+        In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+        If using, please also see `control`.
 
     control: str
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
+
+    copy
+        If False, will perform operation in-place, else return a modified copy of the data.
+
+    progress
+        Whether to show a progress bar
+
+    log
+        Whether to compute log-transformed batch effects. Caution: this will drop any feature with values smaller
+        than -0.99, because it would result in non-finite values.
 
     Returns
     -------
@@ -171,11 +173,12 @@ def remove_batch_effects(
         adata = adata.copy()
     betas, gammas = compute_batch_effects(
         adata,
-        bio_key=bio_key,
         batch_key=batch_key,
-        log=log,
+        bio_key=bio_key,
         treatment_key=treatment_key,
         control=control,
+        progress=progress,
+        log=log,
     )
     adata.uns["batch_effects"] = pd.concat((betas, gammas), axis=1) if len(betas) > 0 else gammas
 

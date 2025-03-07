@@ -142,6 +142,7 @@ def select_features(
 def kruskal_test(
     adata,
     test_column="PlateID",
+    progress=True,
 ) -> AnnData:
     """
     Perform Kruskal-Wallis H-test for each feature across batches.
@@ -155,6 +156,8 @@ def kruskal_test(
         Annotated data matrix.
     test_column
         The column name in `adata.obs` that contains the batch information.
+    progress
+        Whether to show a progress bar.
 
     Returns
     -------
@@ -164,7 +167,8 @@ def kruskal_test(
     confounder_X = adata.obs[test_column].astype(str).astype("category").values
     test_results = {}
 
-    for selected_feature in tqdm(adata.var.index):
+    iterator = tqdm(adata.var.index) if progress else adata.var.index
+    for selected_feature in iterator:
         feature_X = adata[:, selected_feature].X[:, 0]
         conf_indices_d = (
             pd.DataFrame({test_column: confounder_X, "feature": feature_X})
@@ -196,7 +200,9 @@ def kruskal_test(
     return adata
 
 
-def kruskal_filter(adata, test_column="PlateID", sigma=1, sigma_function="mad") -> AnnData:
+def kruskal_filter(
+    adata, test_column="PlateID", sigma=1, sigma_function="mad", copy=False
+) -> AnnData | None:
     """
     Filter features based on Kruskal-Wallis H-test statistics.
 
@@ -210,6 +216,8 @@ def kruskal_filter(adata, test_column="PlateID", sigma=1, sigma_function="mad") 
         The number of standard deviations to use for the threshold.
     sigma_function
         The function to use for calculating the standard deviation. Either "mad" or "std".
+    copy
+        Whether to return a copy or modify `adata` inplace
 
     Returns
     -------
@@ -242,5 +250,9 @@ def kruskal_filter(adata, test_column="PlateID", sigma=1, sigma_function="mad") 
 
     adata = threshold_statistic(adata, test_column)
 
-    feat_keep = filter_threshold_statistic(adata, test_column)
-    return adata[:, feat_keep]
+    keep = filter_threshold_statistic(adata, test_column)
+
+    if not copy:
+        adata._inplace_subset_var(keep)
+        return None
+    return adata[:, keep].copy()

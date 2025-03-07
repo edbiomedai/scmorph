@@ -31,9 +31,24 @@ def test_parse_csv_header(rohban_minimal_csv_file):
     assert isinstance(header, list) and len(header) == raw_cols
 
 
+def test_parse_csv_headers(rohban_minimal_csv_file):
+    header = sm.io.io._parse_csv_headers(
+        [rohban_minimal_csv_file] * 2,
+        n_headers=n_headers,
+        sanitize=True,
+        sep=",",
+    )
+    assert isinstance(header, list) and len(header) == raw_cols
+
+
 def test_parse_csv(rohban_minimal_csv_file):
     df = sm.io.io._parse_csv(rohban_minimal_csv_file, n_headers=n_headers, sep=",")
     assert isinstance(df, pd.DataFrame) and df.shape == (4, raw_cols)
+
+
+def test_parse_csvs(rohban_minimal_csv_file):
+    df = sm.io.io._parse_csv([rohban_minimal_csv_file] * 2, n_headers=n_headers, sep=",")
+    assert isinstance(df, pd.DataFrame) and df.shape == (4 * 2, raw_cols)
 
 
 def test_split_feature_names(rohban):
@@ -51,6 +66,8 @@ def test_split_meta(rohban_minimal_csv_file):
 
 def test_make_AnnData(rohban):
     df = pd.concat([rohban.obs, rohban.to_df()], axis=1)
+    # add in fake column that should be dropped
+    df["Nuclei_NumberOfNeigbors"] = 0
     adata = sm.io.make_AnnData(df, feature_delim="_")
     assert isinstance(adata, AnnData)
 

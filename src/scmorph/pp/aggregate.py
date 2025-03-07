@@ -4,24 +4,23 @@ from anndata import AnnData
 
 from scmorph.logging import get_logger
 from scmorph.pp import drop_na, pca, scale
-from scmorph.utils import _get_group_keys, _infer_names, get_grouped_op
+from scmorph.utils.utils import _flatten, get_grouped_op
 
 
 def _split_adata_control_drugs(
-    adata: AnnData, treatment_key: str, control: str, group_key: str | None = None
-) -> tuple[AnnData, AnnData, list[str]]:
+    adata: AnnData, treatment_key: str, control: str
+) -> tuple[AnnData, AnnData]:
     """Split adata into control and drugs"""
-    group_keys, treatment_col = _get_group_keys(adata, treatment_key, group_key)
-
-    adata_control = adata[(adata.obs[treatment_col] == control).to_numpy(), :]
+    adata_control = adata[(adata.obs[treatment_key] == control).to_numpy(), :]
     adata_drugs = adata[~(adata.obs.index.isin(adata_control.obs.index)), :]
 
-    return adata_control, adata_drugs, group_keys
+    return adata_control, adata_drugs
 
 
 def _pca_aggregate(adata: AnnData, cum_var_explained: float = 0.9) -> tuple[AnnData, np.ndarray]:
-    scale(adata)
-    pca(adata)
+    if "X_pca" not in adata.obsm:
+        scale(adata)
+        pca(adata)
 
     weights = adata.uns["pca"]["variance_ratio"]
 
@@ -100,8 +99,7 @@ def _pca_mahalanobis(
 
 def aggregate(
     adata: AnnData,
-    well_key: str = "infer",
-    group_keys: str | list[str] | None = None,
+    group_keys: str | list[str],
     method: str = "median",
     progress: bool = True,
 ) -> AnnData:
@@ -112,10 +110,8 @@ def aggregate(
     ----------
     adata
         Annotated data matrix
-    well_key
-        Name of column in metadata used to define wells.
     group_keys
-        Other column names to group by, e.g. plate names
+        Column names to group by, e.g. "Well" or "PlateID"
     method
         Which aggregation to perform. Must be one of 'mean', 'median', 'std',
         'var', 'sem', 'mad', and 'mad_scaled' (i.e. median/mad)
@@ -136,22 +132,20 @@ def aggregate(
     dists
             Aggregated annotated data matrix
     """
-    if well_key == "infer":
-        well_key = _infer_names("well", adata.obs.columns)[0]
-
     if not isinstance(group_keys, list):
-        group_keys = [group_keys] if group_keys is not None else []
+        group_keys = [group_keys]
 
-    group_keys = [well_key, *group_keys]
+    adata = get_grouped_op(adata, group_keys, operation=method, as_anndata=True, progress=progress)
 
-    return get_grouped_op(adata, group_keys, operation=method, as_anndata=True, progress=progress)
+    assert isinstance(adata, AnnData)
+    return adata
 
 
 def aggregate_mahalanobis(
     adata: AnnData,
-    treatment_key: str = "infer",
+    treatment_key: str,
     control: str = "DMSO",
-    well_key: str = "infer",
+    group_key: str | None = None,
     per_treatment: bool = False,
     cov_include_treatment: bool = False,
     cov_from_single_cell: bool = False,
@@ -171,8 +165,8 @@ def aggregate_mahalanobis(
     control
         Name of control treatment. Must be valid value in `treatment_key`.
 
-    well_key
-        Name of column in metadata used to define wells. This is needed
+    group_key
+        Name of column in metadata used to define groups, such as wells. This is needed
         to define the covariance matrix for Mahalanobis distance.
 
     per_treatment
@@ -198,8 +192,8 @@ def aggregate_mahalanobis(
     import anndata
     from tqdm import tqdm
 
-    group_keys, treatment_col = _get_group_keys(adata, treatment_key, well_key)
-    treatment_col = treatment_col[0]
+    group_keys = _flatten([treatment_key, group_key])
+    treatment_col = treatment_key
 
     # aggregate
     agg_adata = get_grouped_op(
@@ -210,9 +204,7 @@ def aggregate_mahalanobis(
     if not per_treatment and not cov_from_single_cell:
         return _pca_mahalanobis(agg_adata, treatment_col, control)
 
-    adata_control, adata_drugs, _ = _split_adata_control_drugs(
-        agg_adata, treatment_col, control, well_key
-    )
+    adata_control, adata_drugs = _split_adata_control_drugs(agg_adata, treatment_col, control)
 
     dists = pd.Series(
         index=adata_drugs.obs[treatment_col].unique(),
@@ -224,7 +216,7 @@ def aggregate_mahalanobis(
     if cov_from_single_cell:
         from scipy.spatial.distance import mahalanobis
 
-        adata_control_sc, _, _ = _split_adata_control_drugs(adata, treatment_col, control, well_key)
+        adata_control_sc, _ = _split_adata_control_drugs(adata, treatment_col, control)
         cov = np.cov(adata_control_sc.X, rowvar=False)
         try:
             vi = np.linalg.inv(cov)
@@ -235,7 +227,7 @@ def aggregate_mahalanobis(
             logger = get_logger()
             logger.warning(
                 f"Covariance matrix estimated from single cells of {control} was not invertible."
-                + " This is likely because there are very few cells. Falling back to estimating covariance matrix from aggregate data."
+                + " This is likely because there are too few cells. Falling back to estimating covariance matrix from aggregate data."
             )
 
             cov_from_single_cell = False
@@ -268,7 +260,7 @@ def aggregate_mahalanobis(
 
 def aggregate_pc(
     adata: AnnData,
-    treatment_key: str = "infer",
+    treatment_key: str,
     control: str = "DMSO",
     cum_var_explained: float = 0.9,
     progress: bool = True,
@@ -300,13 +292,12 @@ def aggregate_pc(
     dists
         Weighted principal component distances to control
     """
-    group_keys, treatment_col = _get_group_keys(adata, treatment_key, None)
-
-    agg_adata = get_grouped_op(adata, group_keys, "median", progress=progress, as_anndata=True)
+    agg_adata = get_grouped_op(adata, [treatment_key], "median", progress=progress, as_anndata=True)
     agg_adata, weights = _pca_aggregate(agg_adata, cum_var_explained)
+    assert isinstance(agg_adata, AnnData)
 
     # determine reference point
-    agg_control = agg_adata[(agg_adata.obs[treatment_col] == control).to_numpy(), :]
+    agg_control = agg_adata[(agg_adata.obs[treatment_key] == control).to_numpy(), :]
     control_centroid = agg_control.obsm["X_pca"]
 
     # compute euclidean distances
@@ -318,13 +309,13 @@ def aggregate_pc(
         )
     )
 
-    return pd.Series(dist, index=agg_adata.obs[treatment_col[0]], name="pc_dist")
+    return pd.Series(dist, index=agg_adata.obs[treatment_key], name="pc_dist")
 
 
 # TODO: check speedup options
 def aggregate_ttest(
     adata: AnnData,
-    treatment_key: str = "infer",
+    treatment_key: str,
     control: str = "DMSO",
     group_key: str | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -360,14 +351,13 @@ def aggregate_ttest(
 
     logger = get_logger()
 
-    adata_control, adata_drugs, group_keys = _split_adata_control_drugs(
-        adata, treatment_key, control, group_key
-    )
+    adata_control, adata_drugs = _split_adata_control_drugs(adata, treatment_key, control)
+    group_keys = _flatten([treatment_key, group_key])
 
     tstats = {}
     pvals = {}
 
-    def _get_stats(control: np.array, drug: np.array) -> tuple[np.array, np.array]:
+    def _get_stats(control: np.ndarray, drug: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         tstat, pval = scipy.stats.ttest_ind(control, drug, axis=0, equal_var=False)
         return tstat, pval
 

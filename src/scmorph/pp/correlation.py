@@ -42,8 +42,8 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
 
     Note
     ----------
-    This code is an implementation of [:cite:p:`LinHan2021`]_.
-    Implementation by Jesko Wagner.
+    This logic was originally implemented by [:cite:p:`LinHan2021`]_.
+    This code is a reimplementation by Jesko Wagner.
     """
 
     @jit(nopython=True)
