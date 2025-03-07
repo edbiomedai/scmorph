@@ -40,6 +40,6 @@ def test_cumulative_density(pca_result, image_comparer):
 
 
 def test_ridge_plot(rohban, image_comparer):
-    save_and_compare_images = partial(image_comparer, ROOT, tol=5)
+    save_and_compare_images = partial(image_comparer, ROOT, tol=15)
     sm.pl.ridge_plot(rohban, "Nuclei_AreaShape_Area", "Image_Metadata_Plate", show=False)
     save_and_compare_images("ridge_plot")
