@@ -7,6 +7,8 @@ import anndata as ad
 import numpy as np
 import pytest
 
+import scmorph as sm
+
 ######################################################
 # These functions are reused from scanpy
 # (c) 2025 scverse®
@@ -112,3 +114,20 @@ def adata_fixed_values():
     adata.obs.columns = ["Treatment"]
     adata.obs["Well"] = np.repeat(range(10), 20)
     return adata
+
+
+@pytest.fixture
+def pca_result():
+    adata = sm.datasets.rohban2017_minimal()
+    sm.pp.drop_na(adata)
+    sm.pp.scale(adata)
+    sm.pp.pca(adata, n_comps=2)
+    return adata
+
+
+@pytest.fixture
+def umap_result(pca_result):
+    pca_result = pca_result[:100].copy()
+    sm.pp.neighbors(pca_result)
+    sm.pp.umap(pca_result)
+    return pca_result

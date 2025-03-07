@@ -25,23 +25,6 @@ def adata_treat_mini(adata_treat):
     return adata_treat[:200, :10]
 
 
-@pytest.fixture
-def pca_result():
-    adata = sm.datasets.rohban2017_minimal()
-    sm.pp.drop_na(adata)
-    sm.pp.scale(adata)
-    sm.pp.pca(adata, n_comps=2)
-    return adata
-
-
-@pytest.fixture
-def umap_result(pca_result):
-    pca_result = pca_result[:100].copy()
-    sm.pp.neighbors(pca_result)
-    sm.pp.umap(pca_result)
-    return pca_result
-
-
 def test_drop_na(adata):
     assert sm.pp.drop_na(adata, inplace=False).shape == (data_nrows_no_na, 1687)
 
@@ -230,7 +213,7 @@ def test_correlation(adata_treat_mini):
     assert np.all(corr <= 1) and np.all(corr >= -1)
 
 
-@pytest.mark.filterwarnings("ignore:RuntimeWarning")
+@pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_feature_correlations(adata):
     raw_shape = adata.shape
     sm.pp.select_features(adata)
