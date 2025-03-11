@@ -147,7 +147,7 @@ def count_cells_per_group(
     obs = adata.obs
     new_obs = (
         obs.groupby(group_keys, observed=True)
-        .apply(len)
+        .apply(len, include_groups=False)
         .rename("cells_per_group")
         .to_frame()
         .reset_index()
