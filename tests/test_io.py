@@ -65,7 +65,7 @@ def test_split_meta(rohban_minimal_csv_file):
 
 
 def test_make_AnnData(rohban):
-    df = pd.concat([rohban.obs, rohban.to_df()], axis=1)
+    df = sm.utils.utils.anndata_to_df(rohban)
     # add in fake column that should be dropped
     df["Nuclei_NumberOfNeigbors"] = 0
     adata = sm.io.make_AnnData(df, feature_delim="_")
