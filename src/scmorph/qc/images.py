@@ -1,217 +1,158 @@
-import re
-from typing import Protocol
-from warnings import warn
-
 import numpy as np
 import pandas as pd
 from anndata import AnnData
 
-from scmorph.io import make_AnnData
+import scmorph as sm
 
 
-# Helper functions and classes for typing
-class _Classifier(Protocol):
-    """Classifier is a generic class to describe the type of a classifier."""
-
-    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
-        self.fit(X, y)
-
-    def predict(self, X: np.ndarray) -> np.ndarray:
-        return self.predict(X)
+def _embed(adata):
+    sm.pp.scale(adata)
+    sm.pp.pca(adata)
 
 
-def _is_label_binary(labels: np.ndarray | pd.Series) -> bool:
+def _get_pca(adata):
+    if "X_pca" not in adata.obsm_keys():
+        _embed(adata)
+    return adata.obsm["X_pca"] * adata.uns["pca"]["variance_ratio"]
+
+
+def kNN_dists(adata: AnnData, pcs: int = 3, neighbors: int = 10):
     """
-    Check if labels are binary
+    Compute maximum kNN distance (i.e. radius of smallest enclosing circle of kNNs)
 
     Parameters
     ----------
-    labels
-            Vector of labels
-
-    Returns
-    -------
     adata
-            True if labels are binary
-    """
-    return len(set(labels)) == 2
-
-
-def _default_qc_classifiers(binary: bool = True) -> _Classifier:
-    """
-    Default classifiers for image-based QC
-
-    Parameters
-    ----------
-    binary
-            Is the classification a binary problem?
+        image-level data
+    pcs
+        Number of PCs to use
+    neighbors
+        Number of image neigbors in PC
 
     Returns
     -------
-    classifier
-        LDA in binary case, MultiTaskLasso in multiclass case.
+    For each image, how far is the k-th nearest neighbor away in PC space (measured as Euclidean distance)
     """
-    if binary:
-        from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+    from sklearn.neighbors import NearestNeighbors
 
-        classifier = LinearDiscriminantAnalysis()
-    else:
-        from sklearn.linear_model import MultiTaskLasso
+    a = _get_pca(adata)[:, :pcs]
+    nbrs = NearestNeighbors(n_neighbors=neighbors + 1).fit(a)
+    d, _ = nbrs.kneighbors(a)
+    dss = d[:, 1:]
+    dist = dss[:, neighbors - 1]
+    return dist / np.sqrt(pcs)
 
-        classifier = MultiTaskLasso()
-    return classifier
 
-
-def _prob_to_pred(pred: np.ndarray, decision_boundary: float = 0.5) -> np.ndarray:
+def unsupervised_imageQC(qcadata: AnnData, pcs: int = 3, neighbors: int = 10):
     """
-    Threshold predictions to binary labels
+    Compute maximum kNN distance (i.e. radius of smallest enclosing circle of kNNs).
+    This function will perform center-scaling and PCA transform, before computing distances.
+    It also saves the image-level PCA in obsm["X_pca"].
 
     Parameters
     ----------
-    pred
-        Array of predicted labels
-
-    decision_boundary
-        Decision boundary for binary classification
-
-    Returns
-    -------
-    adata
-        Array of binary labels
-    """
-    # Check if predictions are strings, in which case just return them
-    if not np.issubdtype(pred.dtype, np.number):
-        return pred.dtype
-    if len(pred.shape) > 1:
-        pred = np.argmax(pred, axis=1)
-    else:
-        if pred.dtype == int:
-            return pred  # model is not regression
-        pred = np.where(pred > decision_boundary, 1, 0)
-    return pred
-
-
-# User-facing functions
-
-
-def read_image_qc(
-    filename: str,
-    meta_cols: list[str] | None = None,
-    label_col: str = "Image_Metadata_QClabel",
-    sep: str = ",",
-    feature_delim: str = "_",
-) -> AnnData:
-    """
-    Read image metrics from csv file
-
-    Note that you will manually have to add a labeled column into the file.
-
-    Parameters
-    ----------
-    filename
-            Path to .csv file
-
-    meta_cols
-            Names of metadata columns. `None` for automatic detection.
-
-    label_col
-            Column name of column containing labels
-
-    sep
-            Column deliminator
-
-    feature_delim
-            Character delimiting feature names
+    qcadata
+        image-level data
+    pcs
+        Number of PCs
+    neighbors
+        Number of image neigbors in PC
 
     Returns
     -------
-    adata
+    Image-level data with added ImageQCDistance in `obs` and `X_pca` in `obsm`. Does not operate on X in-place.
     """
-    df = pd.read_csv(filename, sep=sep)
-    labels = df.pop(label_col)
-
-    if meta_cols is None:
-        re_meta = re.compile("Metadata", re.IGNORECASE)
-        meta_cols = df.filter(regex=re_meta).columns.to_list()
-
-    qc = make_AnnData(df, meta_cols, feature_delim=feature_delim)
-    qc.obs["label"] = labels.values
-    return qc
+    qcadatac = qcadata.copy()
+    dists = kNN_dists(qcadatac, pcs, neighbors)
+    qcadata.obs["ImageQCDistance"] = dists
+    qcadata.obsm["X_pca"] = qcadatac.obsm["X_pca"]
+    qcadata.uns["pca"] = qcadatac.uns["pca"]
+    qcadata.varm["PCs"] = qcadatac.varm["PCs"]
+    return qcadata
 
 
-def qc_images(
+def _filter_adata_by_qc(scadata: AnnData, qcadata: AnnData):
+    return (
+        scadata[scadata.obs["PassQC"] == "True"].copy(),
+        qcadata[qcadata.obs["PassQC"] == "True"].copy(),
+    )
+
+
+def qc_images_by_dissimilarity(
     adata: AnnData,
-    qc: AnnData,
-    classifier: None | _Classifier = None,
-    passing_label: int = 1,
-    copy: bool = False,
-) -> AnnData:
+    qcadata: AnnData,
+    filter: bool = True,
+    threshold: float = 0.05,
+    **kwargs,
+) -> tuple[AnnData, AnnData]:
     """
-    Perform cell-QC based on image metrics, if needed using a classifier and a subset of labeled images.
+    Perform QC of datasets using unsupervised, kNN-based distance filtering
 
     Parameters
     ----------
     adata
-            AnnData object with single-cell data.
-
-    qc
-            AnnData object with image-level data.
-
-    classifier
-            Classifier to use for prediction. If `None`, will use the LASSO classifier.
-
-    passing_label
-            Label to use for passing images.
-
-    copy
-            Return a copy instead of writing to `adata`.
+        Single-cell data
+    qcadata
+        Image-level data
+    filter
+        Whether to return filtered or unfiltered (i.e. only annotated) adatas
+    threshold
+        Threshold for removal
 
     Returns
     -------
-    adata
+    Tuple of single-cell and image-level adatas
     """
-    if "label" not in qc.obs.columns:
-        raise ValueError("QC data must have a label column")
+    merge_cols = adata.obs.columns.isin(qcadata.obs.columns)
+    merge_cols = adata.obs.columns[merge_cols]
+    merge_cols = merge_cols.drop(["PassQC", "ImageQCDistance"], errors="ignore")
+    merge_cols = merge_cols.to_list()
+    assert len(merge_cols) > 0, "No columns to merge on"
+    qcadata = unsupervised_imageQC(qcadata, **kwargs)
+    qcadata.obs["PassQC"] = qcadata.obs["ImageQCDistance"] < threshold
+    qcadata.obs["PassQC"] = qcadata.obs["PassQC"].astype(str).astype("category")
+    new = pd.merge(adata.obs, qcadata.obs, how="left", on=merge_cols)
+    new.index = adata.obs.index
+    adata.obs = new
+    if not filter:
+        return adata, qcadata
+    return _filter_adata_by_qc(adata, qcadata)
 
-    # merge QC metadata with model metadata
-    qc_full = pd.merge(adata.obs, qc.obs.reset_index(), how="left")
-    if qc_full["index"].isna().any():
-        raise ValueError(
-            "Some wells do not have corresponding QC data." + " Did you import the correct QC data?"
-        )
 
-    # extract train data indeces
+def count_cells_per_group(
+    adata: AnnData,
+    group_keys: list[str],
+    inplace: bool = True,
+):
+    """
+    Count number of cells per group.
 
-    if not qc_full["label"].isna().any():
-        warn(
-            "All wells have complete QC data. No inference will be performed.",
-            stacklevel=1,
-        )
-        adata.obs["qc_label"] = qc_full["label"]
-    else:
-        train_ind = qc.obs.loc[~qc.obs["label"].isna()].index
-        qc_train = qc[train_ind].copy()
-        qc_pred = qc[~qc.obs_names.isin(train_ind)].copy()
+    Parameters
+    ----------
+    adata
+        Annotated data matrix.
+    group_keys
+        List of keys to group by, typically plate, well and site or image ID.
+    inplace
+        Whether to modify the AnnData object in place.
 
-        if classifier is None:
-            is_prob_binary = _is_label_binary(qc_train.obs["label"])
-            classifier = _default_qc_classifiers(is_prob_binary)
-
-        classifier.fit(qc_train.X, qc_train.obs["label"])
-        pred = classifier.predict(qc_pred.X)
-        pred = _prob_to_pred(pred)
-
-        qc_train.obs["assigned_label"] = qc_train.obs["label"]
-        qc_pred.obs["assigned_label"] = pred
-
-        meta_labelled = pd.concat([qc_train.obs, qc_pred.obs])
-        # Save QC data to model's obsm slot
-        adata.obs["image_qc"] = pd.merge(adata.obs, meta_labelled, how="left")[
-            "assigned_label"
-        ].values
-
-    if copy:
-        return adata[adata.obs["image_qc"] == passing_label, :].copy()
-
-    adata._inplace_subset_obs(adata.obs["image_qc"] == passing_label)
+    Returns
+    -------
+    Annotated data matrix with an additional column "cells_per_group" in `adata.obs` containing the number of cells group.
+    """
+    if not inplace:
+        adata = adata.copy()
+    if not isinstance(group_keys, list):
+        group_keys = [group_keys]
+    obs = adata.obs
+    new_obs = (
+        obs.groupby(group_keys, observed=True)
+        .apply(len)
+        .rename("cells_per_group")
+        .to_frame()
+        .reset_index()
+        .merge(obs, how="right")
+        .set_index(obs.index)
+    )
+    adata.obs = new_obs
     return adata

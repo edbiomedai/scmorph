@@ -1,3 +1,2 @@
-from .cells import calculate_qc_metrics
-from .images import qc_images, read_image_qc
+from .images import count_cells_per_group, qc_images_by_dissimilarity
 from .outliers import filter_outliers
