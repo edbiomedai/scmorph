@@ -14,8 +14,8 @@ def adata():
 
 
 @pytest.fixture
-def adata_treat():
-    adata = sm.datasets.rohban2017_minimal()
+def adata_treat(adata_no_na):
+    adata = adata_no_na
     adata.obs["TARGETGENE"] = adata.obs["TARGETGENE"].astype(str).replace("nan", "DMSO")
     return adata
 
@@ -25,8 +25,8 @@ def adata_treat_mini(adata_treat):
     return adata_treat[:200, :10]
 
 
-def test_drop_na(adata):
-    assert sm.pp.drop_na(adata, inplace=False).shape == (data_nrows_no_na, 1687)
+def test_drop_na(adata_no_na):
+    assert adata_no_na.shape == (data_nrows_no_na, 1687)
 
 
 def test_pca(pca_result):
@@ -68,7 +68,6 @@ def test_single_cell_mahalanobis(adata_fixed_values):
 
 
 def test_aggregate_pc(adata_treat):
-    sm.pp.drop_na(adata_treat)
     agg = sm.pp.aggregate_pc(adata_treat, treatment_key="TARGETGENE")
     assert agg.shape == (2,)
 

@@ -8,11 +8,10 @@ def filter_outliers(
     outliers: float = 0.05,
     fraction: float | None = None,
     n_obs: int | None = None,
-    detect_only: bool = False,
     n_cores: int = 1,
+    only_detect: bool = False,
 ) -> AnnData:
     """
-
     Filter outlier observations from an AnnData object.
 
     Note
@@ -24,27 +23,18 @@ def filter_outliers(
     Parameters
     ----------
     adata
-            Annotated data matrix.
-
+        Annotated data matrix.
     outliers
-            Expected fraction of outlier cells.
-
-    fraction: float
-            During training, subsample to this `fraction` of the number of observations.
-
+        Expected fraction of outlier cells.
+    fraction
+        During training, subsample to this `fraction` of the number of observations.
     n_obs
-            During training, subsample to this number of observations.
-            We recommend 10,000 or fewer, as this results in faster training with adequate accuracy.
-
-    detect_only
-            Whether to only detect outliers but not filter them.
-
+        During training, subsample to this number of observations.
+        We recommend 10,000 or fewer, as this results in faster training with adequate accuracy.
     n_cores
-            Number of cores to use for parallelization. -1 for all cores.
-
-    Returns
-    -------
-    adata
+        Number of cores to use for parallelization. -1 for all cores.
+    only_detect
+        Whether to only detect outliers but not filter them.
     """
     from pyod.models.ecod import ECOD
 
@@ -69,7 +59,7 @@ def filter_outliers(
 
     adata.obs["outlier"] = predictions
 
-    if not detect_only:
+    if not only_detect:
         adata = adata[adata.obs["outlier"] == 0]
 
     return adata

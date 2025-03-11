@@ -117,9 +117,15 @@ def adata_fixed_values():
 
 
 @pytest.fixture
-def pca_result():
+def adata_no_na():
     adata = sm.datasets.rohban2017_minimal()
     sm.pp.drop_na(adata)
+    return adata
+
+
+@pytest.fixture
+def pca_result(adata_no_na):
+    adata = adata_no_na
     sm.pp.scale(adata)
     sm.pp.pca(adata, n_comps=2)
     return adata
