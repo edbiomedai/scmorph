@@ -4,15 +4,14 @@ Quality Control: ``qc``
 
 Tools to filter cells and images based on quality control metrics and morphological profiles.
 For cells, unsupervised filtering is done using :doc:`pyod <pyod:index>` through ``filter_outliers``.
-For images, semi-supervised filtering is done using machine-learning methods trained on
-image-level data and a subset of labels with ``qc_images``.
+For images, unsupervised filtering is done with ``qc_images_by_dissimilarity``.
 
-While the former can be performed on any dataset, it is likely not as accurate and
-may remove underrepresented cell types.
+Note that performing unsupervised QC may remove underrepresented cell types or removes images with
+suitable quality and should therefore be tailored to your analysis needs.
 
 .. autosummary::
     :toctree: generated/
 
     filter_outliers
-    read_image_qc
-    qc_images
+    qc_images_by_dissimilarity
+    count_cells_per_group
