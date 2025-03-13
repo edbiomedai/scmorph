@@ -508,8 +508,7 @@ def get_ks_per_group(ref_data: Plate, plate_data: Plate, id_key: str = "Treatmen
 
     Returns
     -------
-    pd.DataFrame
-        A DataFrame containing the KS test results for each group.
+    A DataFrame containing the KS test results for each group.
     """
     ref_group = ref_data.adata.obs[id_key].unique()[0]
     ref_pca = ref_data.get_pca_data()
@@ -568,8 +567,7 @@ def get_ks_fdr_per_well(
 
     Returns
     -------
-    pd.DataFrame
-        A DataFrame containing the KS test results with FDR correction.
+    A DataFrame containing the KS test results with FDR correction.
     """
     ks_over_groups = []
     if progress:
@@ -617,8 +615,7 @@ def get_ks_per_treatment(
 
     Returns
     -------
-    pd.DataFrame
-        A DataFrame containing the KS test results for each treatment group.
+    A DataFrame containing the KS test results for each treatment group.
     """
     ks_over_groups = []
     if progress:

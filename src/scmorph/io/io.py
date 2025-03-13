@@ -181,11 +181,11 @@ def make_AnnData(
         Names of metadata columns. `None` for automatic detection.
 
     feature_delim
-            Character delimiting feature names
+        Character delimiting feature names
 
     Returns
     -------
-    Annotated data matrix
+    The converted AnnData object.
     """
     meta, X = _split_meta(df, meta_cols=meta_cols)
     dropcols = _match_drop(df.columns)
@@ -222,8 +222,7 @@ def _find_files(path: str | list[str], suffix: str = ".csv") -> list[str]:
 
     Returns
     -------
-    List of str
-        Matching files
+    Matching files
     """
     # check input modes
     if isinstance(path, str):
@@ -280,7 +279,7 @@ def read_cellprofiler_csv(
 
     Returns
     -------
-    The read in AnnData object
+    The read in AnnData object.
 
     Note
     ----------
@@ -334,7 +333,7 @@ def read_cellprofiler_batches(
 
     Returns
     -------
-    adata
+    The read in AnnData object.
     """
     import anndata as ad
     import h5py
@@ -463,7 +462,7 @@ def _read_csv_columns(
 
     Returns
     -------
-    Table with the requested columns
+    Table with the requested columns.
     """
     from pyarrow import csv
 
@@ -574,7 +573,7 @@ def read_sql(filename: str, backup_url: str | None = None) -> AnnData:
 
     Returns
     -------
-    adata
+    The read in AnnData object.
     """
     import sqlite3
 

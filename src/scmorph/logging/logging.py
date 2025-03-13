@@ -31,8 +31,7 @@ def get_logger() -> logging.Logger:
 
     Returns
     -------
-    logging.Logger
-        Handle to logger
+    Handle to logger
     """
     return logging.getLogger(LOG_HANDLE)
 

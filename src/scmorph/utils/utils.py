@@ -69,8 +69,7 @@ def grouped_op(
 
     Returns
     -------
-    pd.DataFrame
-        Data averaged per group in `group_key`
+    Data averaged per group in `group_key`
     """
     if operation == "mean":
         fun = partial(np.mean, axis=0, dtype=np.float64, **kwargs)
@@ -135,8 +134,7 @@ def group_obs_fun_inplace(
 
     Returns
     -------
-    AnnData
-        Annotated data matrix object after the operation
+    Annotated data matrix object after the operation
     """
     from tqdm import tqdm
 
@@ -198,8 +196,7 @@ def get_grouped_op(
 
     Returns
     -------
-    pd.DataFrame
-        Result of grouped operation
+    Result of grouped operation
     """
     keys_tuple = tuple(group_key)
     stored_present = False
@@ -237,14 +234,13 @@ def grouped_op_to_anndata(df: pd.DataFrame, group_key: list[str]) -> AnnData:
     Parameters
     ----------
     df
-            Result from grouped operation
+        Result from grouped operation
     group_key
-            Keys used for grouping
+        Keys used for grouping
 
     Returns
     -------
-    AnnData
-            Converted object
+    Converted object
     """
     if len(group_key) == 1:
         obs = pd.DataFrame(df.columns, index=df.columns, columns=group_key)

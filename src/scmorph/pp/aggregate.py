@@ -129,8 +129,7 @@ def aggregate(
 
     Returns
     -------
-    dists
-            Aggregated annotated data matrix
+    Aggregated annotated data matrix
     """
     if not isinstance(group_keys, list):
         group_keys = [group_keys]
@@ -186,8 +185,7 @@ def aggregate_mahalanobis(
 
     Returns
     -------
-    dists
-        Mahalanobis distances between treatments
+    Mahalanobis distances between treatments
     """
     import anndata
     from tqdm import tqdm
@@ -289,8 +287,7 @@ def aggregate_pc(
 
     Returns
     -------
-    dists
-        Weighted principal component distances to control
+    Weighted principal component distances to control
     """
     agg_adata = get_grouped_op(adata, [treatment_key], "median", progress=progress, as_anndata=True)
     agg_adata, weights = _pca_aggregate(agg_adata, cum_var_explained)
@@ -404,8 +401,7 @@ def tstat_distance(tstats: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    dists
-        Per-group t-statistic distances
+    Per-group t-statistic distances
     """
     # score[j] = sqrt(t_1^2 + ... + t_i^2)
     # where i = features and j = compounds

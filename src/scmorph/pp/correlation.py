@@ -26,19 +26,18 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
 
     Parameters
     ----------
-    X, Y: np.ndarray
-            One or two 1-D or 2-D arrays containing multiple variables and observations.
-            When these are 1-D, each represents a vector of observations of a single variable.
-            In the 2-D case, each row is assumed to contain an observation.
-            Both arrays need to have the same length.
+    X, Y
+        One or two 1-D or 2-D arrays containing multiple variables and observations.
+        When these are 1-D, each represents a vector of observations of a single variable.
+        In the 2-D case, each row is assumed to contain an observation.
+        Both arrays need to have the same length.
 
     M
-            Number of right nearest neighbors
+        Number of right nearest neighbors
 
     Returns
     -------
-    xim
-            Value of XIM
+    Value of XIM
 
     Note
     ----------
@@ -97,21 +96,20 @@ def corr(
     Parameters
     ----------
     X, Y
-            One or two 1-D or 2-D arrays containing multiple variables and observations.
-            When these are 1-D, each represents a vector of observations of a single variable.
-            In the 2-D case, each row is assumed to contain an observation.
-            Both arrays need to have the same length.
+        One or two 1-D or 2-D arrays containing multiple variables and observations.
+        When these are 1-D, each represents a vector of observations of a single variable.
+        In the 2-D case, each row is assumed to contain an observation.
+        Both arrays need to have the same length.
 
     method
-            One of "pearson", "spearman", or "chatterjee" ([:cite:p:`LinHan2021`]_)
+        One of "pearson", "spearman", or "chatterjee" ([:cite:p:`LinHan2021`]_)
 
     M
-            Number of right nearest neighbors to use for Chatterjee correlation.
+        Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    corr
-            Correlation coefficient
+    Correlation coefficient
     """
     if method == "pearson":
         result = np.corrcoef(X, Y, False)

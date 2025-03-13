@@ -183,19 +183,18 @@ def scale(
     Parameters
     ----------
     adata
-            Annotated data matrix.
+        Annotated data matrix.
 
     treatment_key
-            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
-            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
-            If using, please also see `control`.
+        Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+        In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+        If using, please also see `control`.
 
     control
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
 
     chunked
-            Whether to save memory by processing in chunks. This is slower but less memory intensive.
-
+        Whether to save memory by processing in chunks. This is slower but less memory intensive.
     """
     if not chunked:
         from sklearn.preprocessing import StandardScaler
@@ -247,21 +246,21 @@ def scale_by_batch(
     Parameters
     ----------
     adata
-            Annotated data matrix.
+        Annotated data matrix.
 
     batch_key
-            Name of the column in the AnnData object that contains the batch information.
+        Name of the column in the AnnData object that contains the batch information.
 
     treatment_key
-            Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
-            In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
-            If using, please also see `control`.
+        Name of column used to delinate treatments. This is used when computing batch effects across drug-treated plates.
+        In that case, we compute batch effects only on untreated cells and then apply the correction factors to all cells.
+        If using, please also see `control`.
 
     control
-            Name of control treatment. Must be valid value in `treatment_key`.
+        Name of control treatment. Must be valid value in `treatment_key`.
 
     chunked
-            Whether to save memory by processing in chunks. This is slower but less memory intensive.
+        Whether to save memory by processing in chunks. This is slower but less memory intensive.
     """
     for _, idx in adata.obs.groupby(batch_key, observed=True).indices.items():
         scale(adata[idx, :], treatment_key=treatment_key, control=control, chunked=chunked)

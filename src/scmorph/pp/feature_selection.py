@@ -17,19 +17,18 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
     Parameters
     ----------
     adata
-            The (annotated) data matrix of shape `n_obs` × `n_vars`.
-            Rows correspond to cells and columns to genes.
+        The (annotated) data matrix of shape `n_obs` × `n_vars`.
+        Rows correspond to cells and columns to genes.
 
     method
-            One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
+        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
 
     M
-            Number of right nearest neighbors to use for Chatterjee correlation.
+        Number of right nearest neighbors to use for Chatterjee correlation.
 
     Returns
     -------
-    adata
-        Feature correlations saved in `.varm` slot
+    Feature correlations saved in `.varm` slot
     """
     adata.varm[method] = corr(adata.X, method=method, M=M)
     return adata.varm[method]
@@ -83,33 +82,30 @@ def select_features(
     Parameters
     ----------
     adata
-            The (annotated) data matrix of shape ``n_obs`` × ``n_vars``.
-            Rows correspond to cells and columns to genes.
+        The (annotated) data matrix of shape ``n_obs`` × ``n_vars``.
+        Rows correspond to cells and columns to genes.
 
     method
-            Which correlation coefficient to use for filtering.
-            One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
+        Which correlation coefficient to use for filtering.
+        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
 
     cor_cutoff
-            Cutoff beyond which features with a correlation coefficient
-            higher than it are removed. Must be between 0 and 1.
+        Cutoff beyond which features with a correlation coefficient
+        higher than it are removed. Must be between 0 and 1.
 
     fraction
-            Subsample to this ``fraction`` of the number of observations.
+        Subsample to this ``fraction`` of the number of observations.
 
     n_obs
-            Subsample to this number of observations.
+        Subsample to this number of observations.
 
     copy
-            Whether to return a copy or modify ``adata`` inplace
-            (i.e. operate inplace)
+        Whether to return a copy or modify ``adata`` inplace
+        (i.e. operate inplace)
 
     Returns
     -------
-    adata
-        Feature correlations saved in ``.varm`` slot
-        and feature selection saved in ``.var`` slot.
-
+    Feature correlations saved in ``.varm`` slot and feature selection saved in ``.var`` slot.
     """
     # sampling
     if fraction or n_obs:
@@ -161,8 +157,7 @@ def kruskal_test(
 
     Returns
     -------
-    adata
-        The AnnData object with Kruskal-Wallis test results stored in `adata.uns["kruskal_test"]`.
+    Kruskal-Wallis test results saved in `adata.uns["kruskal_test"]`.
     """
     confounder_X = adata.obs[test_column].astype(str).astype("category").values
     test_results = {}
@@ -221,8 +216,7 @@ def kruskal_filter(
 
     Returns
     -------
-    AnnData
-        The filtered or annotated AnnData object.
+    The filtered or annotated AnnData object.
     """
 
     def threshold_statistic(adata, test_column):
