@@ -134,7 +134,14 @@ def aggregate(
     if not isinstance(group_keys, list):
         group_keys = [group_keys]
 
-    adata = get_grouped_op(adata, group_keys, operation=method, as_anndata=True, progress=progress)
+    adata = get_grouped_op(
+        adata,
+        group_keys,
+        operation=method,
+        as_anndata=True,
+        progress=progress,
+        store=False,
+    )
 
     assert isinstance(adata, AnnData)
     return adata
