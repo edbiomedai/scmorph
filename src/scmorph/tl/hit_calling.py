@@ -641,8 +641,9 @@ def get_ks(
     treatment_key: str = "Treatment",
     well_key: str = "Well",
     control: str = "DMSO",
-    batch_key: str | None = None,
     control_wells: list | None = None,
+    batch_key: str | None = None,
+    progress: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Performs the KS test for all treatments and establishes a KS cutoff based on control wells FDR.
@@ -662,6 +663,8 @@ def get_ks(
         The negative control wells.
     batch_key
         Additional grouping column, usually empty (single plate) or plate identifier.
+    progress
+        Whether to display a progress bar.
 
     Returns
     -------
@@ -687,13 +690,15 @@ def get_ks(
     plates.embed()
 
     # Step 2: establish KS cutoff based on control wells FDR
-    print("Building negative control p-value distribution")
-    ref_ks = get_ks_fdr_per_well(plates, well_key=well_key, progress=True)
+    if progress:
+        print("Building negative control p-value distribution")
+    ref_ks = get_ks_fdr_per_well(plates, well_key=well_key, progress=progress)
 
     # Step 3: perform KS test for all treatments
-    print("Computing treatment p-values")
+    if progress:
+        print("Computing treatment p-values")
     treat_ks = get_ks_per_treatment(
-        plates, treatment_key=treatment_key, well_key=well_key, progress=True
+        plates, treatment_key=treatment_key, well_key=well_key, progress=progress
     )
 
     p_thresholds = ref_ks.attrs["ks_threshold"].items()
