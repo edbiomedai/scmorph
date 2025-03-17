@@ -1,9 +1,11 @@
+import warnings
 from abc import ABC, abstractmethod
 
 import anndata as ad
 import numpy as np
 import numpy.typing
 import pandas as pd
+from anndata import ImplicitModificationWarning
 from scipy.spatial.distance import mahalanobis
 from scipy.stats import kstest
 from statsmodels.stats.multitest import fdrcorrection
@@ -240,10 +242,12 @@ class Plate:
         n_pcs
             The number of principal components to retain, by default 10.
         """
-        sm.pp.scale(self.adata)
-        sm.pp.pca(self.adata)
-        n_pcs = min(n_pcs, self.adata.obsm["X_pca"].shape[1])
-        self.adata.obsm["X_pca"] = self.adata.obsm["X_pca"][:, :n_pcs]
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", ImplicitModificationWarning)
+            sm.pp.scale(self.adata)
+            sm.pp.pca(self.adata)
+            n_pcs = min(n_pcs, self.adata.obsm["X_pca"].shape[1])
+            self.adata.obsm["X_pca"] = self.adata.obsm["X_pca"][:, :n_pcs]
 
     def get_pca_data(self) -> np.ndarray:
         """
