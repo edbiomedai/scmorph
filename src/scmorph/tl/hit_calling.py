@@ -638,10 +638,10 @@ def get_ks_per_treatment(
 
 def get_ks(
     adata: ad.AnnData,
-    batch_key: str | None = None,
     treatment_key: str = "Treatment",
     well_key: str = "Well",
     control: str = "DMSO",
+    batch_key: str | None = None,
     control_wells: list | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -651,16 +651,17 @@ def get_ks(
     ----------
     adata
         The AnnData object containing the data.
-
     treatment_key
-        The column name for treatments, by default "Treatment".
+        The column name for treatments.
     well_key
-        The column name for wells, by default "Well".
+        The column name for wells, by default "Well". Used for building background distribution.
     control
         The negative control treatment, by default "DMSO".
         Either `neg_control` or `neg_wells` must be provided.
     control_wells
-        The negative control wells, by default None.
+        The negative control wells.
+    batch_key
+        Additional grouping column, usually empty (single plate) or plate identifier.
 
     Returns
     -------
