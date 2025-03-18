@@ -47,7 +47,7 @@ Morphological profiling has become an essential tool in biology and drug
 discovery, but there is a lack of open-source software tools for analysing
 single-cell morphological data. Existing tools are commercial, do not scale to
 large datasets, or do not offer single-cell specific tools [@OmtaEtAl2016;
-@SerranoEtAl2024]. `scmorph` complements existing tools by providing a
+@SerranoEtAl2025]. `scmorph` complements existing tools by providing a
 comprehensive set of methods for analysing single-cell morphological data, which
 do not require averaging of features. By integrating with the growing `scverse`
 of single-cell tools, `scmorph` also opens up advanced processing capabilities
@@ -90,7 +90,7 @@ performing batch correction, image- and single-cell QC, feature selection, hit
 calling and trajectory inference. All methods are built with single-cell
 analysis in mind and do not require subsampling.](scmorph_overview.png)
 
-In contrast to the commonly used `pycytominer` package [@SerranoEtAl2024] and
+In contrast to the commonly used `pycytominer` package [@SerranoEtAl2025] and
 `SPACe`[@StossiEtAl2024], `scmorph` offers (i) interpretable batch
 correction techniques compatible with single-cell profiles, (ii) enhanced
 feature selection with an adapted Chatterjee correlation coefficient or
@@ -105,7 +105,7 @@ enable out-of-core computation crucial to big data analysis [@VirshupEtAl2024;
 @WolfEtAl2018].
 
 Already, `scmorph` has been used to quality control morphological profiling
-experiments involving differentiating liver cells [@GrahamEtAl2023]. `scmorph`
+experiments involving differentiating liver cells [@GrahamEtAl2025]. `scmorph`
 is also involved in three projects involving small compound and microRNA
 perturbations in the domains of drug discovery and fundamental research,
 spanning datasets of >20M cells. Going forward, we envision that `scmorph` will
