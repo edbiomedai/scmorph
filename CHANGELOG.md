@@ -41,4 +41,10 @@ Release of hit calling tools.
 - Single-cell based hit calling integration
 - KW test & feature selection improvements
 
+## 0.3.1
+
+- Switched all QC methods to unsupervised
+- Expanded unit tests
+- Improved documentation and argument consistency
+- Updated pre-commit configs and versions
 <!--next-version-placeholder-->
