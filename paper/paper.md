@@ -34,10 +34,11 @@ bibliography: paper_minimal.bib
 
 # Summary
 `scmorph` is a Python package to analyse single-cell data from morphological
-profiling experiments, which generates large tabular data. To facilitate feature
-selection, dimensionality reduction, aggregation, and hit calling, `scmorph` is
-built on the versatile and scalable [`scverse`](https://scverse.org) tools.
-`scmorph` brings together a host of statistically robust methods, making it
+profiling experiments which generate large tabular data. `scmorph` combines
+domain-specific methods such as single-cell hit calling and batch correction
+with the versatile and scalable [`scverse`](https://scverse.org) tools to offer
+feature selection, dimensionality reduction and more. Overall, `scmorph` brings
+together a host of single-cell morphological profiling methods, making it
 applicable for a wide range of experimental designs and workflows.
 
 
@@ -47,51 +48,60 @@ discovery, but there is a lack of open-source software tools for analysing
 single-cell morphological data. Existing tools are commercial, do not scale to
 large datasets, or do not offer single-cell specific tools [@OmtaEtAl2016;
 @SerranoEtAl2024]. `scmorph` complements existing tools by providing a
-comprehensive set of methods for analysing single-cell morphological data, none
-of which require image-level averaging of features. By integrating with the
-growing `scverse` of single-cell tools, `scmorph` also opens up advanced
-processing capabilities including access to deep learning tools [@WolfEtAl2018].
+comprehensive set of methods for analysing single-cell morphological data, which
+do not require averaging of features. By integrating with the growing `scverse`
+of single-cell tools, `scmorph` also opens up advanced processing capabilities
+including access to deep learning tools [@WolfEtAl2018].
 
 Briefly, `scmorph` provides five modules to analyze morphological profiles:
 
-- Reading and writing (IO). To enable easy reading in of data generated with the
-  popular CellProfiler software, `scmorph` allows reading data from `csv`,
-  `sql`, `sqlite`, and `h5ad` files. Once converted, `scmorph` works with
-  AnnData objects stored as h5ad, which track processing steps and can easily be
-  written out [@VirshupEtAl2024].
-- Quality control. `scmorph` can train classifiers to remove low-quality images
-  using a subset of labeled images. To further reduce erronous profiles, scmorph
-  can also perform single-cell-level quality control through unsupervised
-  outlier detection and removal. Of note, the integrated batch correction does
-  not change the scale of features, so interpretability is retained
-  [@ColeEtAl2019].
-- Preprocessing. Provided functions help reduce batch effects, perform feature
-  selection, compute PCA coordinates, and optionally aggregate data.
+- Reading and writing (IO). `scmorph` allows reading data from `csv`, `sql`,
+  `sqlite`, and `h5ad` files, including from the popular CellProfiler software
+  [@StirlingEtAl2021]. Once converted, `scmorph` works with AnnData objects
+  stored as h5ad, which track processing steps and can easily be written to disk
+  [@VirshupEtAl2024].
+- Quality control. `scmorph` integrates two levels of quality control:
+  image-level and single-cell level. To improve reusability of these methods,
+  both approaches operature unsupervised. Image-level correction is performed
+  with a kNN-based outlier detection method, whereas single-cell profiles that
+  are outliers are detected via `pyod` [@LiEtAl2022].
+- Preprocessing. Provided functions perform feature selection, compute PCA
+  coordinates, and optionally aggregate data. For the first time in the field,
+  `scmorph` integrates scone as batch correction function, which retains
+  interpretability of features [@ColeEtAl2019]. Additionally, the integrated
+  feature selection methods can remove feature associated with known confounders
+  or with high correlation structures, as is common in morphological profiling
+  experiments [@KruskalWallis1952; @LinHan2021].
 - Plotting. `scmorph` uses scanpy for easy plotting of PCA and UMAP coordinates,
   either in 2D or as cumulative densities, which can be useful for identifying
-  technical artifacts such as batch effects [@WolfEtAl2018].
-- Trajectory inference. `scmorph` integrates an interface to the trajectory
-  inference tools `slingshot` and `condiments` through the `rpy2` translation
-  layer [@StreetEtAl2018; @RouxdeBezieuxEtAl2024].
+  technical artifacts such as batch effects [@WolfEtAl2018]. It also provides
+  methods for plotting features over known covariates, such as plates.
+- Downstream analysis. For experiments focused on profiling non-dynamic
+  responses, like to a small molecule library, `scmorph` integrates
+  functions to perform hit calling from single-cell profiles using the KS
+  statistic of single-cells to controls in PCA space. For dynamic systems like
+  differentiating cells, `scmorph` incorporates differential trajectory
+  inference modelling via  `slingshot` and `condiments` through the `rpy2`
+  translation layer [@StreetEtAl2018; @RouxdeBezieuxEtAl2024].
 
 ![Overview of `scmorph` functionality. `scmorph` processes profiles generated
-with software such as CellProfiler to reduce batch effects, clean images, cells
-and features, and perform downstream analyses such as trajectory inference and
-hit calling. All methods are built with single-cell analysis in mind and do not
-require subsampling.](scmorph_overview.png)
+with software such as CellProfiler to facilitate downstream analysis by
+performing batch correction, image- and single-cell QC, feature selection, hit
+calling and trajectory inference. All methods are built with single-cell
+analysis in mind and do not require subsampling.](scmorph_overview.png)
 
 In contrast to the commonly used `pycytominer` package [@SerranoEtAl2024] and
-the new `SPACe` software [@StossiEtAl2024], `scmorph` offers (i) batch
+`SPACe`[@StossiEtAl2024], `scmorph` offers (i) interpretable batch
 correction techniques compatible with single-cell profiles, (ii) enhanced
 feature selection with an adapted Chatterjee correlation coefficient or
 Kruskal-Wallis test [@LinHan2021; @KruskalWallis1952], (iii) lineage trajectory
 inference [@StreetEtAl2018; @BezieuxEtAl2021], and (iv) the option to analyse
-multi-nucleated profiles. Compared to `pycytominer`, `scmorph` also performs
+multi-nucleated cells. Compared to `pycytominer`, `scmorph` also performs
 single-cell based hit calling. And unlike `SPACe`, `scmorph` is agnostic to the
-segmentation and feature extraction methods used and therefore compatible with
-CellProfiler. `scmorph` also benefits from improvements of `AnnData` and
-`scanpy`, which `scmorph` is based on, which, going forward, will enable
-out-of-core computation crucial to big data analysis [@VirshupEtAl2024;
+segmentation and feature extraction methods used upstream and therefore
+compatible with CellProfiler. `scmorph` also benefits from improvements of
+`AnnData` and `scanpy`, which `scmorph` is based on, which, going forward, will
+enable out-of-core computation crucial to big data analysis [@VirshupEtAl2024;
 @WolfEtAl2018].
 
 Already, `scmorph` has been used to quality control morphological profiling
