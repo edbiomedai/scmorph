@@ -91,7 +91,7 @@ calling and trajectory inference. All methods are built with single-cell
 analysis in mind and do not require subsampling.](scmorph_overview.png)
 
 In contrast to the commonly used `pycytominer` package [@SerranoEtAl2025] and
-`SPACe`[@StossiEtAl2024], `scmorph` offers (i) interpretable batch
+`SPACe` [@StossiEtAl2024], `scmorph` offers (i) interpretable batch
 correction techniques compatible with single-cell profiles, (ii) enhanced
 feature selection with an adapted Chatterjee correlation coefficient or
 Kruskal-Wallis test [@LinHan2021; @KruskalWallis1952], (iii) lineage trajectory
