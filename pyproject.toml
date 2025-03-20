@@ -48,7 +48,6 @@ optional-dependencies.doc = [
   "myst-nb>=1.1",
   "pandas",
   "scanpydoc>=0.14.1",
-  "scmorph",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
   "sphinx-book-theme>=1",
@@ -57,7 +56,7 @@ optional-dependencies.doc = [
   "sphinxcontrib-bibtex>=1",
   "sphinxext-opengraph",
 ]
-optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit", "scmorph" ]
+optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/edbiomedai/scmorph"
