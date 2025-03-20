@@ -84,7 +84,6 @@ features = [ "test" ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = [ "3.10", "3.11", "3.12" ]
-features = [ "test" ]
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/scmorph/_version.py"
