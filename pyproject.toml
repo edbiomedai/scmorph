@@ -8,7 +8,7 @@ description = "Single-cell morphological analysis"
 readme = "README.md"
 license = { file = "LICENSE" }
 maintainers = [
-  { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.ccom" },
+  { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com" },
 ]
 authors = [ { name = "Jesko Wagner" } ]
 requires-python = ">=3.10"
@@ -80,9 +80,6 @@ scripts.clean = "git clean -fdX -- {args:docs}"
 
 [tool.hatch.envs.hatch-test]
 features = [ "test" ]
-
-[[tool.hatch.envs.hatch-test.matrix]]
-python = [ "3.10", "3.11", "3.12" ]
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/scmorph/_version.py"
