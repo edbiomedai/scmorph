@@ -28,7 +28,7 @@ dependencies = [
   "matplotlib>=3.6",
   "numba>=0.56",
   "numpy>=1.23",
-  "pandas>=1.5",
+  "pandas>=2.2",
   "patsy",
   "pyarrow",
   "pyod",
