@@ -17,7 +17,7 @@ authors:
     orcid: 0000-0001-5203-2205
     corresponding: true
     affiliation: "1, 2"
-  - name: Sjoerd&#160;Viktor&#160;Beentjes
+  - name: Sjoerd Viktor Beentjes
     orcid: 0000-0002-7998-4262
     corresponding: true
     affiliation: "1, 3"
@@ -78,9 +78,12 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
   methods for plotting features per experimental group, such as plates.
 - Downstream analysis. For experiments focused on profiling non-dynamic
   responses, such as a small molecule library, `scmorph` integrates functions to
-  perform hit calling from single-cell profiles using the Kolmogorov–Smirnov
-  statistic of single-cells to controls in PCA space. For dynamic systems such
-  as differentiating cells, `scmorph` incorporates differential trajectory
+  perform hit calling from single-cell profiles. Specifically, during hit
+  calling `scmorph` embeds single-cell profiles into PCA space and computes the
+  Mahalanobis distance of cells to the medoid of untreated control cells. It
+  then compares the distances of treated cells to those of untreated cells by
+  use of the Kolmogorov–Smirnov statistic. For dynamic systems such as
+  differentiating cells, `scmorph` incorporates differential trajectory
   inference modelling via  `slingshot` and `condiments` through the `rpy2`
   translation layer [@StreetEtAl2018; @RouxdeBezieuxEtAl2024].
 
@@ -111,6 +114,6 @@ spanning datasets of >20M cells. Going forward, we envision that `scmorph` will
 enable analysis of complex and large morphological profiling experiments.
 
 # Acknowledgements
-JW and HW are funded by an MRC Unit Award.
+JW and HW are supported by an MRC PhD studentship (grant no. MC_ST_00035).
 
 # References
