@@ -22,13 +22,13 @@ authors:
     corresponding: true
     affiliation: "1, 3"
 affiliations:
-  - name: MRC Human Genetics Unit, Institute of Genetics and Cancer, University of Edinburgh, Edinburgh, UK
+  - name: MRC Human Genetics Unit, Institute of Genetics and Cancer, University of Edinburgh, Edinburgh EH4 2XU, UK
     index: 1
-  - name: School of Informatics, University of Edinburgh, Edinburgh, UK
+  - name: School of Informatics, University of Edinburgh, Edinburgh EH8 9AB, UK
     index: 2
-  - name: School of Mathematics, University of Edinburgh, Edinburgh, UK
+  - name: School of Mathematics and Maxwell Institute for Mathematical Sciences, University of Edinburgh, Edinburgh EH9 3FD, UK
     index: 3
-date: 17 October 2024
+date: 25 March 2025
 bibliography: paper_minimal.bib
 ---
 
