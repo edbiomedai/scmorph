@@ -6,16 +6,12 @@
 
 # -- Path setup --------------------------------------------------------------
 import sys
-from typing import TYPE_CHECKING
-from pathlib import Path, PurePosixPath
 from datetime import datetime
 from importlib.metadata import metadata
+from pathlib import Path, PurePosixPath
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE / "extensions"))
-
-if TYPE_CHECKING:
-    pass
 
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +21,7 @@ if TYPE_CHECKING:
 info = metadata("scmorph")
 project_name = info["Name"]
 author = info["Author"]
-copyright = f"{datetime.now():%Y}, {author}"
+copyright = f"{datetime.now():%Y}, {author}."
 version = info["Version"]
 urls = dict(pu.split(", ") for pu in info.get_all("Project-URL"))
 repository_url = urls["Source"]
@@ -34,8 +30,6 @@ repository_url = urls["Source"]
 release = info["Version"]
 
 bibtex_bibfiles = ["references.bib"]
-bibtex_reference_style = "author_year"
-
 templates_path = ["_templates"]
 nitpicky = True  # Warn about broken links
 needs_sphinx = "4.0"
@@ -153,7 +147,6 @@ pygments_style = "default"
 nitpick_ignore = [
     ("py:class", "matplotlib.*"),
     ("py:class", "seaborn.matrix.FacetGrid"),
-    ("py:class", "scmorph.qc.images._Classifier"),
 ]
 
 # Options for plot output

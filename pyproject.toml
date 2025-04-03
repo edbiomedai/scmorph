@@ -10,7 +10,9 @@ license = { file = "LICENSE" }
 maintainers = [
   { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com" },
 ]
-authors = [ { name = "Jesko Wagner" } ]
+authors = [
+  { name = "Jesko Wagner" },
+]
 requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -28,25 +30,27 @@ dependencies = [
   "matplotlib>=3.6",
   "numba>=0.56",
   "numpy>=1.23",
-  "pandas>=1.5",
+  "pandas>=2.2",
   "patsy",
   "pyarrow",
   "pyod",
   "scanpy",
   "scikit-learn>=1.1",
   "seaborn",
-  "session-info",
-  #"rpy2",
+  # for debug logging
+  "session-info2",
   "tqdm",
 ]
 
-optional-dependencies.dev = [ "pre-commit", "setuptools-scm", "twine>=4.0.2" ]
+optional-dependencies.dev = [ "pre-commit", "twine>=4.0.2" ]
 optional-dependencies.doc = [
   "docutils>=0.8,!=0.18.*,!=0.19.*",
   "ipykernel",
   "ipython",
   "myst-nb>=1.1",
   "pandas",
+  # Until pybtex >0.24.0 releases: https://bitbucket.org/pybtex-devs/pybtex/issues/169/
+  "setuptools",
   "scanpydoc>=0.14.1",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
@@ -57,12 +61,13 @@ optional-dependencies.doc = [
   "sphinxext-opengraph",
 ]
 optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit" ]
+
+
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/edbiomedai/scmorph"
 urls.Source = "https://github.com/edbiomedai/scmorph"
 
-[tool.setuptools_scm]
 
 [tool.hatch.envs.default]
 installer = "uv"
@@ -85,7 +90,7 @@ features = [ "test" ]
 version-file = "src/scmorph/_version.py"
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 src = [ "src" ]
 extend-include = [ "*.ipynb" ]
 
@@ -135,6 +140,11 @@ addopts = [
   "--pyargs",
 ]
 nunit_attach_on = "fail"
+testpaths = [ "tests" ]
+xfail_strict = true
+addopts = [
+  "--import-mode=importlib", # allow using test files with same name
+]
 
 [tool.coverage.run]
 source = [ "scmorph" ]
