@@ -98,7 +98,7 @@ In contrast to the commonly used `pycytominer` package [@SerranoEtAl2025] and
 techniques compatible with single-cell profiles, (ii) enhanced feature selection
 with an adapted Chatterjee correlation coefficient or Kruskal-Wallis test
 [@LinHan2021; @KruskalWallis1952], (iii) lineage trajectory inference
-[@StreetEtAl2018; @BezieuxEtAl2021], and (iv) the option to analyse
+[@StreetEtAl2018; @RouxdeBezieuxEtAl2024], and (iv) the option to analyse
 multi-nucleated cells. Compared to `pycytominer`, `scmorph` also performs
 single-cell based hit calling. And unlike `SPACe`, `scmorph` is agnostic to the
 segmentation and feature extraction methods used upstream and therefore
