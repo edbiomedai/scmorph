@@ -1,13 +1,24 @@
 from types import SimpleNamespace
+from typing import Any
 
 import numpy as np
 import pandas as pd
+import scanpy as sc
 from anndata import AnnData
-from scanpy.pp import subsample
+from packaging.version import Version
 from scipy.stats import kruskal, median_abs_deviation
 from tqdm.auto import tqdm
 
 from .correlation import corr
+
+if Version(sc.__version__) >= Version("1.11.0"):
+    from scanpy.pp import sample
+
+    def subsample(adata: AnnData, n_obs: int | None = None, **kwargs: Any):
+        """Wraps `scanpy.pp.sample` to allow subsampling"""
+        return sample(adata, n=n_obs, **kwargs)
+else:
+    from scanpy.pp.sample import subsample
 
 
 def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnData:
@@ -73,7 +84,12 @@ def select_features(
     copy: bool = False,
 ) -> AnnData | None:
     """
-    Feature selection
+    Feature selection based on correlation metrics.
+
+    This can be useful for reducing the number of features in highly correlated profiling data.
+    However, note that if using scmorph for hit calling, this may not be necesary,
+    as ~scmorph.tl.get_ks` operates on PCA-space, which reduces the impact of feature correlation.
+    Nevertheless, performing this step may improve downstream results and speed up computations.
 
     Select features by feature correlations. Allows measuring correlation
     on a subset of cells to speed up computations. See ``fraction`` and ``n_obs``
@@ -136,15 +152,16 @@ def select_features(
 
 
 def kruskal_test(
-    adata,
-    test_column="PlateID",
-    progress=True,
+    adata: AnnData,
+    test_column: str = "PlateID",
+    progress: bool = True,
 ) -> AnnData:
     """
     Perform Kruskal-Wallis H-test for each feature across batches.
 
     This can help identify features that are associated with confounders, such
-    as batch and platemap effects.
+    as batch and platemap effects. Note that while it does reduce feature space, its
+    main purpose is to untrustworthy features associated with technical confounders.
 
     Parameters
     ----------
