@@ -89,7 +89,7 @@ line-length = 100
 src = [ "src" ]
 extend-include = [ "*.ipynb" ]
 
-exclude = [ "docs/extensions" ]
+exclude = [ "docs/extensions", "docs/notebooks" ]
 format.docstring-code-format = true
 
 lint.select = [
