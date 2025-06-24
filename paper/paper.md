@@ -51,7 +51,7 @@ datasets, or do not offer single-cell specific methods [@OmtaEtAl2016;
 single-cell morphological data, which do not require averaging of features
 across cells. By skipping the averaging or profiles, `scmorph` retains the
 heterogeneity of cell populations. This enables hit-calling that is sensitive to
-changes in subpopulations and recaptiulating dynamic processes such as
+changes in subpopulations and recapitulating dynamic processes such as
 differentiation. By integrating with the growing `scverse` of single-cell tools,
 `scmorph` also opens up advanced processing capabilities including access to
 deep learning tools [@WolfEtAl2018].
