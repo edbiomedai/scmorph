@@ -49,7 +49,10 @@ morphological data. Existing solutions are commercial, do not scale to large
 datasets, or do not offer single-cell specific methods [@OmtaEtAl2016;
 @SerranoEtAl2025]. `scmorph` offers a comprehensive set of methods for analysing
 single-cell morphological data, which do not require averaging of features
-across cells. By integrating with the growing `scverse` of single-cell tools,
+across cells. By skipping the averaging or profiles, `scmorph` retains the
+heterogeneity of cell populations. This enables hit-calling that is sensitive to
+changes in subpopulations and recaptiulating dynamic processes such as
+differentiation. By integrating with the growing `scverse` of single-cell tools,
 `scmorph` also opens up advanced processing capabilities including access to
 deep learning tools [@WolfEtAl2018].
 
@@ -67,14 +70,11 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
 - Preprocessing. Provided functions perform feature selection, compute PCA
   coordinates, and optionally aggregate data. For the first time in the field of
   morphological profiling, `scmorph` integrates scone as batch correction
-  function, which retains interpretability of features [@ColeEtAl2019]. Briefly,
-  it removes batch effects using a linear model and thus avoids transformation
-  of features into z-scores. This makes downstream interpretation easier,
-  including allowing for measuring percentage differences rather than
-  differences in z-scores. Additionally, the integrated feature selection
-  methods can remove features associated with known confounders or with high
-  correlation structures, as is common in morphological profiling experiments
-  [@KruskalWallis1952; @LinHan2021].
+  function, which retains interpretability of features [@ColeEtAl2019].
+  Additionally, the integrated feature selection methods can remove features
+  associated with known confounders or with high correlation structures, as is
+  common in morphological profiling experiments [@KruskalWallis1952;
+  @LinHan2021].
 - Plotting. `scmorph` uses scanpy for easy plotting of PCA and UMAP coordinates,
   either in 2D or as cumulative densities, which can be useful for identifying
   technical artifacts such as batch effects [@WolfEtAl2018]. It also provides
@@ -100,14 +100,22 @@ In contrast to the commonly used `pycytominer` package [@SerranoEtAl2025] and
 `SPACe` [@StossiEtAl2024], `scmorph` offers (i) interpretable batch correction
 techniques compatible with single-cell profiles, (ii) enhanced feature selection
 with an adapted Chatterjee correlation coefficient or Kruskal-Wallis test
-[@LinHan2021; @KruskalWallis1952], (iii) lineage trajectory inference
-[@StreetEtAl2018; @RouxdeBezieuxEtAl2024], and (iv) the option to analyse
-multi-nucleated cells. Compared to `pycytominer`, `scmorph` also performs
-single-cell based hit calling. And unlike `SPACe`, `scmorph` is agnostic to the
-segmentation and feature extraction methods used upstream and therefore
-compatible with CellProfiler. `scmorph` also benefits from improvements of
-`AnnData` and `scanpy`, such as enabling out-of-core processing crucial to big
-data analysis [@VirshupEtAl2024; @WolfEtAl2018].
+[@LinHan2021; @KruskalWallis1952], and (iii) lineage trajectory inference
+[@StreetEtAl2018; @RouxdeBezieuxEtAl2024]. Compared to `pycytominer`, `scmorph`
+also performs single-cell based hit calling. And unlike `SPACe`, `scmorph` is
+agnostic to the segmentation and feature extraction methods used upstream and
+therefore compatible with CellProfiler. `scmorph` also benefits from
+improvements of `AnnData` and `scanpy`, such as enabling out-of-core processing
+crucial to big data analysis [@VirshupEtAl2024; @WolfEtAl2018].
+
+`scmorph` aims to complement rather than replace traditional aggregate analysis.
+We recommend its use in experiments where heterogeneous cells or cell-state
+specific responses to treatments are expected. In more traditional drug
+discovery campaigns, `scmorph` may be of more limited use due to slower runtimes
+and because outputs require more careful interpretation. Nevertheless, we
+envision that tools offered in `scmorph` such as the interpretable batch
+correction could find broad application prior to aggregation even in traditional
+imaging campaigns.
 
 Already, `scmorph` has been used to quality control morphological profiling
 experiments involving differentiating liver cells [@GrahamEtAl2025]. `scmorph`
