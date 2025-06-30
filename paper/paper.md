@@ -70,11 +70,17 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
 - Preprocessing. Provided functions perform feature selection, compute PCA
   coordinates, and optionally aggregate data. For the first time in the field of
   morphological profiling, `scmorph` integrates scone as batch correction
-  function, which retains interpretability of features [@ColeEtAl2019].
-  Additionally, the integrated feature selection methods can remove features
-  associated with known confounders or with high correlation structures, as is
-  common in morphological profiling experiments [@KruskalWallis1952;
-  @LinHan2021].
+  function, which retains interpretability of features [@ColeEtAl2019]. Briefly,
+  it removes batch effects using a linear model and thus avoids transformation
+  of features into z-scores. This makes downstream interpretation easier,
+  including allowing for measuring percentage differences rather than
+  differences in z-scores. Additionally, the integrated feature selection
+  methods can remove features associated with known confounders or with high
+  correlation structures, as is common in morphological profiling experiments
+  [@KruskalWallis1952; @LinHan2021]. Additionally, the integrated feature
+  selection methods can remove features associated with known confounders or
+  with high correlation structures, as is common in morphological profiling
+  experiments [@KruskalWallis1952; @LinHan2021].
 - Plotting. `scmorph` uses scanpy for easy plotting of PCA and UMAP coordinates,
   either in 2D or as cumulative densities, which can be useful for identifying
   technical artifacts such as batch effects [@WolfEtAl2018]. It also provides
