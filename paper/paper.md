@@ -77,10 +77,7 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
   differences in z-scores. Additionally, the integrated feature selection
   methods can remove features associated with known confounders or with high
   correlation structures, as is common in morphological profiling experiments
-  [@KruskalWallis1952; @LinHan2021]. Additionally, the integrated feature
-  selection methods can remove features associated with known confounders or
-  with high correlation structures, as is common in morphological profiling
-  experiments [@KruskalWallis1952; @LinHan2021].
+  [@KruskalWallis1952; @LinHan2021].
 - Plotting. `scmorph` uses scanpy for easy plotting of PCA and UMAP coordinates,
   either in 2D or as cumulative densities, which can be useful for identifying
   technical artifacts such as batch effects [@WolfEtAl2018]. It also provides
