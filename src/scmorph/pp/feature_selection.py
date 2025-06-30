@@ -18,7 +18,7 @@ if Version(sc.__version__) >= Version("1.11.0"):
         """Wraps `scanpy.pp.sample` to allow subsampling"""
         return sample(adata, n=n_obs, **kwargs)
 else:
-    from scanpy.pp.sample import subsample
+    from scanpy.pp import subsample
 
 
 def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnData:
