@@ -161,7 +161,7 @@ def kruskal_test(
 
     This can help identify features that are associated with confounders, such
     as batch and platemap effects. Note that while it does reduce feature space, its
-    main purpose is to untrustworthy features associated with technical confounders.
+    main purpose is to remove untrustworthy features associated with technical confounders.
 
     Parameters
     ----------
