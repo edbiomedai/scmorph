@@ -9,7 +9,7 @@ from anndata import ImplicitModificationWarning
 from scipy.spatial.distance import mahalanobis
 from scipy.stats import kstest
 from statsmodels.stats.multitest import fdrcorrection
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 import scmorph as sm
 
