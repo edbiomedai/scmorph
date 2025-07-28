@@ -32,7 +32,7 @@ def corr_features(adata: AnnData, method: str = "pearson", M: int = 5) -> AnnDat
         Rows correspond to cells and columns to genes.
 
     method
-        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
+        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2023`]_)
 
     M
         Number of right nearest neighbors to use for Chatterjee correlation.
@@ -103,7 +103,7 @@ def select_features(
 
     method
         Which correlation coefficient to use for filtering.
-        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2021`]_)
+        One of "pearson", "spearman" and "chatterjee" ([:cite:p:`LinHan2023`]_)
 
     cor_cutoff
         Cutoff beyond which features with a correlation coefficient
