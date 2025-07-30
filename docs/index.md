@@ -10,6 +10,7 @@ api/index.md
 tutorials/index.md
 changelog.md
 contributing.md
+community.md
 references.md
 
 ```
