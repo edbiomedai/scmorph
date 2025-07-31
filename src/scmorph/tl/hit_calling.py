@@ -233,7 +233,7 @@ class Plate:
             return ctrls
         raise ValueError("No negative control provided")
 
-    def embed(self, n_pcs: int = 10) -> None:
+    def embed(self, n_pcs: int = 10, scale_by_var=True) -> None:
         """
         Embeds the data using PCA.
 
@@ -246,7 +246,7 @@ class Plate:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", ImplicitModificationWarning)
                 sm.pp.scale(self.adata)
-                sm.pp.pca(self.adata)
+                sm.pp.pca(self.adata, scale_by_var=scale_by_var)
                 n_pcs = min(n_pcs, self.adata.obsm["X_pca"].shape[1])
                 self.adata.obsm["X_pca"] = self.adata.obsm["X_pca"][:, :n_pcs]
 
@@ -416,7 +416,7 @@ class PlateCollection:
                         plate_name=plate_name,
                     )
 
-    def embed(self, n_pcs: int = 10) -> None:
+    def embed(self, n_pcs: int = 10, scale_by_var=True) -> None:
         """
         Embeds the data using PCA for each plate in the collection.
 
@@ -426,7 +426,7 @@ class PlateCollection:
             The number of principal components to retain, by default 10.
         """
         for plate in self.plates:
-            plate.embed(n_pcs)
+            plate.embed(n_pcs, scale_by_var=scale_by_var)
 
     def __len__(self) -> int:
         return len(self.plates)
@@ -644,6 +644,8 @@ def get_ks(
     control: str = "DMSO",
     control_wells: list | None = None,
     batch_key: str | None = None,
+    n_pcs: int = 10,
+    scale_by_var: bool = True,
     progress: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -664,6 +666,10 @@ def get_ks(
         The negative control wells.
     batch_key
         Additional grouping column, usually empty (single plate) or plate identifier.
+    n_pcs
+        How many principal components to compute Mahalanobis distance on
+    scale_by_var
+        Whether to scale principal components by variance explained (recommended)
     progress
         Whether to display a progress bar.
 
@@ -688,7 +694,7 @@ def get_ks(
         )
 
     # Step 1: embed all plates
-    plates.embed()
+    plates.embed(n_pcs=n_pcs, scale_by_var=scale_by_var)
 
     # Step 2: establish KS cutoff based on control wells FDR
     if progress:
