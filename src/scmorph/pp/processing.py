@@ -100,7 +100,7 @@ def umap(adata: AnnData, **kwargs) -> AnnData | None:
 def pca(
     adata: AnnData,
     n_comps: int | None = None,
-    whiten: bool = False,
+    scale_by_var: bool = False,
     *,
     copy: bool = False,
     zero_center: bool | None = True,
@@ -127,8 +127,9 @@ def pca(
         Number of principal components to compute. Defaults to 50, or 1 - minimum
         dimension size of selected representation.
 
-    whiten
-        Whether to whiten the data. This can help remove correlation in the resulting PC axes.
+    scale_by_var
+        Whether to scale PC coordinates by variance explained. This is useful when computing
+        distances on PCs.
 
     copy
         Return a copy instead of writing to adata.
@@ -166,8 +167,9 @@ def pca(
         copy=False,
     )
 
-    if whiten:
-        adata.obsm["X_pca"] /= np.sqrt(adata.uns["pca"]["variance"])
+    if scale_by_var:
+        adata.obsm["X_pca"] *= adata.uns["pca"]["variance_ratio"]
+
     return adata if copy else None
 
 
