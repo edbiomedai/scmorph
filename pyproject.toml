@@ -8,7 +8,7 @@ description = "Single-cell morphological analysis"
 readme = "README.md"
 license = { file = "LICENSE" }
 maintainers = [
-  { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.ccom" },
+  { name = "Jesko Wagner", email = "35219306+jeskowagner@users.noreply.github.com" },
 ]
 authors = [ { name = "Jesko Wagner" } ]
 requires-python = ">=3.10"
@@ -28,7 +28,7 @@ dependencies = [
   "matplotlib>=3.6",
   "numba>=0.56",
   "numpy>=1.23",
-  "pandas>=1.5",
+  "pandas>=2.2",
   "patsy",
   "pyarrow",
   "pyod",
@@ -48,7 +48,6 @@ optional-dependencies.doc = [
   "myst-nb>=1.1",
   "pandas",
   "scanpydoc>=0.14.1",
-  "scmorph",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
   "sphinx-book-theme>=1",
@@ -57,7 +56,7 @@ optional-dependencies.doc = [
   "sphinxcontrib-bibtex>=1",
   "sphinxext-opengraph",
 ]
-optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit", "scmorph" ]
+optional-dependencies.test = [ "coverage", "pytest", "pytest-cov", "pytest-nunit" ]
 # https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://scmorph.readthedocs.io/"
 urls.Homepage = "https://github.com/edbiomedai/scmorph"
@@ -82,10 +81,6 @@ scripts.clean = "git clean -fdX -- {args:docs}"
 [tool.hatch.envs.hatch-test]
 features = [ "test" ]
 
-[[tool.hatch.envs.hatch-test.matrix]]
-python = [ "3.10", "3.11", "3.12" ]
-features = [ "test" ]
-
 [tool.hatch.build.hooks.vcs]
 version-file = "src/scmorph/_version.py"
 
@@ -94,7 +89,7 @@ line-length = 100
 src = [ "src" ]
 extend-include = [ "*.ipynb" ]
 
-exclude = [ "docs/extensions" ]
+exclude = [ "docs/extensions", "docs/notebooks" ]
 format.docstring-code-format = true
 
 lint.select = [

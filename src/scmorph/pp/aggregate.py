@@ -195,7 +195,7 @@ def aggregate_mahalanobis(
     Mahalanobis distances between treatments
     """
     import anndata
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 
     group_keys = _flatten([treatment_key, group_key])
     treatment_col = treatment_key

@@ -5,6 +5,7 @@ from typing import TypedDict, cast
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import pytest
 
 import scmorph as sm
@@ -110,6 +111,7 @@ def adata_fixed_values():
         ]
     )
     obs = np.array(["treated"] * n_treated + ["DMSO"] * n_control)
+    obs = pd.DataFrame(obs, index=np.arange(len(obs)).astype(str))
     adata = ad.AnnData(X, obs=obs)
     adata.obs.columns = ["Treatment"]
     adata.obs["Well"] = np.repeat(range(10), 20)

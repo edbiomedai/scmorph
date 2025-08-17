@@ -22,7 +22,7 @@ def _grouped_obs_fun(
     Slightly adapted from https://github.com/scverse/scanpy/issues/181#issuecomment-534867254
     All copyright lies with Isaac Virshup.
     """
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 
     def getX(adata: AnnData, layer: None | str) -> np.ndarray:
         return adata.X if layer is None else adata.layers[layer]
@@ -136,7 +136,7 @@ def group_obs_fun_inplace(
     -------
     Annotated data matrix object after the operation
     """
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 
     grouped = adata.obs.groupby(group_key, observed=True)
 

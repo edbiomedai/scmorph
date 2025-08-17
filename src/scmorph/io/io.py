@@ -337,7 +337,7 @@ def read_cellprofiler_batches(
     """
     import anndata as ad
     import h5py
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 
     try:
         from anndata.io import write_elem

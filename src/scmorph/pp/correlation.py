@@ -41,7 +41,7 @@ def xim(X: np.ndarray, Y: None | np.ndarray = None, M: int = 5) -> np.ndarray:
 
     Note
     ----------
-    This logic was originally implemented by [:cite:p:`LinHan2021`]_.
+    This logic was originally implemented by [:cite:p:`LinHan2023`]_.
     This code is a reimplementation by Jesko Wagner.
     """
 
@@ -102,7 +102,7 @@ def corr(
         Both arrays need to have the same length.
 
     method
-        One of "pearson", "spearman", or "chatterjee" ([:cite:p:`LinHan2021`]_)
+        One of "pearson", "spearman", or "chatterjee" ([:cite:p:`LinHan2023`]_)
 
     M
         Number of right nearest neighbors to use for Chatterjee correlation.

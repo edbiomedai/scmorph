@@ -18,6 +18,7 @@ __pycache__/
 # Tests and coverage
 /data/
 /node_modules/
+**/actual.png
 
 # docs
 /docs/generated/
