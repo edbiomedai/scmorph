@@ -22,24 +22,25 @@ authors:
     corresponding: true
     affiliation: "1, 3"
 affiliations:
-  - name: MRC Human Genetics Unit, Institute of Genetics and Cancer, University of Edinburgh, Edinburgh EH4 2XU, UK
+  - name: MRC Human Genetics Unit, Institute of Genetics and Cancer, University of Edinburgh, Edinburgh EH4 2XU, United Kingdom
     index: 1
-  - name: School of Informatics, University of Edinburgh, Edinburgh EH8 9AB, UK
+  - name: School of Informatics, University of Edinburgh, Edinburgh EH8 9AB, United Kingdom
     index: 2
-  - name: School of Mathematics and Maxwell Institute for Mathematical Sciences, University of Edinburgh, Edinburgh EH9 3FD, UK
+  - name: School of Mathematics and Maxwell Institute for Mathematical Sciences, University of Edinburgh, Edinburgh EH9 3FD, United Kingdom
     index: 3
-date: 25 March 2025
+date: 17 August 2025
 bibliography: paper_minimal.bib
 ---
 
 # Summary
-`scmorph` is a Python package to analyse single-cell data from morphological
-profiling experiments which generate large tabular data. `scmorph` combines
-domain-specific methods such as single-cell hit calling and batch correction
-with the versatile and scalable [`scverse`](https://scverse.org) tools to offer
-feature selection, dimensionality reduction and more. Overall, `scmorph` brings
-together a host of single-cell morphological profiling methods, making it
-applicable for a wide range of experimental designs and workflows.
+`scmorph` is a Python package to analyse single-cell data from imaging data of
+cell populations, specifically morphological profiling experiments, which
+generate large tabular data. `scmorph` combines domain-specific methods such as
+single-cell hit calling and batch correction with the versatile and scalable
+[`scverse`](https://scverse.org) tools to offer feature selection,
+dimensionality reduction and more. Overall, `scmorph` brings together a host of
+single-cell morphological profiling methods, making it applicable for a wide
+range of experimental designs and workflows.
 
 
 # Statement of need
@@ -49,9 +50,9 @@ morphological data. Existing solutions are commercial, do not scale to large
 datasets, or do not offer single-cell specific methods [@OmtaEtAl2016;
 @SerranoEtAl2025]. `scmorph` offers a comprehensive set of methods for analysing
 single-cell morphological data, which do not require averaging of features
-across cells. By skipping the averaging or profiles, `scmorph` retains the
-heterogeneity of cell populations. This enables hit-calling that is sensitive to
-changes in subpopulations and recapitulating dynamic processes such as
+across cells. By skipping the averaging of profiles, `scmorph` retains the
+heterogeneity of cell populations. This enables hit calling that is sensitive to
+changes in subpopulations and recapitulation of dynamic processes such as
 differentiation. By integrating with the growing `scverse` of single-cell tools,
 `scmorph` also opens up advanced processing capabilities including access to
 deep learning tools [@WolfEtAl2018].
@@ -60,7 +61,7 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
 
 - Reading and writing (IO). `scmorph` allows reading data from `csv`, `sql`,
   `sqlite`, and `h5ad` files, including from the popular CellProfiler software
-  [@StirlingEtAl2021]. Once converted, `scmorph` works with AnnData objects
+  [@StirlingEtAl2021]. Once converted, `scmorph` works with anndata objects
   stored as h5ad, which track processing steps and can easily be written to disk
   [@VirshupEtAl2024].
 - Quality control. `scmorph` integrates two levels of unsupervised quality
