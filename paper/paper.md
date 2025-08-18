@@ -38,7 +38,7 @@ cell populations, specifically morphological profiling experiments, which
 generate large tabular data. `scmorph` combines domain-specific methods such as
 single-cell hit calling and batch correction with the versatile and scalable
 [`scverse`](https://scverse.org) tools to offer feature selection,
-dimensionality reduction and more. Overall, `scmorph` brings together a host of
+dimensionality reduction, and more. Overall, `scmorph` brings together a host of
 single-cell morphological profiling methods, making it applicable for a wide
 range of experimental designs and workflows.
 
@@ -59,16 +59,16 @@ deep learning tools [@WolfEtAl2018].
 
 Briefly, `scmorph` provides five modules to analyze morphological profiles:
 
-- Reading and writing (IO). `scmorph` allows reading data from `csv`, `sql`,
+- **Reading and writing (IO)**: `scmorph` allows reading data from `csv`, `sql`,
   `sqlite`, and `h5ad` files, including from the popular CellProfiler software
   [@StirlingEtAl2021]. Once converted, `scmorph` works with anndata objects
   stored as h5ad, which track processing steps and can easily be written to disk
   [@VirshupEtAl2024].
-- Quality control. `scmorph` integrates two levels of unsupervised quality
+- **Quality control**: `scmorph` integrates two levels of unsupervised quality
   control: image-level and single-cell level. Image-level correction is
   performed with a kNN-based outlier detection method, whereas single-cell
   profiles that are outliers are detected via `pyod` [@LiEtAl2022].
-- Preprocessing. Provided functions perform feature selection, compute PCA
+- **Preprocessing**: provided functions perform feature selection, compute PCA
   coordinates, and optionally aggregate data. For the first time in the field of
   morphological profiling, `scmorph` integrates scone as batch correction
   function, which retains interpretability of features [@ColeEtAl2019]. Briefly,
@@ -76,17 +76,17 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
   of features into z-scores. This makes downstream interpretation easier,
   including allowing for measuring percentage differences rather than
   differences in z-scores. Additionally, the integrated feature selection
-  methods can remove features associated with known confounders or with high
-  correlation structures, as is common in morphological profiling experiments
-  [@KruskalWallis1952; @LinHan2021].
-- Plotting. `scmorph` uses scanpy for easy plotting of PCA and UMAP coordinates,
-  either in 2D or as cumulative densities, which can be useful for identifying
-  technical artifacts such as batch effects [@WolfEtAl2018]. It also provides
-  methods for plotting features per experimental group, such as plates.
-- Downstream analysis. For experiments focused on profiling non-dynamic
+  methods can remove features associated with known confounders or with
+  high-correlation structures, as is common in morphological profiling
+  experiments [@KruskalWallis1952; @LinHan2021].
+- **Plotting**: `scmorph` uses scanpy for easy plotting of PCA and UMAP
+  coordinates, either in 2D or as cumulative densities, which can be useful for
+  identifying technical artifacts such as batch effects [@WolfEtAl2018]. It also
+  provides methods for plotting features per experimental group, such as plates.
+- **Downstream analysis**: for experiments focused on profiling non-dynamic
   responses, such as a small molecule library, `scmorph` integrates functions to
   perform hit calling from single-cell profiles. Specifically, during hit
-  calling `scmorph` embeds single-cell profiles into PCA space and computes the
+  calling, `scmorph` embeds single-cell profiles into PCA space and computes the
   Mahalanobis distance of cells to the medoid of untreated control cells. It
   then compares the distances of treated cells to those of untreated cells by
   use of the Kolmogorov–Smirnov statistic. For dynamic systems such as
