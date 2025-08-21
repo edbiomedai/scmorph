@@ -78,7 +78,7 @@ Briefly, `scmorph` provides five modules to analyze morphological profiles:
   differences in z-scores. Additionally, the integrated feature selection
   methods can remove features associated with known confounders or with
   high-correlation structures, as is common in morphological profiling
-  experiments [@KruskalWallis1952; @LinHan2021].
+  experiments [@KruskalWallis1952; @LinHan2023].
 - **Plotting**: `scmorph` uses scanpy for easy plotting of PCA and UMAP
   coordinates, either in 2D or as cumulative densities, which can be useful for
   identifying technical artifacts such as batch effects [@WolfEtAl2018]. It also
@@ -104,7 +104,7 @@ In contrast to the commonly used `pycytominer` package [@SerranoEtAl2025] and
 `SPACe` [@StossiEtAl2024], `scmorph` offers (i) interpretable batch correction
 techniques compatible with single-cell profiles, (ii) enhanced feature selection
 with an adapted Chatterjee correlation coefficient or Kruskal-Wallis test
-[@LinHan2021; @KruskalWallis1952], and (iii) lineage trajectory inference
+[@LinHan2023; @KruskalWallis1952], and (iii) lineage trajectory inference
 [@StreetEtAl2018; @RouxdeBezieuxEtAl2024]. Compared to `pycytominer`, `scmorph`
 also performs single-cell based hit calling. And unlike `SPACe`, `scmorph` is
 agnostic to the segmentation and feature extraction methods used upstream and
