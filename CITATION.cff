@@ -1,0 +1,53 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Wagner
+  given-names: Jesko
+  orcid: "https://orcid.org/0000-0001-9805-7192"
+- family-names: Warden
+  given-names: Hugh
+  orcid: "https://orcid.org/0000-0002-4308-7316"
+- family-names: Khamseh
+  given-names: Ava
+  orcid: "https://orcid.org/0000-0001-5203-2205"
+- family-names: Beentjes
+  given-names: Sjoerd Viktor
+  orcid: "https://orcid.org/0000-0002-7998-4262"
+contact:
+- family-names: Khamseh
+  given-names: Ava
+  orcid: "https://orcid.org/0000-0001-5203-2205"
+- family-names: Beentjes
+  given-names: Sjoerd Viktor
+  orcid: "https://orcid.org/0000-0002-7998-4262"
+doi: 10.5281/zenodo.16890402
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Wagner
+    given-names: Jesko
+    orcid: "https://orcid.org/0000-0001-9805-7192"
+  - family-names: Warden
+    given-names: Hugh
+    orcid: "https://orcid.org/0000-0002-4308-7316"
+  - family-names: Khamseh
+    given-names: Ava
+    orcid: "https://orcid.org/0000-0001-5203-2205"
+  - family-names: Beentjes
+    given-names: Sjoerd Viktor
+    orcid: "https://orcid.org/0000-0002-7998-4262"
+  date-published: 2025-08-22
+  doi: 10.21105/joss.08324
+  issn: 2475-9066
+  issue: 112
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 8324
+  title: "scmorph: a Python package for analysing single-cell
+    morphological profiles"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.08324"
+  volume: 10
+title: "scmorph: a Python package for analysing single-cell
+  morphological profiles"
