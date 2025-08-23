@@ -61,4 +61,4 @@ If you use `scmorph` in your work, please cite the `scmorph` publication as foll
 >
 > Jesko Wagner, Hugh Warden, Ava Khamseh, Sjoerd Viktor Beentjes,
 >
-> _JOSS_ 2025 Aug 23. doi: [10.21105/joss.08324](https://doi.org/10.21105/joss.08324).
+> _JOSS_ 2025 Aug 22. doi: [10.21105/joss.08324](https://doi.org/10.21105/joss.08324).
