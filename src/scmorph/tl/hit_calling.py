@@ -442,6 +442,11 @@ class PlateCollection:
         header = f"PlateCollection with {len(self.plates)} plates"
         return "\n".join([header] + [str(plate) for plate in self.plates])
 
+    def __getitem__(self, key: int) -> Plate:
+        assert isinstance(key, int)
+        assert key >= 0 and key <= len(self.plates), f"Subset must be within 0-{len(self.plates)}"
+        return self.plates[key]
+
 
 class MahalanobisKSTest:
     """
