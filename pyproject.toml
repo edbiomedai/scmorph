@@ -47,6 +47,7 @@ optional-dependencies.doc = [
   "ipython",
   "myst-nb>=1.1",
   "pandas",
+  "plotnine",
   "scanpydoc>=0.14.1",
   "sphinx>=4",
   "sphinx-autodoc-typehints",
