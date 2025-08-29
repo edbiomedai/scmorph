@@ -98,6 +98,8 @@ def qc_images_by_dissimilarity(
         Whether to return filtered or unfiltered (i.e. only annotated) adatas
     threshold
         Threshold for removal
+    **kwargs
+        Arguments passed to `unsupervised_imageQC`
 
     Returns
     -------
