@@ -7,5 +7,4 @@ image_qc
 batch_effects
 feature_selection
 hit_calling
-why_scone
 ```
